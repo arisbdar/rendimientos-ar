@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparar Fondos | Rendimientos AR</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <script>!function(){var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">🇦🇷 Rendimientos</div>
+      <nav class="currency-tabs">
+        <a href="/" class="currency-tab">
+          <span class="flag">🇦🇷</span> Inicio
+        </a>
+        <a href="/comparar.html" class="currency-tab active">
+          Comparar
+        </a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">🌙</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Comparar Fondos</h1>
+    <p>Seleccioná dos fondos para comparar sus rendimientos por período.</p>
+  </section>
+
+  <main class="container">
+    <div class="compare-selectors">
+      <div class="compare-select-group">
+        <label>Fondo A</label>
+        <select id="fund-a"></select>
+      </div>
+      <div class="compare-select-group">
+        <label>Fondo B</label>
+        <select id="fund-b"></select>
+      </div>
+      <button class="btn btn-primary" id="compare-btn">Comparar</button>
+    </div>
+
+    <div id="compare-loading" class="loading" style="display:none">
+      <div class="loading-spinner"></div>
+      <p>Cargando datos de CAFCI...</p>
+    </div>
+
+    <div id="compare-error" class="loading" style="display:none"></div>
+
+    <div id="chart-container" style="display:none">
+      <canvas id="compare-chart"></canvas>
+      <div id="compare-details" class="compare-details"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Datos de FCIs provistos por CAFCI (Cámara Argentina de Fondos Comunes de Inversión).</p>
+    <p>Los rendimientos pasados no garantizan rendimientos futuros.</p>
+  </footer>
+
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      var btn = document.getElementById('theme-toggle');
+      if (btn) {
+        btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+        btn.addEventListener('click', function() {
+          var current = document.documentElement.getAttribute('data-theme');
+          var next = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+          btn.textContent = next === 'dark' ? '☀️' : '🌙';
+        });
+      }
+    })();
+  </script>
+  <script src="/comparar.js"></script>
+</body>
+</html>

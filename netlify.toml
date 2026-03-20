@@ -1,0 +1,23 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/api/fci"
+  to = "/.netlify/functions/cafci"
+  status = 200
+
+[[redirects]]
+  from = "/api/config"
+  to = "/config.json"
+  status = 200
+
+# Hide admin in production
+[[redirects]]
+  from = "/admin"
+  to = "/"
+  status = 302
+[[redirects]]
+  from = "/admin/*"
+  to = "/"
+  status = 302
