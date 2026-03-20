@@ -390,12 +390,6 @@ async function loadPlazoFijo() {
       const bestRate = Math.max(banco.tna_clientes || 0, banco.tna_no_clientes || 0);
 
       const tags = [];
-      if (banco.tna_clientes != null) {
-        tags.push({ text: `Clientes: ${banco.tna_clientes}%`, type: 'type' });
-      }
-      if (banco.tna_no_clientes != null && banco.tna_no_clientes !== banco.tna_clientes) {
-        tags.push({ text: `No Clientes: ${banco.tna_no_clientes}%`, type: 'category' });
-      }
       if (banco.enlace) {
         tags.push({ text: 'Plazo Fijo Online', type: 'billetera' });
       }
