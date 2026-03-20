@@ -16,6 +16,11 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgbm1 libnss3 libatk-bridge2.0-0 libxkbcommon0 libgtk-3-0 libasound2t64
+
       - name: Install dependencies
         run: npm install puppeteer
 

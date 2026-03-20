@@ -49,7 +49,10 @@ function parseRate(text) {
 
 (async () => {
   console.log('Scraping BCRA plazo fijo rates...');
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+  });
   const page = await browser.newPage();
 
   await page.goto('https://www.bcra.gob.ar/plazos-fijos-online/', {
