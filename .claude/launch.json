@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "comparatasas",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["/Users/arielsbdar/Desktop/test/comparatasas/server.js"],
+      "port": 3000
+    }
+  ]
+}

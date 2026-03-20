@@ -1,0 +1,250 @@
+{
+  "garantizados": [
+    {
+      "id": "carrefour-banco",
+      "nombre": "Carrefour Banco",
+      "tipo": "Billetera",
+      "limite": "$4 M",
+      "tna": 30,
+      "vigente_desde": "15/03/2026",
+      "logo": "CB",
+      "logo_bg": "#004a9f",
+      "activo": true
+    },
+    {
+      "id": "naranjax",
+      "nombre": "Naranja X",
+      "tipo": "Cuenta Remunerada",
+      "limite": "$1 M",
+      "tna": 21,
+      "vigente_desde": "19/03/2026",
+      "logo": "NX",
+      "logo_bg": "#ff6600",
+      "activo": true
+    },
+    {
+      "id": "fiwind",
+      "nombre": "Fiwind",
+      "tipo": "Billetera",
+      "limite": "$750 K",
+      "tna": 23,
+      "vigente_desde": "19/03/2026",
+      "logo": "FW",
+      "logo_bg": "#1a1a2e",
+      "activo": true
+    },
+    {
+      "id": "uala",
+      "nombre": "Ualá",
+      "tipo": "Cuenta Remunerada",
+      "limite": "$1 M",
+      "tna": 23,
+      "vigente_desde": "12/02/2026",
+      "logo": "UA",
+      "logo_bg": "#6c63ff",
+      "activo": true
+    }
+  ],
+  "especiales": [
+    {
+      "id": "uala-plus2",
+      "nombre": "Ualá Plus 2",
+      "descripcion": "Acumulá $500.000 entre inversiones, consumos con tarjeta y cobros con Ualá Bis para acceder a la tasa Plus 2 el próximo mes",
+      "tipo": "Cuenta Remunerada",
+      "limite": "$1 M",
+      "tna": 29,
+      "vigente_desde": "12/02/2026",
+      "logo": "UA",
+      "logo_bg": "#6c63ff",
+      "activo": true
+    },
+    {
+      "id": "uala-plus1",
+      "nombre": "Ualá Plus 1",
+      "descripcion": "Acumulá $250.000 entre inversiones, consumos con tarjeta y cobros con Ualá Bis para acceder a la tasa Plus 1 el próximo mes",
+      "tipo": "Cuenta Remunerada",
+      "limite": "$1 M",
+      "tna": 26,
+      "vigente_desde": "12/02/2026",
+      "logo": "UA",
+      "logo_bg": "#6c63ff",
+      "activo": true
+    },
+    {
+      "id": "supervielle",
+      "nombre": "Supervielle",
+      "descripcion": "Solo Clientes Plan Sueldo.",
+      "tipo": "Cuenta Remunerada",
+      "limite": "$1 M",
+      "tna": 19.5,
+      "vigente_desde": "13/03/2026",
+      "logo": "SV",
+      "logo_bg": "#e31837",
+      "activo": true
+    }
+  ],
+  "fcis": [
+    {
+      "id": "allaria-ahorro-e",
+      "fondo_id": 442,
+      "clase_id": 5127,
+      "nombre": "Allaria Ahorro - Clase E",
+      "entidad": "Prex",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "alpha-pesos-a",
+      "fondo_id": 344,
+      "clase_id": 569,
+      "nombre": "Alpha Pesos - Clase A",
+      "entidad": "ICBC",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "adcap-ahorro-a",
+      "fondo_id": 883,
+      "clase_id": 2565,
+      "nombre": "Adcap Ahorro Pesos Fondo de Dinero - Clase A",
+      "entidad": "Adcap",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "ualintec-ahorro-a",
+      "fondo_id": 1307,
+      "clase_id": 3713,
+      "nombre": "Ualintec Ahorro Pesos - Clase A",
+      "entidad": "Ualá",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "ieb-ahorro-a",
+      "fondo_id": 1220,
+      "clase_id": 3377,
+      "nombre": "IEB Ahorro - Clase A",
+      "entidad": "IEB+",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "premier-renta-cp-a",
+      "fondo_id": 225,
+      "clase_id": 225,
+      "nombre": "Premier Renta CP en Pesos - Clase A",
+      "entidad": "Supervielle",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "balanz-mm-a",
+      "fondo_id": 1213,
+      "clase_id": 3355,
+      "nombre": "Balanz Capital Money Market - Clase A",
+      "entidad": "Balanz",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "st-zero-a",
+      "fondo_id": 1222,
+      "clase_id": 3385,
+      "nombre": "ST Zero - Clase A",
+      "entidad": "LB Finanzas",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "fima-premium-a",
+      "fondo_id": 345,
+      "clase_id": 575,
+      "nombre": "Fima Premium - Clase A",
+      "entidad": "Galicia",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "delta-pesos-a",
+      "fondo_id": 394,
+      "clase_id": 715,
+      "nombre": "Delta Pesos - Clase A",
+      "entidad": "Fiwind",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "cocos-ahorro-a",
+      "fondo_id": 1469,
+      "clase_id": 4337,
+      "nombre": "Cocos Ahorro - Clase A",
+      "entidad": "Cocos Ahorro",
+      "categoria": "Money Market",
+      "activo": false
+    },
+    {
+      "id": "sbs-ahorro-a",
+      "fondo_id": 443,
+      "clase_id": 839,
+      "nombre": "SBS Ahorro Pesos - Clase A",
+      "entidad": "Claro Pay",
+      "categoria": "Money Market",
+      "activo": true
+    },
+    {
+      "id": "cocos-rendimiento-a",
+      "fondo_id": 876,
+      "clase_id": 2517,
+      "nombre": "Cocos Rendimiento - Clase A",
+      "entidad": "Cocos",
+      "categoria": "Renta Mixta",
+      "activo": true
+    },
+    {
+      "id": "mercado-fondo-a",
+      "fondo_id": 798,
+      "clase_id": 1982,
+      "nombre": "Mercado Fondo - Clase A",
+      "entidad": "Mercado Fondo",
+      "categoria": "Money Market",
+      "activo": true
+    }
+  ],
+  "plazos_fijos": {
+    "fuente": "BCRA - Comparador de Tasas",
+    "actualizado": "20/03/2026",
+    "bancos": [
+      { "nombre": "Crédito Regional", "tna_clientes": 32, "tna_no_clientes": 31.5, "enlace": "https://www.creditoregional.com.ar/solplazofijoweb.html", "logo_bg": "#0d47a1" },
+      { "nombre": "Banco Voii", "tna_clientes": 31, "tna_no_clientes": 31, "enlace": "https://www.voii.com.ar/plazo-fijo-web/", "logo_bg": "#6a1b9a" },
+      { "nombre": "Banco CMF", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.bancocmf.com.ar/plazo-fijo-web-2/", "logo_bg": "#1a3a5c" },
+      { "nombre": "Banco BICA", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://plazofijo.bancobica.com.ar/", "logo_bg": "#00695c" },
+      { "nombre": "Banco Meridian", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.bancomeridian.com.ar/OnlineTermDeposit/Simulation", "logo_bg": "#263238" },
+      { "nombre": "Reba Compañía Financiera", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.reba.com.ar/plazo-fijo/", "logo_bg": "#e65100" },
+      { "nombre": "Banco del Sol", "tna_clientes": 29, "tna_no_clientes": 29, "enlace": "https://www.bancodelsol.com/", "logo_bg": "#f9a825" },
+      { "nombre": "Ualá", "tna_clientes": 27, "tna_no_clientes": null, "enlace": "https://www.uala.com.ar/", "logo_bg": "#6c63ff" },
+      { "nombre": "Banco de Comercio", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://bancodecomercio.com.ar/plazo-fijo-web", "logo_bg": "#283593" },
+      { "nombre": "Banco Dino", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://bancodino.com/personas/plazo-fijo/", "logo_bg": "#c62828" },
+      { "nombre": "Banco de la Prov. de Córdoba", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://www.bancor.com.ar/737_plazofijovirtual", "logo_bg": "#1b5e20" },
+      { "nombre": "Banco Macro", "tna_clientes": 26, "tna_no_clientes": null, "enlace": null, "logo_bg": "#1a237e" },
+      { "nombre": "Banco del Chubut", "tna_clientes": 26, "tna_no_clientes": 26, "enlace": "https://www.bancochubut.com.ar/webinstitucional/personas/inversiones/inversionesbch/plazo_fijo_noclientes", "logo_bg": "#004d40" },
+      { "nombre": "Banco Hipotecario", "tna_clientes": 25, "tna_no_clientes": 27.5, "enlace": "https://buhobank.com/onboarding/", "logo_bg": "#004d40" },
+      { "nombre": "Banco de la Prov. de Buenos Aires", "tna_clientes": 25, "tna_no_clientes": null, "enlace": null, "logo_bg": "#1565c0" },
+      { "nombre": "Banco Prov. Tierra del Fuego", "tna_clientes": 25, "tna_no_clientes": 21, "enlace": "https://www.btf.com.ar/contacto/solicitud_pf_web/", "logo_bg": "#00838f" },
+      { "nombre": "Banco Julio", "tna_clientes": 25, "tna_no_clientes": 25, "enlace": "https://plazofijo.bancojulio.com.ar", "logo_bg": "#37474f" },
+      { "nombre": "Banco Mariva", "tna_clientes": 25.5, "tna_no_clientes": 25.5, "enlace": "https://pfweb.mariva.com.ar/", "logo_bg": "#1565c0" },
+      { "nombre": "Bibank", "tna_clientes": 25, "tna_no_clientes": 25, "enlace": "https://bibank.com.ar/plazo-fijo-personas/", "logo_bg": "#0277bd" },
+      { "nombre": "Banco Masventas", "tna_clientes": 24, "tna_no_clientes": 25, "enlace": "https://www.bancomasventas.com.ar/personas/inversiones/plazo-fijo-web", "logo_bg": "#558b2f" },
+      { "nombre": "ICBC Argentina", "tna_clientes": 24.8, "tna_no_clientes": null, "enlace": null, "logo_bg": "#b71c1c" },
+      { "nombre": "Banco Nación", "tna_clientes": 24, "tna_no_clientes": null, "enlace": null, "logo_bg": "#0d47a1" },
+      { "nombre": "Banco de Corrientes", "tna_clientes": 23, "tna_no_clientes": 23, "enlace": "https://aplicativos.bancodecorrientes.com.ar/sitio/clientes_solicitud-pf.php", "logo_bg": "#b71c1c" },
+      { "nombre": "BBVA Argentina", "tna_clientes": 23, "tna_no_clientes": null, "enlace": null, "logo_bg": "#004481" },
+      { "nombre": "Banco Comafi", "tna_clientes": 22, "tna_no_clientes": 22, "enlace": "https://plazofijodigital.comafi.com.ar/#/simulator/form", "logo_bg": "#1a237e" },
+      { "nombre": "Banco Santander", "tna_clientes": 22, "tna_no_clientes": null, "enlace": null, "logo_bg": "#d32f2f" },
+      { "nombre": "Banco Credicoop", "tna_clientes": 22, "tna_no_clientes": 22, "enlace": "https://www.bancocredicoop.coop/personas/solicitud-de-plazo-fijo", "logo_bg": "#1b5e20" },
+      { "nombre": "Banco Galicia", "tna_clientes": 21, "tna_no_clientes": null, "enlace": null, "logo_bg": "#e65100" },
+      { "nombre": "Banco Ciudad", "tna_clientes": 21, "tna_no_clientes": null, "enlace": null, "logo_bg": "#0d47a1" },
+      { "nombre": "Banco de Formosa", "tna_clientes": 21, "tna_no_clientes": 21, "enlace": "https://www.bancoformosa.com.ar/simulador-plazo-fijo.aspx", "logo_bg": "#2e7d32" }
+    ]
+  }
+}

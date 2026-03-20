@@ -1,0 +1,44 @@
+name: Update Plazo Fijo Rates
+
+on:
+  schedule:
+    # Runs every day at 12:00 UTC (9:00 AM Argentina)
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install puppeteer
+
+      - name: Scrape BCRA rates
+        run: node scrape_bcra_pf.js
+
+      - name: Check for changes
+        id: changes
+        run: |
+          git diff --quiet public/config.json && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit updated rates
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/config.json data/config.json
+          git commit -m "Update plazo fijo rates from BCRA $(date +%Y-%m-%d)"
+          git push
+
+      - name: Deploy to Netlify
+        if: steps.changes.outputs.changed == 'true'
+        run: npx netlify deploy --prod --dir=public --auth=$NETLIFY_AUTH_TOKEN --site=$NETLIFY_SITE_ID
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

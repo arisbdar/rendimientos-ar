@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rendimientos AR — Compará billeteras, fondos y plazos fijos</title>
+  <meta name="description" content="Compará rendimientos actualizados de billeteras digitales, fondos comunes de inversión y plazos fijos en Argentina. Datos de CAFCI y BCRA.">
+
+  <!-- Open Graph / WhatsApp / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rendimientos.co/">
+  <meta property="og:title" content="Rendimientos AR — Compará billeteras, fondos y plazos fijos">
+  <meta property="og:description" content="Compará rendimientos actualizados de billeteras digitales, fondos de inversión y plazos fijos en Argentina. Datos de CAFCI y BCRA.">
+  <meta property="og:image" content="https://rendimientos-ar.netlify.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="Rendimientos AR">
+  <meta property="og:locale" content="es_AR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Rendimientos AR — Compará billeteras, fondos y plazos fijos">
+  <meta name="twitter:description" content="Compará rendimientos actualizados de billeteras digitales, fondos de inversión y plazos fijos en Argentina.">
+  <meta name="twitter:image" content="https://rendimientos-ar.netlify.app/og-image.png">
+
+  <link rel="canonical" href="https://rendimientos.co/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <script>!function(){var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">🇦🇷 Rendimientos</div>
+      <nav class="currency-tabs">
+        <a href="#" class="currency-tab active">
+          <span class="flag">🇦🇷</span> ARS
+        </a>
+        <a href="#" class="currency-tab disabled" data-soon>
+          <span class="flag">🇺🇸</span> USD
+        </a>
+        <a href="#" class="currency-tab disabled" data-soon>
+          <span class="flag">₿</span> Criptos
+        </a>
+      </nav>
+      <a href="/comparar.html" class="admin-link" style="margin-right:6px">Comparar Fondos</a>
+      <a href="/admin" class="admin-link">Panel Admin</a>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">🌙</button>
+    </div>
+  </header>
+
+  <nav class="subnav">
+    <div class="subnav-inner">
+      <a href="#" class="subnav-tab active" data-tab="billeteras">Cuentas y Billeteras</a>
+      <a href="#" class="subnav-tab" data-tab="plazofijo">Plazo Fijo</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <h1>Rendimientos de Fondos y Billeteras</h1>
+    <p>Compará rendimientos actualizados de billeteras y fondos de liquidez en Argentina.</p>
+  </section>
+
+  <main class="container">
+
+    <!-- Tab: Billeteras y Fondos -->
+    <div id="tab-billeteras">
+      <section class="section" id="billeteras-fondos">
+        <h2>Billeteras y fondos de liquidez</h2>
+        <p class="section-desc">Billeteras con tasa garantizada y fondos comunes de inversión de bajo riesgo</p>
+        <div class="card-list" id="main-list"></div>
+      </section>
+
+      <section class="section" id="chart-section">
+        <h2>Comparación de rendimientos</h2>
+        <p class="section-desc">TNA de billeteras y fondos de liquidez ordenados por rendimiento</p>
+        <div class="chart-wrapper" id="rendimientos-chart"></div>
+      </section>
+
+      <section class="section" id="especiales">
+        <h2>Rendimientos especiales</h2>
+        <p class="section-desc">Productos con requisitos o condiciones particulares para acceder</p>
+        <div class="card-list" id="especiales-list"></div>
+      </section>
+    </div>
+
+    <!-- Tab: Plazo Fijo -->
+    <div id="tab-plazofijo" style="display:none">
+      <section class="section" id="plazofijo-section">
+        <h2>Tasas de Plazo Fijo</h2>
+        <p class="section-desc">TNA para plazo fijo de $100.000 a 30 días — Fuente: BCRA</p>
+        <div class="card-list" id="plazofijo-list"></div>
+        <p class="section-source"></p>
+      </section>
+      <section class="section" id="pf-chart-section">
+        <h2>Comparación de tasas</h2>
+        <p class="section-desc">TNA de plazos fijos ordenados por rendimiento</p>
+        <div class="chart-wrapper" id="plazofijo-chart"></div>
+      </section>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>Datos de FCIs provistos por CAFCI. Datos de Plazos Fijos provistos por BCRA.</p>
+    <p>Los rendimientos pasados no garantizan rendimientos futuros.</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
