@@ -215,36 +215,216 @@
     "fuente": "BCRA - Comparador de Tasas",
     "actualizado": "20/03/2026",
     "bancos": [
-      { "nombre": "Crédito Regional", "tna_clientes": 32, "tna_no_clientes": 31.5, "enlace": "https://www.creditoregional.com.ar/solplazofijoweb.html", "logo_bg": "#0d47a1" },
-      { "nombre": "Banco Voii", "tna_clientes": 31, "tna_no_clientes": 31, "enlace": "https://www.voii.com.ar/plazo-fijo-web/", "logo_bg": "#6a1b9a" },
-      { "nombre": "Banco CMF", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.bancocmf.com.ar/plazo-fijo-web-2/", "logo_bg": "#1a3a5c" },
-      { "nombre": "Banco BICA", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://plazofijo.bancobica.com.ar/", "logo_bg": "#00695c" },
-      { "nombre": "Banco Meridian", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.bancomeridian.com.ar/OnlineTermDeposit/Simulation", "logo_bg": "#263238" },
-      { "nombre": "Reba Compañía Financiera", "tna_clientes": 30, "tna_no_clientes": 30, "enlace": "https://www.reba.com.ar/plazo-fijo/", "logo_bg": "#e65100" },
-      { "nombre": "Banco del Sol", "tna_clientes": 29, "tna_no_clientes": 29, "enlace": "https://www.bancodelsol.com/", "logo_bg": "#f9a825" },
-      { "nombre": "Ualá", "tna_clientes": 27, "tna_no_clientes": null, "enlace": "https://www.uala.com.ar/", "logo_bg": "#6c63ff" },
-      { "nombre": "Banco de Comercio", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://bancodecomercio.com.ar/plazo-fijo-web", "logo_bg": "#283593" },
-      { "nombre": "Banco Dino", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://bancodino.com/personas/plazo-fijo/", "logo_bg": "#c62828" },
-      { "nombre": "Banco de la Prov. de Córdoba", "tna_clientes": 27, "tna_no_clientes": 27, "enlace": "https://www.bancor.com.ar/737_plazofijovirtual", "logo_bg": "#1b5e20" },
-      { "nombre": "Banco Macro", "tna_clientes": 26, "tna_no_clientes": null, "enlace": null, "logo_bg": "#1a237e" },
-      { "nombre": "Banco del Chubut", "tna_clientes": 26, "tna_no_clientes": 26, "enlace": "https://www.bancochubut.com.ar/webinstitucional/personas/inversiones/inversionesbch/plazo_fijo_noclientes", "logo_bg": "#004d40" },
-      { "nombre": "Banco Hipotecario", "tna_clientes": 25, "tna_no_clientes": 27.5, "enlace": "https://buhobank.com/onboarding/", "logo_bg": "#004d40" },
-      { "nombre": "Banco de la Prov. de Buenos Aires", "tna_clientes": 25, "tna_no_clientes": null, "enlace": null, "logo_bg": "#1565c0" },
-      { "nombre": "Banco Prov. Tierra del Fuego", "tna_clientes": 25, "tna_no_clientes": 21, "enlace": "https://www.btf.com.ar/contacto/solicitud_pf_web/", "logo_bg": "#00838f" },
-      { "nombre": "Banco Julio", "tna_clientes": 25, "tna_no_clientes": 25, "enlace": "https://plazofijo.bancojulio.com.ar", "logo_bg": "#37474f" },
-      { "nombre": "Banco Mariva", "tna_clientes": 25.5, "tna_no_clientes": 25.5, "enlace": "https://pfweb.mariva.com.ar/", "logo_bg": "#1565c0" },
-      { "nombre": "Bibank", "tna_clientes": 25, "tna_no_clientes": 25, "enlace": "https://bibank.com.ar/plazo-fijo-personas/", "logo_bg": "#0277bd" },
-      { "nombre": "Banco Masventas", "tna_clientes": 24, "tna_no_clientes": 25, "enlace": "https://www.bancomasventas.com.ar/personas/inversiones/plazo-fijo-web", "logo_bg": "#558b2f" },
-      { "nombre": "ICBC Argentina", "tna_clientes": 24.8, "tna_no_clientes": null, "enlace": null, "logo_bg": "#b71c1c" },
-      { "nombre": "Banco Nación", "tna_clientes": 24, "tna_no_clientes": null, "enlace": null, "logo_bg": "#0d47a1" },
-      { "nombre": "Banco de Corrientes", "tna_clientes": 23, "tna_no_clientes": 23, "enlace": "https://aplicativos.bancodecorrientes.com.ar/sitio/clientes_solicitud-pf.php", "logo_bg": "#b71c1c" },
-      { "nombre": "BBVA Argentina", "tna_clientes": 23, "tna_no_clientes": null, "enlace": null, "logo_bg": "#004481" },
-      { "nombre": "Banco Comafi", "tna_clientes": 22, "tna_no_clientes": 22, "enlace": "https://plazofijodigital.comafi.com.ar/#/simulator/form", "logo_bg": "#1a237e" },
-      { "nombre": "Banco Santander", "tna_clientes": 22, "tna_no_clientes": null, "enlace": null, "logo_bg": "#d32f2f" },
-      { "nombre": "Banco Credicoop", "tna_clientes": 22, "tna_no_clientes": 22, "enlace": "https://www.bancocredicoop.coop/personas/solicitud-de-plazo-fijo", "logo_bg": "#1b5e20" },
-      { "nombre": "Banco Galicia", "tna_clientes": 21, "tna_no_clientes": null, "enlace": null, "logo_bg": "#e65100" },
-      { "nombre": "Banco Ciudad", "tna_clientes": 21, "tna_no_clientes": null, "enlace": null, "logo_bg": "#0d47a1" },
-      { "nombre": "Banco de Formosa", "tna_clientes": 21, "tna_no_clientes": 21, "enlace": "https://www.bancoformosa.com.ar/simulador-plazo-fijo.aspx", "logo_bg": "#2e7d32" }
+      {
+        "nombre": "Crédito Regional",
+        "tna_clientes": 32,
+        "tna_no_clientes": 31.5,
+        "enlace": "https://www.creditoregional.com.ar/solplazofijoweb.html",
+        "logo_bg": "#0d47a1"
+      },
+      {
+        "nombre": "Banco Voii",
+        "tna_clientes": 31,
+        "tna_no_clientes": 31,
+        "enlace": "https://www.voii.com.ar/plazo-fijo-web/",
+        "logo_bg": "#6a1b9a"
+      },
+      {
+        "nombre": "Banco CMF",
+        "tna_clientes": 30,
+        "tna_no_clientes": 30,
+        "enlace": "https://www.bancocmf.com.ar/plazo-fijo-web-2/",
+        "logo_bg": "#1a3a5c"
+      },
+      {
+        "nombre": "Banco BICA",
+        "tna_clientes": 30,
+        "tna_no_clientes": 30,
+        "enlace": "https://plazofijo.bancobica.com.ar/",
+        "logo_bg": "#00695c"
+      },
+      {
+        "nombre": "Banco Meridian",
+        "tna_clientes": 30,
+        "tna_no_clientes": 30,
+        "enlace": "https://www.bancomeridian.com.ar/OnlineTermDeposit/Simulation",
+        "logo_bg": "#263238"
+      },
+      {
+        "nombre": "Reba Compañía Financiera",
+        "tna_clientes": 30,
+        "tna_no_clientes": 30,
+        "enlace": "https://www.reba.com.ar/plazo-fijo/",
+        "logo_bg": "#e65100"
+      },
+      {
+        "nombre": "Banco del Sol",
+        "tna_clientes": 29,
+        "tna_no_clientes": 29,
+        "enlace": "https://www.bancodelsol.com/",
+        "logo_bg": "#f9a825"
+      },
+      {
+        "nombre": "Ualá",
+        "tna_clientes": 27,
+        "tna_no_clientes": null,
+        "enlace": "https://www.uala.com.ar/",
+        "logo_bg": "#6c63ff"
+      },
+      {
+        "nombre": "Banco de Comercio",
+        "tna_clientes": 27,
+        "tna_no_clientes": 27,
+        "enlace": "https://bancodecomercio.com.ar/plazo-fijo-web",
+        "logo_bg": "#283593"
+      },
+      {
+        "nombre": "Banco Dino",
+        "tna_clientes": 27,
+        "tna_no_clientes": 27,
+        "enlace": "https://bancodino.com/personas/plazo-fijo/",
+        "logo_bg": "#c62828"
+      },
+      {
+        "nombre": "Banco de la Prov. de Córdoba",
+        "tna_clientes": 27,
+        "tna_no_clientes": 27,
+        "enlace": "https://www.bancor.com.ar/737_plazofijovirtual",
+        "logo_bg": "#1b5e20"
+      },
+      {
+        "nombre": "Banco Macro",
+        "tna_clientes": 26,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#1a237e"
+      },
+      {
+        "nombre": "Banco Mariva",
+        "tna_clientes": 25.5,
+        "tna_no_clientes": 25.5,
+        "enlace": "https://pfweb.mariva.com.ar/",
+        "logo_bg": "#1565c0"
+      },
+      {
+        "nombre": "Banco del Chubut",
+        "tna_clientes": 25,
+        "tna_no_clientes": 25,
+        "enlace": "https://www.bancochubut.com.ar/webinstitucional/personas/inversiones/inversionesbch/plazo_fijo_noclientes",
+        "logo_bg": "#004d40"
+      },
+      {
+        "nombre": "Banco Hipotecario",
+        "tna_clientes": 25,
+        "tna_no_clientes": 27.5,
+        "enlace": "https://buhobank.com/onboarding/",
+        "logo_bg": "#004d40"
+      },
+      {
+        "nombre": "Banco de la Prov. de Buenos Aires",
+        "tna_clientes": 25,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#1565c0"
+      },
+      {
+        "nombre": "Banco Prov. Tierra del Fuego",
+        "tna_clientes": 25,
+        "tna_no_clientes": 21,
+        "enlace": "https://www.btf.com.ar/contacto/solicitud_pf_web/",
+        "logo_bg": "#00838f"
+      },
+      {
+        "nombre": "Banco Julio",
+        "tna_clientes": 25,
+        "tna_no_clientes": 25,
+        "enlace": "https://plazofijo.bancojulio.com.ar",
+        "logo_bg": "#37474f"
+      },
+      {
+        "nombre": "Bibank",
+        "tna_clientes": 25,
+        "tna_no_clientes": 25,
+        "enlace": "https://bibank.com.ar/plazo-fijo-personas/",
+        "logo_bg": "#0277bd"
+      },
+      {
+        "nombre": "ICBC Argentina",
+        "tna_clientes": 24.8,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#b71c1c"
+      },
+      {
+        "nombre": "Banco Masventas",
+        "tna_clientes": 24,
+        "tna_no_clientes": 25,
+        "enlace": "https://www.bancomasventas.com.ar/personas/inversiones/plazo-fijo-web",
+        "logo_bg": "#558b2f"
+      },
+      {
+        "nombre": "Banco Nación",
+        "tna_clientes": 24,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#0d47a1"
+      },
+      {
+        "nombre": "Banco de Corrientes",
+        "tna_clientes": 23,
+        "tna_no_clientes": 23,
+        "enlace": "https://aplicativos.bancodecorrientes.com.ar/sitio/clientes_solicitud-pf.php",
+        "logo_bg": "#b71c1c"
+      },
+      {
+        "nombre": "BBVA Argentina",
+        "tna_clientes": 23,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#004481"
+      },
+      {
+        "nombre": "Banco Comafi",
+        "tna_clientes": 22,
+        "tna_no_clientes": 22,
+        "enlace": "https://plazofijodigital.comafi.com.ar/#/simulator/form",
+        "logo_bg": "#1a237e"
+      },
+      {
+        "nombre": "Banco Santander",
+        "tna_clientes": 22,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#d32f2f"
+      },
+      {
+        "nombre": "Banco Credicoop",
+        "tna_clientes": 22,
+        "tna_no_clientes": 22,
+        "enlace": "https://www.bancocredicoop.coop/personas/solicitud-de-plazo-fijo",
+        "logo_bg": "#1b5e20"
+      },
+      {
+        "nombre": "Banco Galicia",
+        "tna_clientes": 21,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#e65100"
+      },
+      {
+        "nombre": "Banco Ciudad",
+        "tna_clientes": 21,
+        "tna_no_clientes": null,
+        "enlace": null,
+        "logo_bg": "#0d47a1"
+      },
+      {
+        "nombre": "Banco de Formosa",
+        "tna_clientes": 21,
+        "tna_no_clientes": 21,
+        "enlace": "https://www.bancoformosa.com.ar/simulador-plazo-fijo.aspx",
+        "logo_bg": "#2e7d32"
+      }
     ]
   }
 }
