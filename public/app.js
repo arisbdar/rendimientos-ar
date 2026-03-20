@@ -356,6 +356,7 @@ const BANK_LOGOS = {
   "Banco de Comercio": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00432.png",
   "Banco de Formosa": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00315.png",
   "Banco Prov. Tierra del Fuego": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00268.png",
+  "Banco Meridian": "https://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00281.png",
 };
 BANK_LOGOS["Ualá"] = ENTITY_LOGOS["Ualá"];
 
@@ -373,7 +374,7 @@ async function loadPlazoFijo() {
     }
 
     // Filter out hidden banks
-    const HIDDEN_BANKS = ["Banco Meridian"];
+    const HIDDEN_BANKS = [];
     const filtered = pf.bancos.filter(b => !HIDDEN_BANKS.includes(b.nombre));
 
     // Sort by best available rate (no_clientes first, then clientes)
