@@ -3,10 +3,31 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const CONFIG_PATH = path.join(__dirname, 'data', 'config.json');
 
+app.disable('x-powered-by');
 app.use(express.json());
+app.use((req, res, next) => {
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "frame-ancestors 'none'",
+      "img-src 'self' data: https:",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+      "connect-src 'self' https://api.argentinadatos.com",
+      "object-src 'none'",
+    ].join('; ')
+  );
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Config API ---
