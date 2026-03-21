@@ -337,6 +337,10 @@ body {
   background: var(--accent-light);
 }
 
+.fund-card.promoted {
+  border: 1.5px solid var(--accent);
+}
+
 /* Logo */
 .fund-logo {
   width: 40px;
