@@ -377,11 +377,12 @@ async function loadPlazoFijo() {
     const HIDDEN_BANKS = [];
     const filtered = pf.bancos.filter(b => !HIDDEN_BANKS.includes(b.nombre));
 
-    // Sort by best available rate (no_clientes first, then clientes)
+    // Sort by best available rate (no_clientes first, then clientes), then alphabetically
     const sorted = [...filtered].sort((a, b) => {
-      const rateA = a.tna_no_clientes || a.tna_clientes;
-      const rateB = b.tna_no_clientes || b.tna_clientes;
-      return rateB - rateA;
+      const rateA = Math.max(a.tna_no_clientes || 0, a.tna_clientes || 0);
+      const rateB = Math.max(b.tna_no_clientes || 0, b.tna_clientes || 0);
+      if (rateB !== rateA) return rateB - rateA;
+      return a.nombre.localeCompare(b.nombre);
     });
 
     container.innerHTML = '';
