@@ -11,13 +11,3 @@
   from = "/api/config"
   to = "/config.json"
   status = 200
-
-# Hide admin in production
-[[redirects]]
-  from = "/admin"
-  to = "/"
-  status = 302
-[[redirects]]
-  from = "/admin/*"
-  to = "/"
-  status = 302
