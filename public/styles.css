@@ -288,8 +288,6 @@ body {
 }
 
 .admin-link:hover {
-  background: var(--text);
-  color: #fff;
   border-color: var(--text);
 }
 
@@ -643,7 +641,7 @@ body {
 }
 
 .btn-primary {
-  background: var(--text);
+  background: var(--accent);
   color: #fff;
 }
 
