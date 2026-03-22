@@ -8,6 +8,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/cafci/ficha/:fondoId/:claseId"
+  to = "https://api.cafci.org.ar/estadisticas/informacion/diaria/ficha/:fondoId/:claseId"
+  status = 200
+
+[[redirects]]
   from = "/api/config"
   to = "/config.json"
   status = 200

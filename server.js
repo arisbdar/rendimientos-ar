@@ -4,7 +4,7 @@ const path = require('path');
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const CONFIG_PATH = path.join(__dirname, 'data', 'config.json');
+const CONFIG_PATH = path.join(__dirname, 'public', 'config.json');
 
 app.disable('x-powered-by');
 app.use(express.json());
@@ -69,6 +69,28 @@ app.get('/api/fci', async (req, res) => {
   } catch (err) {
     console.error('FCI proxy error:', err.message);
     res.status(502).json({ error: 'Failed to fetch FCI data' });
+  }
+});
+
+// --- CAFCI Ficha Proxy (for comparar.html) ---
+
+app.get('/api/cafci/ficha/:fondoId/:claseId', async (req, res) => {
+  const { fondoId, claseId } = req.params;
+  const url = `https://api.cafci.org.ar/estadisticas/informacion/diaria/ficha/${encodeURIComponent(fondoId)}/${encodeURIComponent(claseId)}`;
+  try {
+    const resp = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Referer': 'https://www.cafci.org.ar/',
+        'Origin': 'https://www.cafci.org.ar',
+      }
+    });
+    if (!resp.ok) throw new Error(`CAFCI API returned ${resp.status}`);
+    const data = await resp.json();
+    res.json(data);
+  } catch (err) {
+    console.error('CAFCI ficha proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch CAFCI ficha data' });
   }
 });
 

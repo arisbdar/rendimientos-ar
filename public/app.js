@@ -304,8 +304,9 @@ function setupTabs() {
     tab.addEventListener('click', (e) => {
       e.preventDefault();
       const target = tab.dataset.tab;
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
       tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
 
       document.getElementById('tab-billeteras').style.display = target === 'billeteras' ? '' : 'none';
       document.getElementById('tab-plazofijo').style.display = target === 'plazofijo' ? '' : 'none';
@@ -326,60 +327,32 @@ function setupTabs() {
   });
 }
 
-// ─── Plazo Fijo logos ───
-const BANK_LOGOS = {
-  "Banco CMF": "https://api.argentinadatos.com/static/logos/banco-cmf.jpg",
-  "Crédito Regional": "https://api.argentinadatos.com/static/logos/credito-regional.jpg",
-  "Banco Voii": "https://api.argentinadatos.com/static/logos/banco-voii.jpg",
-  "Banco BICA": "https://api.argentinadatos.com/static/logos/banco-bica.svg",
-  "Reba Compañía Financiera": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/45072.png",
-  "Banco del Sol": "https://api.argentinadatos.com/static/logos/banco-del-sol.svg",
-  "Banco Mariva": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00254.png",
-  "Banco Hipotecario": "https://api.argentinadatos.com/static/logos/banco-hipotecario.png",
-  "Banco de la Prov. de Córdoba": "https://api.argentinadatos.com/static/logos/bancor.svg",
-  "Bibank": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00147.png",
-  "Banco Dino": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00448.png",
-  "Banco Julio": "https://api.argentinadatos.com/static/logos/banco-julio.jpeg",
-  "Banco Macro": "https://api.argentinadatos.com/static/logos/banco-macro.png",
-  "Banco del Chubut": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00083.png",
-  "Banco de la Prov. de Buenos Aires": "https://api.argentinadatos.com/static/logos/banco-provincia.png",
-  "Banco Masventas": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00341.png",
-  "ICBC Argentina": "https://api.argentinadatos.com/static/logos/banco-icbc.png",
-  "Banco Nación": "https://api.argentinadatos.com/static/logos/banco-nacion.png",
-  "Banco Comafi": "https://api.argentinadatos.com/static/logos/banco-comafi.png",
-  "Banco de Corrientes": "https://api.argentinadatos.com/static/logos/banco-corrientes.svg",
-  "Banco Santander": "https://api.argentinadatos.com/static/logos/banco-santander.png",
-  "Banco Galicia": "https://api.argentinadatos.com/static/logos/banco-galicia.png",
-  "BBVA Argentina": "https://api.argentinadatos.com/static/logos/bbva.png",
-  "Banco Credicoop": "https://api.argentinadatos.com/static/logos/banco-credicoop.png",
-  "Banco Ciudad": "https://api.argentinadatos.com/static/logos/banco-ciudad.png",
-  "Banco de Comercio": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00432.png",
-  "Banco de Formosa": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00315.png",
-  "Banco Prov. Tierra del Fuego": "http://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00268.png",
-  "Banco Meridian": "https://www.bcra.gob.ar/archivos/Imagenes/logosbancos/00281.png",
-};
-BANK_LOGOS["Ualá"] = ENTITY_LOGOS["Ualá"];
-
 // ─── Plazo Fijo section ───
 async function loadPlazoFijo() {
   const container = document.getElementById('plazofijo-list');
   container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando tasas...</p></div>`;
 
   try {
-    const config = await fetch('/api/config').then(r => r.json());
-    const pf = config.plazos_fijos;
-    if (!pf || !pf.bancos) {
+    const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const bancos = await res.json();
+    if (!bancos || !bancos.length) {
       container.innerHTML = '<div class="loading">No se pudieron cargar los datos.</div>';
       return;
     }
 
-    // Filter out hidden banks
-    const HIDDEN_BANKS = [];
-    const filtered = pf.bancos.filter(b => !HIDDEN_BANKS.includes(b.nombre));
+    // Normalize API data: rates come as decimals (0.23 = 23%)
+    const normalized = bancos.map(b => ({
+      nombre: b.entidad,
+      tna_clientes: b.tnaClientes != null ? Math.round(b.tnaClientes * 100 * 100) / 100 : null,
+      tna_no_clientes: b.tnaNoClientes != null ? Math.round(b.tnaNoClientes * 100 * 100) / 100 : null,
+      enlace: b.enlace,
+      logo: b.logo,
+    }));
 
     // Sort by best available rate, Banco Voii first on ties, then alphabetically
-    const PROMOTED = ["Banco Voii"];
-    const sorted = [...filtered].sort((a, b) => {
+    const PROMOTED = ["BANCO VOII S.A."];
+    const sorted = [...normalized].sort((a, b) => {
       const rateA = Math.max(a.tna_no_clientes || 0, a.tna_clientes || 0);
       const rateB = Math.max(b.tna_no_clientes || 0, b.tna_clientes || 0);
       if (rateB !== rateA) return rateB - rateA;
@@ -390,8 +363,12 @@ async function loadPlazoFijo() {
     });
 
     container.innerHTML = '';
+    const today = new Date();
+    const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+
     sorted.forEach((banco, idx) => {
-      const initials = banco.nombre.replace(/^Banco\s*/i, '').substring(0, 2).toUpperCase();
+      const displayName = formatBankName(banco.nombre);
+      const initials = displayName.replace(/^Banco\s*/i, '').substring(0, 2).toUpperCase();
       const bestRate = Math.max(banco.tna_clientes || 0, banco.tna_no_clientes || 0);
 
       const tags = [];
@@ -401,13 +378,13 @@ async function loadPlazoFijo() {
 
       const card = createCard({
         logo: initials,
-        logoBg: banco.logo_bg || stringToColor(banco.nombre),
-        logoSrc: BANK_LOGOS[banco.nombre] || null,
-        name: banco.nombre,
+        logoBg: stringToColor(banco.nombre),
+        logoSrc: banco.logo || null,
+        name: displayName,
         tags,
         rate: `${bestRate.toFixed(1)}%`,
         rateLabel: 'TNA',
-        rateDate: `Actualizado: ${pf.actualizado}`
+        rateDate: `Actualizado: ${dateStr}`
       });
 
       if (idx === 0) card.classList.add('highlighted');
@@ -415,7 +392,7 @@ async function loadPlazoFijo() {
 
       if (banco.enlace) {
         card.style.cursor = 'pointer';
-        card.addEventListener('click', () => window.open(banco.enlace, '_blank'));
+        card.addEventListener('click', () => window.open(banco.enlace, '_blank', 'noopener,noreferrer'));
       }
 
       container.appendChild(card);
@@ -423,19 +400,59 @@ async function loadPlazoFijo() {
 
     // Source note
     const source = document.querySelector('.section-source');
-    if (source) source.textContent = `Fuente: ${pf.fuente} — Actualizado: ${pf.actualizado}`;
+    if (source) source.textContent = `Fuente: BCRA — Actualizado: ${dateStr}`;
 
     // Render plazo fijo chart
-    const chartItems = sorted.map(banco => ({
-      tna: Math.max(banco.tna_clientes || 0, banco.tna_no_clientes || 0),
-      nombre: banco.nombre,
-      logoSrc: BANK_LOGOS[banco.nombre] || null,
-      logo: banco.nombre.replace(/^Banco\s*/i, '').substring(0, 2).toUpperCase(),
-      logoBg: banco.logo_bg || stringToColor(banco.nombre)
-    }));
+    const chartItems = sorted.map(banco => {
+      const displayName = formatBankName(banco.nombre);
+      return {
+        tna: Math.max(banco.tna_clientes || 0, banco.tna_no_clientes || 0),
+        nombre: displayName,
+        logoSrc: banco.logo || null,
+        logo: displayName.replace(/^Banco\s*/i, '').substring(0, 2).toUpperCase(),
+        logoBg: stringToColor(banco.nombre)
+      };
+    });
     renderRendimientosChart(chartItems, 'plazofijo-chart');
   } catch (e) {
     console.error('Error loading plazo fijo:', e);
     container.innerHTML = '<div class="loading">Error al cargar datos de plazos fijos.</div>';
   }
+}
+
+// Format API bank names to shorter display names
+function formatBankName(name) {
+  const MAP = {
+    'BANCO DE LA NACION ARGENTINA': 'Banco Nación',
+    'BANCO SANTANDER ARGENTINA S.A.': 'Banco Santander',
+    'BANCO DE GALICIA Y BUENOS AIRES S.A.': 'Banco Galicia',
+    'BANCO DE LA PROVINCIA DE BUENOS AIRES': 'Banco Provincia',
+    'BANCO BBVA ARGENTINA S.A.': 'BBVA Argentina',
+    'BANCO MACRO S.A.': 'Banco Macro',
+    'BANCO CREDICOOP COOPERATIVO LIMITADO': 'Banco Credicoop',
+    'INDUSTRIAL AND COMMERCIAL BANK OF CHINA (ARGENTINA) S.A.U.': 'ICBC Argentina',
+    'BANCO DE LA CIUDAD DE BUENOS AIRES': 'Banco Ciudad',
+    'BANCO BICA S.A.': 'Banco BICA',
+    'BANCO CMF S.A.': 'Banco CMF',
+    'BANCO COMAFI SOCIEDAD ANONIMA': 'Banco Comafi',
+    'BANCO DE COMERCIO S.A.': 'Banco de Comercio',
+    'BANCO DE CORRIENTES S.A.': 'Banco de Corrientes',
+    'BANCO DE FORMOSA S.A.': 'Banco de Formosa',
+    'BANCO DE LA PROVINCIA DE CORDOBA S.A.': 'Banco de Córdoba',
+    'BANCO DEL CHUBUT S.A.': 'Banco del Chubut',
+    'BANCO DEL SOL S.A.': 'Banco del Sol',
+    'BANCO DINO S.A.': 'Banco Dino',
+    'BANCO HIPOTECARIO S.A.': 'Banco Hipotecario',
+    'BANCO JULIO SOCIEDAD ANONIMA': 'Banco Julio',
+    'BANCO MARIVA S.A.': 'Banco Mariva',
+    'BANCO MASVENTAS S.A.': 'Banco Masventas',
+    'BANCO MERIDIAN S.A.': 'Banco Meridian',
+    'BANCO PROVINCIA DE TIERRA DEL FUEGO': 'Banco Tierra del Fuego',
+    'BANCO VOII S.A.': 'Banco Voii',
+    'BIBANK S.A.': 'Bibank',
+    'CRÉDITO REGIONAL COMPAÑÍA FINANCIERA S.A.U.': 'Crédito Regional',
+    'REBA COMPAÑIA FINANCIERA S.A.': 'Reba',
+    'UALA': 'Ualá',
+  };
+  return MAP[name] || name;
 }

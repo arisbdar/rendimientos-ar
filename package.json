@@ -4,16 +4,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "scrape:pf": "node scrape_bcra_pf.js",
-    "scrape:pf:dry": "node scrape_bcra_pf.js --dry-run",
-    "test": "node --check server.js && node --check scrape_bcra_pf.js && node --check netlify/functions/cafci.js"
+    "test": "node --check server.js && node --check netlify/functions/cafci.js && node --test test/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "Comparador de rendimientos para billeteras, FCIs y plazos fijos en Argentina",
   "dependencies": {
-    "express": "^5.2.1",
-    "puppeteer": "^24.40.0"
+    "express": "^5.2.1"
   }
 }

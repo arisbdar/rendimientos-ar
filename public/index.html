@@ -53,9 +53,9 @@
   </header>
 
   <nav class="subnav">
-    <div class="subnav-inner">
-      <a href="#" class="subnav-tab active" data-tab="billeteras">Cuentas y Billeteras</a>
-      <a href="#" class="subnav-tab" data-tab="plazofijo">Plazo Fijo</a>
+    <div class="subnav-inner" role="tablist" aria-label="Tipo de inversión">
+      <a href="#" class="subnav-tab active" data-tab="billeteras" role="tab" id="tab-billeteras-tab" aria-selected="true" aria-controls="tab-billeteras">Cuentas y Billeteras</a>
+      <a href="#" class="subnav-tab" data-tab="plazofijo" role="tab" id="tab-plazofijo-tab" aria-selected="false" aria-controls="tab-plazofijo">Plazo Fijo</a>
     </div>
   </nav>
 
@@ -68,7 +68,7 @@
   <main class="container">
 
     <!-- Tab: Billeteras y Fondos -->
-    <div id="tab-billeteras">
+    <div id="tab-billeteras" role="tabpanel" aria-labelledby="tab-billeteras-tab">
       <section class="section" id="billeteras-fondos">
         <h2>Billeteras y fondos de liquidez</h2>
         <p class="section-desc">Billeteras con tasa garantizada y fondos comunes de inversión de bajo riesgo</p>
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Tab: Plazo Fijo -->
-    <div id="tab-plazofijo" style="display:none">
+    <div id="tab-plazofijo" role="tabpanel" aria-labelledby="tab-plazofijo-tab" style="display:none">
       <section class="section" id="plazofijo-section">
         <h2>Tasas de Plazo Fijo</h2>
         <p class="section-desc">TNA para plazo fijo de $100.000 a 30 días — Fuente: BCRA</p>
