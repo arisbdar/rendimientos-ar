@@ -818,8 +818,6 @@ body {
     min-width: 70px;
   }
   .rate-value { font-size: 1rem; }
-  .admin-table { font-size: 0.75rem; }
-  .admin-table th, .admin-table td { padding: 8px 10px; }
   /* LECAP table mobile */
   .lecap-table { table-layout: auto; font-size: 0.68rem; }
   .lecap-table th { padding: 8px 8px; font-size: 0.6rem; }

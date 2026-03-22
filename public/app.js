@@ -931,7 +931,6 @@ async function loadSoberanos() {
 
     const soberanos = config.soberanos || {};
     const bondPrices = apiRes.data || [];
-    const ccl = apiRes.ccl || 0;
 
     if (!bondPrices.length) {
       container.innerHTML = '<div class="loading">No se pudieron cargar los datos de bonos soberanos.</div>';
@@ -978,17 +977,17 @@ async function loadSoberanos() {
       });
     }
 
-    // Sort by years to maturity
-    items.sort((a, b) => a.yearsToMaturity - b.yearsToMaturity);
+    // Sort by duration (ascending)
+    items.sort((a, b) => a.duration - b.duration);
 
-    renderSoberanosTable(container, items, ccl);
+    renderSoberanosTable(container, items);
 
     // Render yield curve
     renderYieldCurve(items);
 
     const source = document.getElementById('soberanos-source');
     if (source) {
-      source.textContent = `Fuente: data912 (en vivo) — CCL: $${ccl.toFixed(0)} — ${items.length} bonos`;
+      source.textContent = `Fuente: data912 (precios en USD) — ${items.length} bonos`;
     }
   } catch (e) {
     console.error('Error loading soberanos:', e);
@@ -1037,18 +1036,10 @@ function calcDuration(price, flows, settlementDate, ytmPct) {
   return totalPV > 0 ? weightedTime / totalPV : 0;
 }
 
-function renderSoberanosTable(container, items, ccl) {
+function renderSoberanosTable(container, items) {
   const rows = items.map(item => {
     const leyClass = item.ley === 'NY' ? 'ley-ny' : 'ley-local';
     const leyLabel = item.ley === 'NY' ? 'NY' : 'Local';
-    // Find spread vs par bond
-    const par = items.find(i => i.symbol === item.par);
-    let spreadText = '-';
-    if (par) {
-      const spread = (item.ytm - par.ytm);
-      const sign = spread > 0 ? '+' : '';
-      spreadText = `${sign}${spread.toFixed(2)}pp`;
-    }
     return `<tr>
       <td><span class="soberano-ticker">${item.symbol}</span><span class="soberano-ley ${leyClass}">${leyLabel}</span></td>
       <td class="col-ley">${leyLabel}</td>
@@ -1056,7 +1047,6 @@ function renderSoberanosTable(container, items, ccl) {
       <td class="soberano-ytm">${item.ytm.toFixed(2)}%</td>
       <td class="col-duration">${item.duration.toFixed(1)}</td>
       <td class="col-vto">${item.vencimiento}</td>
-      <td>${spreadText}</td>
     </tr>`;
   }).join('');
 
@@ -1071,14 +1061,13 @@ function renderSoberanosTable(container, items, ccl) {
             <th>TIR</th>
             <th class="col-duration">Duration</th>
             <th class="col-vto">Vencimiento</th>
-            <th>Spread</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
       </table>
     </div>
     <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:6px">
-      Spread = diferencia de TIR entre ley NY y ley local del mismo bono. TIR calculada con flujos de fondos futuros.
+      TIR (YTM) calculada con flujos de fondos futuros descontados. Duration en años (Macaulay).
     </p>`;
 }
 
@@ -1095,11 +1084,11 @@ function renderYieldCurve(items) {
   const localBonds = items.filter(i => i.ley === 'local');
   const nyBonds = items.filter(i => i.ley === 'NY');
 
-  // Fit curves
-  const localPoints = localBonds.map(i => [i.yearsToMaturity, i.ytm]);
-  const nyPoints = nyBonds.map(i => [i.yearsToMaturity, i.ytm]);
-  const localCurve = localPoints.length >= 3 ? fitPolyCurve(localPoints, 2, 50) : [];
-  const nyCurve = nyPoints.length >= 3 ? fitPolyCurve(nyPoints, 2, 50) : [];
+  // Fit polynomial curves (degree 2) using duration as X axis
+  const localPoints = localBonds.map(i => [i.duration, i.ytm]);
+  const nyPoints = nyBonds.map(i => [i.duration, i.ytm]);
+  const localCurve = localPoints.length >= 3 ? fitPolyCurve(localPoints, 2, 80) : [];
+  const nyCurve = nyPoints.length >= 3 ? fitPolyCurve(nyPoints, 2, 80) : [];
 
   const datasets = [];
 
@@ -1112,7 +1101,7 @@ function renderYieldCurve(items) {
       borderWidth: 2,
       borderDash: [6, 3],
       pointRadius: 0,
-      tension: 0.4,
+      tension: 0,
       order: 2,
     });
   }
@@ -1125,14 +1114,14 @@ function renderYieldCurve(items) {
       borderWidth: 2,
       borderDash: [6, 3],
       pointRadius: 0,
-      tension: 0.4,
+      tension: 0,
       order: 2,
     });
   }
 
   datasets.push({
     label: 'Ley Local',
-    data: localBonds.map(i => ({ x: i.yearsToMaturity, y: i.ytm, label: i.symbol })),
+    data: localBonds.map(i => ({ x: i.duration, y: i.ytm, label: i.symbol })),
     backgroundColor: '#f97316',
     borderColor: '#ea580c',
     borderWidth: 1.5,
@@ -1144,7 +1133,7 @@ function renderYieldCurve(items) {
 
   datasets.push({
     label: 'Ley NY',
-    data: nyBonds.map(i => ({ x: i.yearsToMaturity, y: i.ytm, label: i.symbol })),
+    data: nyBonds.map(i => ({ x: i.duration, y: i.ytm, label: i.symbol })),
     backgroundColor: '#3b82f6',
     borderColor: '#2563eb',
     borderWidth: 1.5,
@@ -1173,7 +1162,7 @@ function renderYieldCurve(items) {
       },
       scales: {
         x: {
-          title: { display: true, text: 'Años al vencimiento', color: textColor },
+          title: { display: true, text: 'Duration (años)', color: textColor },
           grid: { color: gridColor },
           ticks: { color: textColor },
         },
