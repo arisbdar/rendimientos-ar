@@ -2,166 +2,85 @@
 
 Sitio para comparar rendimientos de productos financieros en Argentina:
 
-- billeteras y cuentas remuneradas
-- fondos comunes de inversión de liquidez
-- plazos fijos
+- Billeteras y cuentas remuneradas
+- Fondos comunes de inversion de liquidez
+- Plazos fijos
+- LECAPs y BONCAPs
 
-El proyecto combina contenido estático con datos actualizados desde fuentes externas y un pequeño servidor Express para desarrollo local.
-
-## Qué hace
-
-La app muestra rankings y comparativas de:
-
-- cuentas y billeteras con TNA configurada manualmente
-- FCIs de liquidez con TNA calculada a partir de datos recientes
-- plazos fijos de bancos argentinos, actualizados por scraping
-
-La información visible del sitio vive principalmente en:
-
-- [`public/config.json`](./public/config.json)
-- [`data/config.json`](./data/config.json)
+Live en [rendimientos.co](https://rendimientos.co)
 
 ## Fuentes de datos
 
-### BCRA
-
-Las tasas de plazo fijo se obtienen desde el comparador de tasas del BCRA usando el script:
-
-- [`scrape_bcra_pf.js`](./scrape_bcra_pf.js)
-
-Ese script actualiza:
-
-- [`public/config.json`](./public/config.json)
-- [`data/config.json`](./data/config.json)
-
-### ArgentinaDatos / CAFCI
-
-Los FCIs se alimentan desde endpoints públicos de ArgentinaDatos y se transforman a TNA en:
-
-- [`server.js`](./server.js)
-- [`netlify/functions/cafci.js`](./netlify/functions/cafci.js)
-
-Endpoints utilizados:
-
-- `https://api.argentinadatos.com/v1/finanzas/fci/mercadoDinero/ultimo`
-- `https://api.argentinadatos.com/v1/finanzas/fci/mercadoDinero/penultimo`
-- `https://api.argentinadatos.com/v1/finanzas/fci/rentaMixta/ultimo`
-- `https://api.argentinadatos.com/v1/finanzas/fci/rentaMixta/penultimo`
+| Seccion | Fuente | Actualizacion |
+|---------|--------|---------------|
+| Billeteras | Manual en `config.json` | Manual |
+| FCIs | [ArgentinaDatos API](https://api.argentinadatos.com) via CAFCI | En vivo |
+| Plazo Fijo | [ArgentinaDatos API](https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo) | En vivo |
+| LECAPs | [BYMA API](https://open.bymadata.com.ar) via Netlify function proxy | En vivo (7/14 tickers) |
+| BONCAPs | Manual en `config.json` (no disponibles en API gratuita BYMA) | Manual |
 
 ## Estructura
 
-- [`public/`](./public/) frontend estático
-- [`server.js`](./server.js) servidor local Express
-- [`scrape_bcra_pf.js`](./scrape_bcra_pf.js) scraping de plazo fijo
-- [`netlify/functions/`](./netlify/functions/) functions para despliegue en Netlify
-- [`.github/workflows/update-rates.yml`](./.github/workflows/update-rates.yml) actualización automática diaria
+```
+public/              Frontend estatico
+  index.html         Pagina principal (3 tabs: Billeteras, Plazo Fijo, LECAPs)
+  app.js             Logica del frontend
+  config.json        Datos de billeteras, FCIs, LECAPs (precios manuales)
+  styles.css         Estilos + dark mode
+  comparar.html      Comparador de fondos
+server.js            Servidor local Express (dev)
+update_lecaps.js     Script para actualizar precios LECAP desde BYMA
+netlify/functions/
+  cafci.js           Proxy ArgentinaDatos para FCIs
+  lecaps.js          Proxy BYMA para precios de LECAPs en vivo
+netlify.toml         Config de deploy y redirects
+```
 
-## Requisitos
-
-- Node.js 20+ recomendado
-- npm
-
-Para el scraping local también necesitás que Puppeteer pueda lanzar Chrome/Chromium.
-
-## Cómo levantarlo localmente
-
-1. Instalar dependencias:
+## Como levantar localmente
 
 ```bash
 npm install
-```
-
-2. Crear archivo de entorno:
-
-```bash
-cp .env.example .env
-```
-
-3. Levantar el servidor:
-
-```bash
 npm start
+# http://localhost:3000
 ```
 
-Por defecto queda disponible en:
+## Endpoints
 
-- `http://localhost:3000`
+| Ruta | Descripcion |
+|------|-------------|
+| `GET /api/config` | Config con billeteras, FCIs y LECAPs |
+| `GET /api/fci` | FCIs con TNA calculada (proxy ArgentinaDatos) |
+| `GET /api/lecaps` | Precios LECAP en vivo (proxy BYMA) |
+| `GET /api/cafci/ficha/:fondoId/:claseId` | Ficha tecnica de fondo (proxy CAFCI) |
 
-También podés cambiar el puerto:
+## LECAPs: como funciona
+
+1. El frontend llama a `/api/lecaps` que proxea la API gratuita de BYMA (`/lebacs`)
+2. BYMA devuelve precios T+1 con 20min de delay — se usa el ultimo operado (`trade`)
+3. Los tickers que no estan en la API gratuita (BONCAPs) usan precios de `config.json`
+4. Se calcula TIR y TNA desde la fecha de liquidacion (T+1 dia habil, saltando feriados AR)
+
+Para actualizar precios manualmente:
 
 ```bash
-PORT=4000 npm start
+# Actualiza los 7 tickers disponibles en BYMA
+NODE_TLS_REJECT_UNAUTHORIZED=0 node update_lecaps.js
+
+# Dry run (no escribe)
+NODE_TLS_REJECT_UNAUTHORIZED=0 node update_lecaps.js --dry-run
 ```
 
-## Variables de entorno
+## Deploy
 
-Ejemplo:
+Deploy directo a Netlify:
 
-```env
-PORT=3000
-NODE_ENV=development
+```bash
+npx netlify deploy --prod --dir=public
 ```
 
-## Scripts
-
-- `npm start`: levanta el servidor local
-- `npm run scrape:pf`: ejecuta el scraping de tasas de plazo fijo y actualiza los archivos de config
-- `npm run scrape:pf:dry`: corre el scraping sin escribir archivos
-- `npm test`: chequeo de sintaxis de los entrypoints principales
-
-## Endpoints locales
-
-El servidor local expone:
-
-- `GET /api/config`: devuelve la config actual
-- `GET /api/fci`: devuelve FCIs con TNA calculada
-
-Además sirve el frontend estático desde [`public/`](./public/).
-
-## Deploy y automatización
-
-El proyecto está preparado para Netlify mediante [`netlify.toml`](./netlify.toml):
-
-- publica `public/`
-- expone `/.netlify/functions/cafci` como `/api/fci`
-- expone `public/config.json` como `/api/config`
-
-El workflow [`update-rates.yml`](./.github/workflows/update-rates.yml) hace esto todos los días:
-
-1. instala dependencias
-2. ejecuta el scraping del BCRA
-3. commitea cambios en la config si hubo diferencias
-4. hace deploy a Netlify
-
-## Seguridad básica del server local
-
-El server local agrega algunos headers defensivos:
+## Seguridad del server local
 
 - `Content-Security-Policy`
 - `X-Frame-Options: DENY`
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
-
-## Limitaciones actuales
-
-- La vista [`public/comparar.html`](./public/comparar.html) usa `/api/cafci/ficha/:fondoId/:claseId`, pero ese endpoint no está implementado en [`server.js`](./server.js). Si se quiere usar localmente, hace falta agregar ese proxy o adaptar la página.
-- Parte del contenido del sitio depende de APIs públicas de terceros; si cambian formato o disponibilidad, algunas vistas pueden degradarse.
-- El scraping del BCRA depende de la estructura HTML actual del sitio fuente.
-
-## Próximos pasos
-
-- Agregar validación automática de `public/config.json` y `data/config.json` en CI.
-- Implementar o remover la dependencia de `/api/cafci/ficha/:fondoId/:claseId` para que la vista de comparación quede consistente.
-- Agregar tests básicos de integración para `GET /api/config` y `GET /api/fci`.
-- Mejorar la tolerancia a fallos de APIs externas, por ejemplo guardando un último valor válido para FCIs.
-- Documentar con más detalle el esquema de `config.json` y el flujo de actualización de datos.
-- Revisar si conviene mantener dos archivos de config (`public/config.json` y `data/config.json`) o consolidarlos.
-
-## Archivos más importantes
-
-- [`public/index.html`](./public/index.html)
-- [`public/app.js`](./public/app.js)
-- [`public/config.json`](./public/config.json)
-- [`server.js`](./server.js)
-- [`scrape_bcra_pf.js`](./scrape_bcra_pf.js)
-- [`.github/workflows/update-rates.yml`](./.github/workflows/update-rates.yml)
