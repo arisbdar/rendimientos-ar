@@ -14,8 +14,8 @@ Live en [rendimientos.co](https://rendimientos.co)
 | Seccion | Fuente | Actualizacion |
 |---------|--------|---------------|
 | Billeteras | Manual en `config.json` | Manual |
-| FCIs | [ArgentinaDatos API](https://api.argentinadatos.com) via CAFCI | En vivo |
-| Plazo Fijo | [ArgentinaDatos API](https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo) | En vivo |
+| FCIs | [ArgentinaDatos API](https://argentinadatos.com) via CAFCI | En vivo |
+| Plazo Fijo | [ArgentinaDatos API](https://argentinadatos.com) | En vivo |
 | LECAPs | [BYMA API](https://open.bymadata.com.ar) via Netlify function proxy | En vivo (7/14 tickers) |
 | BONCAPs | Manual en `config.json` (no disponibles en API gratuita BYMA) | Manual |
 
