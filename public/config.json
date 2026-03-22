@@ -360,11 +360,11 @@
         "nombre": "Apple"
       },
       "ABEV": {
-        "ratio": 0.3333,
+        "ratio": 1,
         "nombre": "ABEV"
       },
       "ABEV3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Ambev BR"
       },
       "ABNB": {
@@ -376,7 +376,7 @@
         "nombre": "Abbott Labs"
       },
       "ACN": {
-        "ratio": 75,
+        "ratio": 74,
         "nombre": "Accenture"
       },
       "ADBE": {
@@ -428,7 +428,7 @@
         "nombre": "Abercrombie"
       },
       "ARCO": {
-        "ratio": 0.5,
+        "ratio": 1,
         "nombre": "ARCO"
       },
       "ARKK": {
@@ -440,7 +440,7 @@
         "nombre": "ARM Holdings"
       },
       "ASR": {
-        "ratio": 2,
+        "ratio": 20,
         "nombre": "ASR"
       },
       "AVY": {
@@ -452,7 +452,7 @@
         "nombre": "American Express"
       },
       "BA": {
-        "ratio": 43,
+        "ratio": 24,
         "nombre": "Boeing"
       },
       "BABA": {
@@ -468,7 +468,7 @@
         "nombre": "BlackBerry"
       },
       "BBAS3": {
-        "ratio": 2,
+        "ratio": 11,
         "nombre": "Banco do Brasil"
       },
       "BBD": {
@@ -476,7 +476,7 @@
         "nombre": "Bradesco"
       },
       "BBDC3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Bradesco BR"
       },
       "BCS": {
@@ -500,15 +500,15 @@
         "nombre": "Bioceres"
       },
       "BITF": {
-        "ratio": 0.2,
+        "ratio": 1,
         "nombre": "Bitfarms"
       },
       "BK": {
-        "ratio": 19,
+        "ratio": 2,
         "nombre": "BNY Mellon"
       },
       "BKNG": {
-        "ratio": 700,
+        "ratio": 696,
         "nombre": "Booking"
       },
       "BKR": {
@@ -522,10 +522,6 @@
       "BP": {
         "ratio": 5,
         "nombre": "BP"
-      },
-      "BPA11": {
-        "ratio": 1,
-        "nombre": "BTG Pactual"
       },
       "BSBR": {
         "ratio": 1,
@@ -572,7 +568,7 @@
         "nombre": "Costco"
       },
       "CRM": {
-        "ratio": 6,
+        "ratio": 18,
         "nombre": "Salesforce"
       },
       "CSCO": {
@@ -580,11 +576,11 @@
         "nombre": "Cisco"
       },
       "CSNA3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "CSN BR"
       },
       "CVS": {
-        "ratio": 15,
+        "ratio": 16,
         "nombre": "CVS Health"
       },
       "CVX": {
@@ -624,7 +620,7 @@
         "nombre": "Dow Inc"
       },
       "E": {
-        "ratio": 2,
+        "ratio": 4,
         "nombre": "Eni"
       },
       "EA": {
@@ -640,15 +636,15 @@
         "nombre": "iShares EM"
       },
       "EFX": {
-        "ratio": 4,
+        "ratio": 16,
         "nombre": "Equifax"
       },
       "EQNR": {
-        "ratio": 16,
+        "ratio": 6,
         "nombre": "Equinor"
       },
       "ERIC": {
-        "ratio": 20,
+        "ratio": 2,
         "nombre": "Ericsson"
       },
       "ETHA": {
@@ -664,35 +660,35 @@
         "nombre": "Ford"
       },
       "FCX": {
-        "ratio": 1,
+        "ratio": 3,
         "nombre": "Freeport-McMoRan"
       },
       "FDX": {
-        "ratio": 1,
+        "ratio": 10,
         "nombre": "FedEx"
       },
       "FMX": {
-        "ratio": 10,
+        "ratio": 6,
         "nombre": "FEMSA"
       },
       "FSLR": {
-        "ratio": 2,
+        "ratio": 18,
         "nombre": "First Solar"
       },
       "GE": {
-        "ratio": 3,
+        "ratio": 8,
         "nombre": "GE Aerospace"
       },
       "GFI": {
-        "ratio": 5,
+        "ratio": 1,
         "nombre": "Gold Fields"
       },
       "GGB": {
-        "ratio": 6,
+        "ratio": 1,
         "nombre": "Gerdau"
       },
       "GILD": {
-        "ratio": 1,
+        "ratio": 4,
         "nombre": "Gilead Sciences"
       },
       "GLD": {
@@ -700,7 +696,7 @@
         "nombre": "SPDR Gold"
       },
       "GLOB": {
-        "ratio": 14,
+        "ratio": 18,
         "nombre": "Globant"
       },
       "GLW": {
@@ -712,7 +708,7 @@
         "nombre": "Alphabet"
       },
       "GPRK": {
-        "ratio": 8,
+        "ratio": 1,
         "nombre": "Geopark"
       },
       "GRMN": {
@@ -720,19 +716,19 @@
         "nombre": "Garmin"
       },
       "GSK": {
-        "ratio": 20,
+        "ratio": 4,
         "nombre": "GSK"
       },
       "GT": {
-        "ratio": 18,
+        "ratio": 2,
         "nombre": "Goodyear"
       },
       "HAPV3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Hapvida"
       },
       "HD": {
-        "ratio": 18,
+        "ratio": 32,
         "nombre": "Home Depot"
       },
       "HDB": {
@@ -768,11 +764,11 @@
         "nombre": "HSBC"
       },
       "HSY": {
-        "ratio": 28,
+        "ratio": 21,
         "nombre": "Hershey"
       },
       "HUT": {
-        "ratio": 0.2,
+        "ratio": 1,
         "nombre": "Hut 8"
       },
       "HWM": {
@@ -808,7 +804,7 @@
         "nombre": "International Paper"
       },
       "ISRG": {
-        "ratio": 90,
+        "ratio": 88,
         "nombre": "Intuitive Surgical"
       },
       "ITA": {
@@ -820,7 +816,7 @@
         "nombre": "Itaú Unibanco"
       },
       "ITUB3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Itaú BR"
       },
       "IWM": {
@@ -848,11 +844,11 @@
         "nombre": "JPMorgan"
       },
       "KB": {
-        "ratio": 1,
+        "ratio": 2,
         "nombre": "KB Financial"
       },
       "KEP": {
-        "ratio": 2,
+        "ratio": 1,
         "nombre": "KEPCO"
       },
       "KGC": {
@@ -860,15 +856,15 @@
         "nombre": "Kinross Gold"
       },
       "KMB": {
-        "ratio": 5,
+        "ratio": 6,
         "nombre": "Kimberly-Clark"
       },
       "KO": {
-        "ratio": 16,
+        "ratio": 5,
         "nombre": "Coca-Cola"
       },
       "LAC": {
-        "ratio": 2,
+        "ratio": 1,
         "nombre": "Lithium Americas"
       },
       "LLY": {
@@ -876,7 +872,7 @@
         "nombre": "Eli Lilly"
       },
       "LMT": {
-        "ratio": 1,
+        "ratio": 20,
         "nombre": "Lockheed Martin"
       },
       "LND": {
@@ -884,15 +880,15 @@
         "nombre": "BrasilAgro"
       },
       "LRCX": {
-        "ratio": 1,
+        "ratio": 56,
         "nombre": "Lam Research"
       },
       "LREN3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Lojas Renner"
       },
       "LVS": {
-        "ratio": 1,
+        "ratio": 2,
         "nombre": "Las Vegas Sands"
       },
       "LYG": {
@@ -900,11 +896,11 @@
         "nombre": "Lloyds Banking"
       },
       "MCD": {
-        "ratio": 4,
+        "ratio": 24,
         "nombre": "McDonald's"
       },
       "MDLZ": {
-        "ratio": 2,
+        "ratio": 15,
         "nombre": "Mondelez"
       },
       "MDT": {
@@ -912,19 +908,19 @@
         "nombre": "Medtronic"
       },
       "MELI": {
-        "ratio": 5,
+        "ratio": 120,
         "nombre": "MercadoLibre"
       },
       "META": {
-        "ratio": 30,
+        "ratio": 24,
         "nombre": "Meta"
       },
       "MFG": {
-        "ratio": 19,
+        "ratio": 1,
         "nombre": "Mizuho"
       },
       "MGLU3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Magazine Luiza"
       },
       "MMM": {
@@ -944,19 +940,19 @@
         "nombre": "Merck"
       },
       "MRNA": {
-        "ratio": 20,
+        "ratio": 19,
         "nombre": "Moderna"
       },
       "MRVL": {
-        "ratio": 24,
+        "ratio": 14,
         "nombre": "Marvell"
       },
       "MSFT": {
-        "ratio": 1,
+        "ratio": 30,
         "nombre": "Microsoft"
       },
       "MSI": {
-        "ratio": 1,
+        "ratio": 20,
         "nombre": "Motorola Solutions"
       },
       "MSTR": {
@@ -968,71 +964,71 @@
         "nombre": "Micron"
       },
       "MUFG": {
-        "ratio": 2,
+        "ratio": 1,
         "nombre": "Mitsubishi UFJ"
       },
       "MUX": {
-        "ratio": 120,
+        "ratio": 2,
         "nombre": "McEwen Mining"
       },
       "NATU3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Natura"
       },
       "NEM": {
-        "ratio": 12,
+        "ratio": 3,
         "nombre": "Newmont"
       },
       "NFLX": {
-        "ratio": 1,
+        "ratio": 48,
         "nombre": "Netflix"
       },
       "NG": {
-        "ratio": 2,
+        "ratio": 1,
         "nombre": "NovaGold"
       },
       "NGG": {
-        "ratio": 1,
+        "ratio": 2,
         "nombre": "National Grid"
       },
       "NIO": {
-        "ratio": 1,
+        "ratio": 4,
         "nombre": "NIO"
       },
       "NKE": {
-        "ratio": 1,
+        "ratio": 12,
         "nombre": "Nike"
       },
       "NMR": {
-        "ratio": 4,
+        "ratio": 1,
         "nombre": "Nomura"
       },
       "NTES": {
-        "ratio": 3,
+        "ratio": 14,
         "nombre": "NetEase"
       },
       "NUE": {
-        "ratio": 5,
+        "ratio": 16,
         "nombre": "Nucor"
       },
       "NVDA": {
-        "ratio": 28,
+        "ratio": 24,
         "nombre": "NVIDIA"
       },
       "NVS": {
-        "ratio": 2,
+        "ratio": 4,
         "nombre": "Novartis"
       },
       "NXE": {
-        "ratio": 4,
+        "ratio": 1,
         "nombre": "NXE"
       },
       "ORCL": {
-        "ratio": 222,
+        "ratio": 3,
         "nombre": "Oracle"
       },
       "ORLY": {
-        "ratio": 3,
+        "ratio": 221,
         "nombre": "O'Reilly Auto"
       },
       "OXY": {
@@ -1040,11 +1036,11 @@
         "nombre": "Occidental"
       },
       "PAC": {
-        "ratio": 1,
+        "ratio": 16,
         "nombre": "Grupo Aeroportuario"
       },
       "PAGS": {
-        "ratio": 50,
+        "ratio": 3,
         "nombre": "PagSeguro"
       },
       "PANW": {
@@ -1052,11 +1048,11 @@
         "nombre": "Palo Alto Networks"
       },
       "PBI": {
-        "ratio": 4,
+        "ratio": 1,
         "nombre": "Pitney Bowes"
       },
       "PBR": {
-        "ratio": 4,
+        "ratio": 1,
         "nombre": "Petrobras"
       },
       "PCAR": {
@@ -1064,27 +1060,27 @@
         "nombre": "Paccar"
       },
       "PEP": {
-        "ratio": 1,
+        "ratio": 18,
         "nombre": "PepsiCo"
       },
       "PETR3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Petrobras BR"
       },
       "PFE": {
-        "ratio": 6,
+        "ratio": 4,
         "nombre": "Pfizer"
       },
       "PG": {
-        "ratio": 8,
+        "ratio": 15,
         "nombre": "Procter & Gamble"
       },
       "PHG": {
-        "ratio": 56,
+        "ratio": 5,
         "nombre": "Koninklijke Philips"
       },
       "PINS": {
-        "ratio": 2,
+        "ratio": 7,
         "nombre": "Pinterest"
       },
       "PLTR": {
@@ -1092,23 +1088,23 @@
         "nombre": "Palantir"
       },
       "PM": {
-        "ratio": 7,
+        "ratio": 18,
         "nombre": "Philip Morris"
       },
       "PRIO3": {
-        "ratio": 2,
+        "ratio": 10,
         "nombre": "PRIO"
       },
       "PSX": {
-        "ratio": 1,
+        "ratio": 6,
         "nombre": "Phillips 66"
       },
       "PYPL": {
-        "ratio": 1,
+        "ratio": 8,
         "nombre": "PayPal"
       },
       "QCOM": {
-        "ratio": 2,
+        "ratio": 11,
         "nombre": "Qualcomm"
       },
       "QQQ": {
@@ -1116,7 +1112,7 @@
         "nombre": "Nasdaq 100 ETF"
       },
       "RACE": {
-        "ratio": 10,
+        "ratio": 84,
         "nombre": "Ferrari"
       },
       "RBLX": {
@@ -1124,35 +1120,35 @@
         "nombre": "Roblox"
       },
       "RENT3": {
-        "ratio": 2,
+        "ratio": 10,
         "nombre": "Localiza"
       },
       "RIO": {
-        "ratio": 29,
+        "ratio": 8,
         "nombre": "Rio Tinto"
       },
       "RIOT": {
-        "ratio": 2,
+        "ratio": 3,
         "nombre": "Riot Platforms"
       },
       "ROKU": {
-        "ratio": 2,
+        "ratio": 13,
         "nombre": "Roku"
       },
       "ROST": {
-        "ratio": 45,
+        "ratio": 4,
         "nombre": "Ross Stores"
       },
       "RTX": {
-        "ratio": 8,
+        "ratio": 5,
         "nombre": "RTX Corp"
       },
       "SAN": {
-        "ratio": 0.25,
+        "ratio": 1,
         "nombre": "Santander"
       },
       "SAP": {
-        "ratio": 3,
+        "ratio": 6,
         "nombre": "SAP"
       },
       "SATL": {
@@ -1160,27 +1156,27 @@
         "nombre": "Satellogic"
       },
       "SBS": {
-        "ratio": 0.5,
-        "nombre": "Sabesp"
-      },
-      "SBSP3": {
         "ratio": 1,
         "nombre": "Sabesp"
       },
+      "SBSP3": {
+        "ratio": 5,
+        "nombre": "Sabesp"
+      },
       "SBUX": {
-        "ratio": 3,
+        "ratio": 12,
         "nombre": "Starbucks"
       },
       "SCCO": {
-        "ratio": 20,
+        "ratio": 2,
         "nombre": "Southern Copper"
       },
       "SCHW": {
-        "ratio": 13,
+        "ratio": 14,
         "nombre": "Charles Schwab"
       },
       "SE": {
-        "ratio": 0.5,
+        "ratio": 32,
         "nombre": "Sea Ltd"
       },
       "SH": {
@@ -1188,19 +1184,15 @@
         "nombre": "ProShares Short S&P"
       },
       "SHEL": {
-        "ratio": 18,
+        "ratio": 2,
         "nombre": "Shell"
       },
-      "SI": {
-        "ratio": 10,
-        "nombre": "Silvergate"
-      },
       "SID": {
-        "ratio": 0.125,
+        "ratio": 1,
         "nombre": "CSN"
       },
       "SLB": {
-        "ratio": 172,
+        "ratio": 3,
         "nombre": "Schlumberger"
       },
       "SMH": {
@@ -1208,27 +1200,27 @@
         "nombre": "VanEck Semiconductor"
       },
       "SNA": {
-        "ratio": 8,
+        "ratio": 6,
         "nombre": "Snap-on"
       },
       "SNAP": {
-        "ratio": 30,
+        "ratio": 1,
         "nombre": "Snap"
       },
       "SNOW": {
-        "ratio": 2,
+        "ratio": 30,
         "nombre": "Snowflake"
       },
       "SONY": {
-        "ratio": 20,
+        "ratio": 8,
         "nombre": "Sony"
       },
       "SPCE": {
-        "ratio": 3,
+        "ratio": 1,
         "nombre": "Virgin Galactic"
       },
       "SPGI": {
-        "ratio": 14,
+        "ratio": 45,
         "nombre": "S&P Global"
       },
       "SPXL": {
@@ -1240,27 +1232,27 @@
         "nombre": "S&P 500 ETF"
       },
       "STLA": {
-        "ratio": 2,
+        "ratio": 5,
         "nombre": "Stellantis"
       },
       "STNE": {
-        "ratio": 1,
+        "ratio": 3,
         "nombre": "StoneCo"
       },
       "SUZ": {
-        "ratio": 8,
+        "ratio": 1,
         "nombre": "Suzano"
       },
       "SUZB3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Suzano BR"
       },
       "SWKS": {
-        "ratio": 6,
+        "ratio": 21,
         "nombre": "Skyworks"
       },
       "SYY": {
-        "ratio": 24,
+        "ratio": 8,
         "nombre": "Sysco"
       },
       "T": {
@@ -1268,35 +1260,35 @@
         "nombre": "AT&T"
       },
       "TCOM": {
-        "ratio": 36,
+        "ratio": 2,
         "nombre": "Trip.com"
       },
       "TGT": {
-        "ratio": 0.001,
+        "ratio": 24,
         "nombre": "Target"
       },
       "TIMB": {
-        "ratio": 22,
+        "ratio": 1,
         "nombre": "TIMB"
       },
       "TIMS3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Tim SA"
       },
       "TJX": {
-        "ratio": 3,
+        "ratio": 22,
         "nombre": "TJX"
       },
       "TM": {
-        "ratio": 2,
+        "ratio": 15,
         "nombre": "Toyota"
       },
       "TMO": {
-        "ratio": 1,
+        "ratio": 22,
         "nombre": "Thermo Fisher"
       },
       "TMUS": {
-        "ratio": 15,
+        "ratio": 33,
         "nombre": "T-Mobile"
       },
       "TQQQ": {
@@ -1308,23 +1300,23 @@
         "nombre": "TRIP"
       },
       "TSLA": {
-        "ratio": 24,
+        "ratio": 15,
         "nombre": "Tesla"
       },
       "TSM": {
-        "ratio": 1,
+        "ratio": 9,
         "nombre": "TSMC"
       },
       "TTE": {
-        "ratio": 2,
+        "ratio": 3,
         "nombre": "TotalEnergies"
       },
       "TV": {
-        "ratio": 16,
+        "ratio": 3,
         "nombre": "Grupo Televisa"
       },
       "TWLO": {
-        "ratio": 5,
+        "ratio": 36,
         "nombre": "Twilio"
       },
       "TXN": {
@@ -1340,15 +1332,15 @@
         "nombre": "Uber"
       },
       "UGP": {
-        "ratio": 20,
+        "ratio": 1,
         "nombre": "Ultrapar"
       },
       "UL": {
-        "ratio": 5,
+        "ratio": 3,
         "nombre": "Unilever"
       },
       "UNH": {
-        "ratio": 2,
+        "ratio": 33,
         "nombre": "UnitedHealth"
       },
       "UPST": {
@@ -1364,39 +1356,39 @@
         "nombre": "Urban Outfitters"
       },
       "USB": {
-        "ratio": 2,
+        "ratio": 5,
         "nombre": "US Bancorp"
       },
       "V": {
-        "ratio": 26,
+        "ratio": 18,
         "nombre": "Visa"
       },
       "VALE": {
-        "ratio": 10,
+        "ratio": 2,
         "nombre": "Vale"
       },
       "VALE3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Vale BR"
       },
       "VIST": {
-        "ratio": 1,
+        "ratio": 3,
         "nombre": "Vista Energy"
       },
       "VIV": {
-        "ratio": 12,
+        "ratio": 1,
         "nombre": "Telefonica Brasil ADR"
       },
       "VIVT3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "Telefonica Brasil"
       },
       "VOD": {
-        "ratio": 18,
+        "ratio": 1,
         "nombre": "Vodafone"
       },
       "VRSN": {
-        "ratio": 101,
+        "ratio": 6,
         "nombre": "VeriSign"
       },
       "VXX": {
@@ -1404,19 +1396,19 @@
         "nombre": "iPath VIX"
       },
       "VZ": {
-        "ratio": 0.5,
+        "ratio": 4,
         "nombre": "Verizon"
       },
       "WEGE3": {
-        "ratio": 1,
+        "ratio": 5,
         "nombre": "WEG"
       },
       "WFC": {
-        "ratio": 4,
+        "ratio": 5,
         "nombre": "Wells Fargo"
       },
       "WMT": {
-        "ratio": 6,
+        "ratio": 18,
         "nombre": "Walmart"
       },
       "XLE": {
@@ -1432,11 +1424,11 @@
         "nombre": "Utilities SPDR"
       },
       "XOM": {
-        "ratio": 16,
+        "ratio": 10,
         "nombre": "Exxon Mobil"
       },
       "XP": {
-        "ratio": 1,
+        "ratio": 4,
         "nombre": "XP Inc"
       }
     }

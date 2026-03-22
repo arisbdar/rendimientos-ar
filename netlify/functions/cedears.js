@@ -59,7 +59,7 @@ exports.handler = async (event) => {
     }
     const usdPrices = usdCache.prices;
 
-    // Build result with auto-derived ratios
+    // Build result using hardcoded ratios from config.json
     const result = [];
     for (const ticker of allTickers) {
       const cedear = cedearPrices[ticker];
@@ -70,14 +70,8 @@ exports.handler = async (event) => {
 
       if (usdPrice <= 0) continue;
 
-      // Auto-derive ratio using CCL reference
-      // ratio = (ccl_ref * usd_price) / cedear_price
-      const derivedRatio = Math.round((cclReference * usdPrice) / cedear.price);
-      const ratio = derivedRatio > 0 ? derivedRatio : 1;
-
-      // Calculate CCL implícito with the derived ratio
+      const ratio = configRatios[ticker]?.ratio || 1;
       const cclImplicit = (cedear.price * ratio) / usdPrice;
-
       const nombre = configRatios[ticker]?.nombre || ticker;
 
       result.push({
