@@ -28,6 +28,21 @@
   status = 200
 
 [[redirects]]
+  from = "/api/visits"
+  to = "/.netlify/functions/visits"
+  status = 200
+
+[[redirects]]
+  from = "/api/mundo"
+  to = "/.netlify/functions/mundo"
+  status = 200
+
+[[redirects]]
+  from = "/api/news"
+  to = "/.netlify/functions/news"
+  status = 200
+
+[[redirects]]
   from = "/api/config"
   to = "/config.json"
   status = 200

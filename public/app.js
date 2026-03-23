@@ -4,7 +4,20 @@ document.addEventListener('DOMContentLoaded', () => {
   setupTabs();
   setupKeyboardNav();
   addShareButtons();
+  loadMundo();
+  loadNewsTicker();
+  updateVisitCounter();
 });
+
+function updateVisitCounter() {
+  fetch('/api/visits')
+    .then(r => r.json())
+    .then(data => {
+      const el = document.getElementById('visit-counter');
+      if (el && data.count) el.textContent = data.count.toLocaleString('es-AR') + ' visitas';
+    })
+    .catch(() => {});
+}
 
 function setupThemeToggle() {
   const saved = localStorage.getItem('theme');
@@ -344,13 +357,16 @@ function setupTabs() {
 
   const headerSoberanos = document.getElementById('header-soberanos');
 
+  const headerMundo = document.getElementById('header-mundo');
+
   function hideAllTabs() {
     document.getElementById('tab-billeteras').style.display = 'none';
     document.getElementById('tab-plazofijo').style.display = 'none';
     document.getElementById('tab-lecaps').style.display = 'none';
     document.getElementById('tab-cedears').style.display = 'none';
     document.getElementById('tab-soberanos').style.display = 'none';
-    [headerArs, headerCedears, headerSoberanos].forEach(b => b && b.classList.remove('active'));
+    document.getElementById('section-mundo').style.display = 'none';
+    [headerArs, headerCedears, headerSoberanos, headerMundo].forEach(b => b && b.classList.remove('active'));
   }
 
   function switchToArs() {
@@ -407,9 +423,22 @@ function setupTabs() {
     }
   }
 
+  function switchToMundo() {
+    hideAllTabs();
+    headerMundo.classList.add('active');
+    subnav.style.display = 'none';
+    document.getElementById('section-mundo').style.display = '';
+    hero.querySelector('h1').textContent = 'Monitor Global';
+    hero.querySelector('p').textContent = 'Principales indicadores del mercado mundial en tiempo real.';
+    if (!document.getElementById('mundo-grid').hasChildNodes()) {
+      loadMundo();
+    }
+  }
+
   if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); });
   if (headerCedears) headerCedears.addEventListener('click', (e) => { e.preventDefault(); switchToCedears(); });
   if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); });
+  if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); });
 }
 
 // ─── Keyboard navigation for subnav tabs ───
@@ -1147,24 +1176,26 @@ function renderYieldCurve(items) {
   const localBonds = items.filter(i => i.ley === 'local');
   const nyBonds = items.filter(i => i.ley === 'NY');
 
-  // Fit polynomial curves (degree 2) using duration as X axis
+  // Polynomial regression curves (degree 2, 300 points for smoothness)
   const localPoints = localBonds.map(i => [i.duration, i.ytm]);
   const nyPoints = nyBonds.map(i => [i.duration, i.ytm]);
-  const localCurve = localPoints.length >= 3 ? fitPolyCurve(localPoints, 2, 80) : [];
-  const nyCurve = nyPoints.length >= 3 ? fitPolyCurve(nyPoints, 2, 80) : [];
+  const localCurve = localPoints.length >= 3 ? fitPolyCurve(localPoints, 2, 300) : [];
+  const nyCurve = nyPoints.length >= 3 ? fitPolyCurve(nyPoints, 2, 300) : [];
 
+  // Use labels array for x-axis to make line charts work properly
+  // Collect all x values and curve x values, build unified x scale
   const datasets = [];
 
   if (localCurve.length) {
     datasets.push({
       label: 'Ley Local (curva)',
       data: localCurve,
-      type: 'line',
       borderColor: '#f97316',
-      borderWidth: 2,
+      borderWidth: 2.5,
       borderDash: [6, 3],
       pointRadius: 0,
-      tension: 0,
+      pointHitRadius: 0,
+      fill: false,
       order: 2,
     });
   }
@@ -1172,12 +1203,12 @@ function renderYieldCurve(items) {
     datasets.push({
       label: 'Ley NY (curva)',
       data: nyCurve,
-      type: 'line',
       borderColor: '#3b82f6',
-      borderWidth: 2,
+      borderWidth: 2.5,
       borderDash: [6, 3],
       pointRadius: 0,
-      tension: 0,
+      pointHitRadius: 0,
+      fill: false,
       order: 2,
     });
   }
@@ -1190,7 +1221,7 @@ function renderYieldCurve(items) {
     borderWidth: 1.5,
     pointRadius: 7,
     pointHoverRadius: 9,
-    type: 'scatter',
+    showLine: false,
     order: 1,
   });
 
@@ -1202,12 +1233,12 @@ function renderYieldCurve(items) {
     borderWidth: 1.5,
     pointRadius: 7,
     pointHoverRadius: 9,
-    type: 'scatter',
+    showLine: false,
     order: 1,
   });
 
   soberanosChart = new Chart(canvas, {
-    type: 'scatter',
+    type: 'line',
     data: { datasets },
     options: {
       responsive: true,
@@ -1225,11 +1256,13 @@ function renderYieldCurve(items) {
       },
       scales: {
         x: {
+          type: 'linear',
           title: { display: true, text: 'Duration (años)', color: textColor },
           grid: { color: gridColor },
           ticks: { color: textColor },
         },
         y: {
+          type: 'linear',
           title: { display: true, text: 'TIR (%)', color: textColor },
           grid: { color: gridColor },
           ticks: { color: textColor, callback: v => v.toFixed(1) + '%' },
@@ -1238,3 +1271,143 @@ function renderYieldCurve(items) {
     }
   });
 }
+
+// ─── Mundo (Global Monitor) ───
+function drawSparkline(canvasId, data, isUp) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  ctx.scale(dpr, dpr);
+
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min || 1;
+  const pad = 2;
+
+  const color = isUp ? getComputedStyle(document.documentElement).getPropertyValue('--green').trim()
+                     : getComputedStyle(document.documentElement).getPropertyValue('--red').trim();
+
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+
+  let lastX, lastY;
+  for (let i = 0; i < data.length; i++) {
+    const x = (i / (data.length - 1)) * (w - pad * 2) + pad;
+    const y = h - pad - ((data[i] - min) / range) * (h - pad * 2);
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+    lastX = x;
+    lastY = y;
+  }
+  ctx.stroke();
+
+  // Pulsing dot at the end — CSS overlay
+  const parent = canvas.parentElement;
+  parent.style.position = 'relative';
+  const dot = document.createElement('div');
+  dot.className = 'spark-dot';
+  dot.style.left = (lastX / w * 100) + '%';
+  dot.style.top = (lastY / h * 100) + '%';
+  dot.style.background = color;
+  dot.style.boxShadow = `0 0 6px ${color}`;
+  parent.appendChild(dot);
+}
+
+async function loadMundo() {
+  const grid = document.getElementById('mundo-grid');
+  grid.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando datos globales...</p></div>`;
+
+  try {
+    const res = await fetch('/api/mundo');
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const { data, updated } = await res.json();
+
+    grid.innerHTML = '';
+    data.forEach(item => {
+      if (item.price === null) return;
+
+      const isRate = item.id === 'tnx';
+      const isUp = item.change >= 0;
+      const changeColor = isUp ? 'var(--green)' : 'var(--red)';
+      const arrow = isUp ? '▲' : '▼';
+
+      let priceStr;
+      if (isRate) {
+        priceStr = item.price.toFixed(3) + '%';
+      } else if (item.price >= 10000) {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+      } else if (item.price >= 100) {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 2 });
+      } else {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 4 });
+      }
+
+      const canvasId = `spark-${item.id}`;
+      const card = document.createElement('div');
+      card.className = 'mundo-card';
+      card.innerHTML = `
+        <div class="mundo-icon">${item.icon}</div>
+        <div class="mundo-info">
+          <div class="mundo-name">${item.name}</div>
+          <div class="mundo-price">${priceStr}</div>
+        </div>
+        <div class="mundo-spark"><canvas id="${canvasId}" width="120" height="40"></canvas></div>
+        <div class="mundo-change" style="color:${changeColor}">
+          <span class="mundo-arrow">${arrow}</span>
+          <span>${Math.abs(item.change).toFixed(2)}%</span>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      // Draw sparkline
+      if (item.sparkline && item.sparkline.length > 1) {
+        drawSparkline(canvasId, item.sparkline, isUp);
+      }
+    });
+
+    const src = document.getElementById('mundo-source');
+    if (src) {
+      const time = new Date(updated).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+      src.textContent = `Fuente: Yahoo Finance — Actualizado: ${time}`;
+    }
+  } catch (e) {
+    grid.innerHTML = '<div class="loading">Error al cargar datos globales.</div>';
+    console.error('Mundo error:', e);
+  }
+}
+
+// ─── News Ticker ───
+async function loadNewsTicker() {
+  try {
+    const res = await fetch('/api/news');
+    if (!res.ok) throw new Error('News API error');
+    const { data } = await res.json();
+    if (!data || !data.length) return;
+
+    const track = document.getElementById('news-ticker-track');
+    if (!track) return;
+
+    // Build items HTML
+    const html = data.map(item =>
+      `<a class="news-ticker-item" href="${item.link}" target="_blank" rel="noopener">` +
+      (item.source ? `<span class="news-ticker-source">${item.source}</span>` : '') +
+      `${item.title}</a>`
+    ).join('');
+
+    // Duplicate for seamless loop
+    track.innerHTML = html + html;
+
+    document.getElementById('news-ticker').style.display = 'flex';
+  } catch (e) {
+    // Silently fail — ticker is non-essential
+    console.error('News ticker error:', e);
+  }
+}
+
