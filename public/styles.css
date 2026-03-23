@@ -936,15 +936,17 @@ body {
 /* Responsive */
 @media (max-width: 640px) {
   .header-inner {
-    padding: 10px 16px;
-    gap: 8px;
+    padding: 8px 12px;
+    gap: 6px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
   .header-inner::-webkit-scrollbar { display: none; }
-  .logo { font-size: 0.85rem; white-space: nowrap; }
-  .currency-tabs { flex-shrink: 0; }
-  .currency-tab { padding: 5px 10px; font-size: 0.72rem; }
+  .logo { font-size: 0.8rem; white-space: nowrap; flex-shrink: 0; }
+  .currency-tabs { flex-shrink: 0; gap: 0; padding: 2px; }
+  .currency-tab { padding: 4px 6px; font-size: 0.65rem; }
+  .currency-tab .flag { display: none; }
   .admin-link { display: none; }
   .subnav-inner { padding: 0 16px; }
   .hero { padding: 16px 16px 8px; }

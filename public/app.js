@@ -174,10 +174,11 @@ function renderRendimientosChart(items, containerId) {
     const chartMin = 10;
     const pct = Math.max(8, ((item.tna - chartMin) / (maxTna - chartMin)) * 100);
     const color = getBarColor(item.tna);
-    const logoInner = item.logoSrc
-      ? `<img src="${item.logoSrc}" alt="${item.nombre}" onerror="this.parentElement.textContent='${item.logo}'">`
+    const safeChartLogoSrc = item.logoSrc?.replace(/^http:\/\//, 'https://');
+    const logoInner = safeChartLogoSrc
+      ? `<img src="${safeChartLogoSrc}" alt="${item.nombre}" onerror="this.parentElement.textContent='${item.logo}'">`
       : item.logo;
-    const logoBg = item.logoSrc ? 'transparent' : item.logoBg;
+    const logoBg = safeChartLogoSrc ? 'transparent' : item.logoBg;
 
     return `
       <div class="chart-row">
@@ -207,12 +208,14 @@ function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, ra
   const entityHTML = entity ? `<div class="fund-entity">${entity}</div>` : '';
 
   // Use real logo image if available, otherwise fallback to initials
-  const logoInner = logoSrc
-    ? `<img src="${logoSrc}" alt="${name}">`
+  // Fix mixed content: upgrade http:// to https:// for BCRA logos
+  const safeLogoSrc = logoSrc?.replace(/^http:\/\//, 'https://');
+  const logoInner = safeLogoSrc
+    ? `<img src="${safeLogoSrc}" alt="${name}">`
     : logo;
 
   card.innerHTML = `
-    <div class="fund-logo" style="background:${logoSrc ? 'transparent' : logoBg}">${logoInner}</div>
+    <div class="fund-logo" style="background:${safeLogoSrc ? 'transparent' : logoBg}">${logoInner}</div>
     <div class="fund-info">
       <div class="fund-name">${name}</div>
       ${entityHTML}
@@ -227,7 +230,7 @@ function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, ra
   `;
 
   // Add error handler for logo images
-  if (logoSrc) {
+  if (safeLogoSrc) {
     const img = card.querySelector('.fund-logo img');
     if (img) {
       img.onerror = function() {
@@ -344,6 +347,8 @@ function setupTabs() {
         hero.querySelector('h1').textContent = 'Rendimientos de Fondos y Billeteras';
         hero.querySelector('p').textContent = 'Compará rendimientos actualizados de billeteras y fondos de liquidez en Argentina.';
       }
+      // Update hash for sub-tabs
+      location.hash = target === 'billeteras' ? 'ars' : target;
     });
   });
 
@@ -365,6 +370,19 @@ function setupTabs() {
     document.getElementById('tab-soberanos').style.display = 'none';
     document.getElementById('section-mundo').style.display = 'none';
     [headerArs, headerCedears, headerSoberanos, headerMundo].forEach(b => b && b.classList.remove('active'));
+  }
+
+  function updatePageTitle(section) {
+    const base = 'Rendimientos AR';
+    const titles = {
+      mundo: 'Monitor Global',
+      ars: 'Billeteras y Fondos',
+      cedears: 'Arbitraje CEDEARs',
+      bonos: 'Bonos Soberanos USD',
+      plazofijo: 'Tasas Plazo Fijo',
+      lecaps: 'LECAPs y BONCAPs'
+    };
+    document.title = titles[section] ? `${titles[section]} — ${base}` : base;
   }
 
   function switchToArs() {
@@ -395,6 +413,8 @@ function setupTabs() {
       hero.querySelector('h1').textContent = 'Rendimientos de Fondos y Billeteras';
       hero.querySelector('p').textContent = 'Compará rendimientos actualizados de billeteras y fondos de liquidez en Argentina.';
     }
+    const sub = document.querySelector('.subnav-tab.active')?.dataset.tab || 'ars';
+    updatePageTitle(sub === 'billeteras' ? 'ars' : sub);
   }
 
   function switchToCedears() {
@@ -404,6 +424,7 @@ function setupTabs() {
     document.getElementById('tab-cedears').style.display = '';
     hero.querySelector('h1').textContent = 'Arbitraje de CEDEARs';
     hero.querySelector('p').textContent = 'CCL implícito por CEDEAR y spread vs tipo de cambio de referencia.';
+    updatePageTitle('cedears');
     if (!document.getElementById('cedears-list').hasChildNodes()) {
       loadCedears();
     }
@@ -416,6 +437,7 @@ function setupTabs() {
     document.getElementById('tab-soberanos').style.display = '';
     hero.querySelector('h1').textContent = 'Bonos Soberanos USD';
     hero.querySelector('p').textContent = 'Rendimiento de bonos soberanos argentinos en dólares. Ley local y ley extranjera.';
+    updatePageTitle('bonos');
     if (!document.getElementById('soberanos-list').hasChildNodes()) {
       loadSoberanos();
     }
@@ -428,15 +450,35 @@ function setupTabs() {
     document.getElementById('section-mundo').style.display = '';
     hero.querySelector('h1').textContent = 'Monitor Global';
     hero.querySelector('p').textContent = 'Principales indicadores del mercado mundial en tiempo real.';
+    updatePageTitle('mundo');
     if (!document.getElementById('mundo-grid').hasChildNodes()) {
       loadMundo();
     }
   }
 
-  if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); });
-  if (headerCedears) headerCedears.addEventListener('click', (e) => { e.preventDefault(); switchToCedears(); });
-  if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); });
-  if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); });
+  if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); location.hash = 'ars'; });
+  if (headerCedears) headerCedears.addEventListener('click', (e) => { e.preventDefault(); switchToCedears(); location.hash = 'cedears'; });
+  if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); location.hash = 'bonos'; });
+  if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); location.hash = 'mundo'; });
+
+  // Handle initial hash on page load
+  const initialHash = location.hash.replace('#', '');
+  if (initialHash === 'ars') switchToArs();
+  else if (initialHash === 'cedears') switchToCedears();
+  else if (initialHash === 'bonos') switchToSoberanos();
+  else if (initialHash === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
+  else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
+
+  // Handle back/forward navigation
+  window.addEventListener('hashchange', () => {
+    const h = location.hash.replace('#', '');
+    if (h === 'ars') switchToArs();
+    else if (h === 'cedears') switchToCedears();
+    else if (h === 'bonos') switchToSoberanos();
+    else if (h === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
+    else if (h === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
+    else switchToMundo();
+  });
 }
 
 // ─── Plazo Fijo section ───
