@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupThemeToggle();
   init();
   setupTabs();
+  setupKeyboardNav();
+  addShareButtons();
 });
 
 function setupThemeToggle() {
@@ -408,6 +410,67 @@ function setupTabs() {
   if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); });
   if (headerCedears) headerCedears.addEventListener('click', (e) => { e.preventDefault(); switchToCedears(); });
   if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); });
+}
+
+// ─── Keyboard navigation for subnav tabs ───
+function setupKeyboardNav() {
+  const tablist = document.querySelector('.subnav');
+  if (!tablist) return;
+  tablist.setAttribute('role', 'tablist');
+
+  const tabs = Array.from(tablist.querySelectorAll('.subnav-tab[data-tab]'));
+  tabs.forEach((tab, i) => {
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('tabindex', tab.classList.contains('active') ? '0' : '-1');
+    tab.addEventListener('keydown', (e) => {
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+      if (next === -1) return;
+      e.preventDefault();
+      tabs[next].focus();
+      tabs[next].click();
+    });
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('tabindex', '-1'));
+      tab.setAttribute('tabindex', '0');
+    });
+  });
+}
+
+// ─── Share button (🔗) per subnav tab ───
+function addShareButtons() {
+  const tabs = document.querySelectorAll('.subnav-tab[data-tab]');
+  tabs.forEach(tab => {
+    const btn = document.createElement('button');
+    btn.className = 'share-tab-btn';
+    btn.title = 'Copiar link a esta sección';
+    btn.setAttribute('aria-label', 'Copiar enlace');
+    btn.textContent = '🔗';
+
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const hash = '#' + tab.dataset.tab;
+      const url = window.location.origin + window.location.pathname + hash;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        // fallback for older browsers
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+      }
+      const prev = btn.textContent;
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = prev; btn.classList.remove('copied'); }, 1500);
+    });
+
+    tab.appendChild(btn);
+  });
 }
 
 // ─── Plazo Fijo section ───

@@ -382,6 +382,42 @@ body {
   pointer-events: none;
 }
 
+.subnav-tab:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.share-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  padding: 1px 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  color: var(--text-tertiary);
+  vertical-align: middle;
+}
+
+.subnav-tab:hover .share-tab-btn,
+.subnav-tab.active .share-tab-btn {
+  opacity: 0.6;
+}
+
+.share-tab-btn:hover {
+  opacity: 1 !important;
+}
+
+.share-tab-btn.copied {
+  color: var(--positive, #22c55e);
+  opacity: 1 !important;
+}
+
 /* Hero */
 .hero {
   max-width: 780px;
