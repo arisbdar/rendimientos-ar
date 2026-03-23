@@ -2,7 +2,38 @@ document.addEventListener('DOMContentLoaded', () => {
   setupThemeToggle();
   init();
   setupTabs();
+  setupKeyboardNav();
+  startTimestampUpdater();
 });
+
+// ─── TEA helper ───
+function calcTEA(tna) {
+  // tna is in percent (e.g. 40.5)
+  return (Math.pow(1 + tna / 100 / 365, 365) - 1) * 100;
+}
+
+// ─── Timestamp tracking ───
+const _fetchTimes = {};
+
+function markFetched(sectionId) {
+  _fetchTimes[sectionId] = Date.now();
+  updateTimestampLabel(sectionId);
+}
+
+function updateTimestampLabel(sectionId) {
+  const el = document.getElementById(`timestamp-${sectionId}`);
+  if (!el) return;
+  const t = _fetchTimes[sectionId];
+  if (!t) { el.textContent = ''; return; }
+  const mins = Math.floor((Date.now() - t) / 60000);
+  el.textContent = mins < 1 ? 'Actualizado hace menos de 1 min' : `Actualizado hace ${mins} min`;
+}
+
+function startTimestampUpdater() {
+  setInterval(() => {
+    Object.keys(_fetchTimes).forEach(updateTimestampLabel);
+  }, 60000);
+}
 
 function setupThemeToggle() {
   const saved = localStorage.getItem('theme');
@@ -97,6 +128,7 @@ async function init() {
         { text: item.limite === 'Sin Límites' ? 'Sin Límites' : `Límite: ${item.limite}`, type: item.limite === 'Sin Límites' ? 'limit no-limit' : 'limit' }
       ],
       rate: `${item.tna.toFixed(2)}%`, rateLabel: 'TNA',
+      teaValue: calcTEA(item.tna),
       rateDate: `TNA vigente desde el ${item.vigente_desde}`
     })
   }));
@@ -117,6 +149,7 @@ async function init() {
         { text: `Patrimonio: ${formatPatrimonio(item.patrimonio)}`, type: '' }
       ],
       rate: `${item.tna.toFixed(2)}%`, rateLabel: 'TNA',
+      teaValue: calcTEA(item.tna),
       rateDate: item.fechaDesde && item.fechaHasta ? `Entre ${item.fechaDesde} y ${item.fechaHasta}` : ''
     })
   }));
@@ -137,6 +170,10 @@ async function init() {
 
   // Render especiales at the bottom
   renderEspeciales(config.especiales.filter(i => i.activo));
+
+  // Mark sections as freshly loaded
+  markFetched('billeteras');
+  markFetched('especiales');
 }
 
 function renderRendimientosChart(items, containerId) {
@@ -180,7 +217,7 @@ function renderRendimientosChart(items, containerId) {
   container.innerHTML = rows;
 }
 
-function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, rate, rateLabel, rateDate, highlighted }) {
+function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, rate, rateLabel, rateDate, teaValue, highlighted }) {
   const card = document.createElement('div');
   card.className = 'fund-card' + (highlighted ? ' highlighted' : '');
 
@@ -198,6 +235,10 @@ function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, ra
     ? `<img src="${logoSrc}" alt="${name}">`
     : logo;
 
+  const teaHTML = teaValue != null
+    ? `<div class="rate-tea">TEA ${teaValue.toFixed(2)}%</div>`
+    : '';
+
   card.innerHTML = `
     <div class="fund-logo" style="background:${logoSrc ? 'transparent' : logoBg}">${logoInner}</div>
     <div class="fund-info">
@@ -209,6 +250,7 @@ function createCard({ logo, logoBg, logoSrc, name, entity, description, tags, ra
     <div class="fund-rate">
       <div class="rate-value">${rate}</div>
       <div class="rate-label">${rateLabel}</div>
+      ${teaHTML}
       <div class="rate-date">${rateDate}</div>
     </div>
   `;
@@ -272,6 +314,7 @@ function renderEspeciales(items) {
       ],
       rate: `${item.tna.toFixed(2)}%`,
       rateLabel: 'TNA',
+      teaValue: calcTEA(item.tna),
       rateDate: `TNA vigente desde el ${item.vigente_desde}`
     });
     container.appendChild(card);
@@ -299,6 +342,7 @@ function stringToColor(str) {
 
 // ─── Tab switching ───
 function setupTabs() {
+  addShareButtons();
   const tabs = document.querySelectorAll('.subnav-tab[data-tab]');
   tabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
@@ -467,6 +511,7 @@ async function loadPlazoFijo() {
         tags,
         rate: `${bestRate.toFixed(1)}%`,
         rateLabel: 'TNA',
+        teaValue: bestRate > 0 ? calcTEA(bestRate) : null,
         rateDate: `Actualizado: ${dateStr}`
       });
 
@@ -484,6 +529,9 @@ async function loadPlazoFijo() {
     // Source note
     const source = document.querySelector('.section-source');
     if (source) source.textContent = `Fuente: BCRA — Actualizado: ${dateStr}`;
+
+    // Mark as freshly loaded
+    markFetched('plazofijo');
 
     // Render plazo fijo chart
     const chartItems = sorted.map(banco => {
@@ -666,6 +714,8 @@ async function loadLecaps() {
         source.textContent = `Fuente: ${lecaps.fuente} — Actualizado: ${lecaps.actualizado}`;
       }
     }
+
+    markFetched('lecaps');
 
     // Render scatter plot (TIR vs Días)
     renderLecapScatter(items);
@@ -857,6 +907,8 @@ async function loadCedears() {
 
     renderCedearsTable(container, items, cclRef);
 
+    markFetched('cedears');
+
     const withCcl = items.filter(i => i.hasCcl).length;
     const source = document.getElementById('cedears-source');
     if (source) {
@@ -984,6 +1036,8 @@ async function loadSoberanos() {
 
     // Render yield curve
     renderYieldCurve(items);
+
+    markFetched('soberanos');
 
     const source = document.getElementById('soberanos-source');
     if (source) {
@@ -1173,5 +1227,78 @@ function renderYieldCurve(items) {
         }
       }
     }
+  });
+}
+
+// ─── Keyboard navigation for subnav tabs ───
+function setupKeyboardNav() {
+  const tabList = document.querySelector('.subnav-inner[role="tablist"]');
+  if (!tabList) return;
+
+  tabList.addEventListener('keydown', (e) => {
+    const tabs = [...tabList.querySelectorAll('.subnav-tab[data-tab]')];
+    const focused = document.activeElement;
+    const idx = tabs.indexOf(focused);
+    if (idx === -1) return;
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      tabs[(idx + 1) % tabs.length].focus();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      tabs[(idx - 1 + tabs.length) % tabs.length].focus();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      focused.click();
+    }
+  });
+
+  // Make tabs focusable
+  tabList.querySelectorAll('.subnav-tab[data-tab]').forEach((tab, i) => {
+    tab.setAttribute('tabindex', i === 0 ? '0' : '-1');
+    tab.addEventListener('click', () => {
+      tabList.querySelectorAll('.subnav-tab[data-tab]').forEach(t => t.setAttribute('tabindex', '-1'));
+      tab.setAttribute('tabindex', '0');
+    });
+  });
+}
+
+// ─── Share/copy buttons per subnav tab ───
+function addShareButtons() {
+  const tabs = document.querySelectorAll('.subnav-tab[data-tab]');
+  tabs.forEach(tab => {
+    const tabId = 'tab-' + tab.dataset.tab;
+    const btn = document.createElement('button');
+    btn.className = 'tab-share-btn';
+    btn.title = 'Copiar enlace a esta sección';
+    btn.setAttribute('aria-label', `Copiar enlace a ${tab.textContent.trim()}`);
+    btn.textContent = '🔗';
+
+    const tooltip = document.createElement('span');
+    tooltip.className = 'tab-share-tooltip';
+    tooltip.textContent = '¡Copiado!';
+    btn.appendChild(tooltip);
+
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const url = window.location.origin + '/#' + tabId;
+      navigator.clipboard.writeText(url).then(() => {
+        tooltip.classList.add('visible');
+        setTimeout(() => tooltip.classList.remove('visible'), 1500);
+      }).catch(() => {
+        // Fallback
+        const tmp = document.createElement('textarea');
+        tmp.value = url;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand('copy');
+        document.body.removeChild(tmp);
+        tooltip.classList.add('visible');
+        setTimeout(() => tooltip.classList.remove('visible'), 1500);
+      });
+    });
+
+    tab.appendChild(btn);
   });
 }

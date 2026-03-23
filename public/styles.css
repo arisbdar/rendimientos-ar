@@ -855,3 +855,59 @@ body {
   .soberanos-table td:nth-child(6) { display: none; }
   .footer { padding: 24px 16px 40px; }
 }
+
+/* ─── TEA display ─── */
+.rate-tea {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+/* ─── Section timestamp ─── */
+.section-timestamp {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  margin-left: 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* ─── Tab share button ─── */
+.tab-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0 0 0 5px;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  position: relative;
+  vertical-align: middle;
+  line-height: 1;
+}
+.tab-share-btn:hover {
+  opacity: 1;
+}
+.tab-share-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  color: var(--bg-primary, #fff);
+  font-size: 0.65rem;
+  padding: 3px 7px;
+  border-radius: 4px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.tab-share-tooltip.visible {
+  opacity: 1;
+}
