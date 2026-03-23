@@ -23,11 +23,6 @@
   status = 200
 
 [[redirects]]
-  from = "/api/cedears"
-  to = "/.netlify/functions/cedears"
-  status = 200
-
-[[redirects]]
   from = "/api/visits"
   to = "/.netlify/functions/visits"
   status = 200

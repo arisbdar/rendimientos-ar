@@ -8,7 +8,6 @@ Sitio para comparar rendimientos de productos financieros en Argentina y monitor
 - Fondos comunes de inversión de liquidez
 - Plazos fijos
 - LECAPs y BONCAPs
-- Arbitraje de CEDEARs (270+ tickers)
 - Bonos soberanos USD (ley local + ley NY)
 
 Live en [rendimientos.co](https://rendimientos.co)
@@ -23,25 +22,21 @@ Live en [rendimientos.co](https://rendimientos.co)
 | FCIs | [ArgentinaDatos](https://api.argentinadatos.com) via CAFCI | En vivo |
 | Plazo Fijo | [ArgentinaDatos](https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo) | En vivo |
 | LECAPs/BONCAPs | [data912](https://data912.com) (`/live/arg_notes` + `/live/arg_bonds`) | En vivo |
-| CEDEARs (ARS) | [data912](https://data912.com/live/arg_cedears) | En vivo |
-| CEDEARs (USD) | [Yahoo Finance](https://query1.finance.yahoo.com) v8/chart | En vivo (cache 5min) |
-| CCL referencia | [data912](https://data912.com/live/ccl) (mediana top-10 por volumen) | En vivo |
 | Soberanos USD | [data912](https://data912.com/live/arg_bonds) (tickers con sufijo D) | En vivo |
 
 ## Estructura
 
 ```
 public/
-  index.html         Pagina principal (4 secciones: Mundo, ARS, CEDEARs, Bonos USD)
+  index.html         Pagina principal (3 secciones: Mundo, ARS, Bonos USD)
   app.js             Logica del frontend
-  config.json        Billeteras, FCIs, LECAPs, CEDEARs (ratios), Soberanos (flujos)
+  config.json        Billeteras, FCIs, LECAPs, Soberanos (flujos)
   styles.css         Estilos + dark mode
   comparar.html      Comparador de fondos (deshabilitado)
 server.js            Servidor Express para desarrollo local
 netlify/functions/
   cafci.js           Proxy ArgentinaDatos -> FCIs con TNA calculada
   lecaps.js          Proxy data912 -> precios de LECAPs y BONCAPs
-  cedears.js         Proxy data912 + Yahoo Finance -> CEDEARs con CCL calculado
   soberanos.js       Proxy data912 -> precios de bonos soberanos en USD
   mundo.js           Proxy Yahoo Finance -> futuros, commodities, crypto (con sparklines)
   news.js            Proxy Google News RSS -> noticias financieras en tiempo real
@@ -57,7 +52,7 @@ npm start
 # http://localhost:3000
 ```
 
-Nota: las Netlify functions (mundo, cedears, soberanos, etc.) solo funcionan en produccion. El server local sirve FCIs y config.
+Nota: las Netlify functions (mundo, soberanos, etc.) solo funcionan en produccion. El server local sirve FCIs y config.
 
 ## Endpoints
 
@@ -65,10 +60,9 @@ Nota: las Netlify functions (mundo, cedears, soberanos, etc.) solo funcionan en 
 |------|-------------|
 | `GET /api/mundo` | Monitor global: precios + sparklines intradiarias (Yahoo Finance) |
 | `GET /api/news` | Noticias financieras ultimas 3h (Google News RSS) |
-| `GET /api/config` | Config estatica (billeteras, FCIs, LECAPs, CEDEARs, soberanos) |
+| `GET /api/config` | Config estatica (billeteras, FCIs, LECAPs, soberanos) |
 | `GET /api/fci` | FCIs con TNA calculada (proxy ArgentinaDatos) |
 | `GET /api/lecaps` | Precios LECAP/BONCAP en vivo (proxy data912) |
-| `GET /api/cedears` | CEDEARs con CCL implicito calculado (data912 + Yahoo Finance) |
 | `GET /api/soberanos` | Bonos soberanos precios en USD (proxy data912) |
 | `GET /api/visits` | Contador de visitas |
 
@@ -86,13 +80,6 @@ Cinta horizontal con las ultimas noticias financieras. Se actualiza cada 2 minut
 2. Pago final y vencimiento en `config.json`
 3. TIR y TNA calculadas desde fecha de liquidacion T+1 (saltando feriados AR)
 4. Scatter plot con curva polinomica
-
-## CEDEARs — Arbitraje
-
-1. Precios ARS de data912, precios USD de Yahoo Finance, CCL de referencia de data912
-2. 271 ratios de conversion hardcodeados en `config.json` (fuente: PDF BYMA + Caja de Valores)
-3. CCL implicito: `(precio_cedear x ratio) / precio_usd`
-4. Spread: diferencia vs CCL de referencia. Rojo = caro, verde = barato.
 
 ## Soberanos USD
 

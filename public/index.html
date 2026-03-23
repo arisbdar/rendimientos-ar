@@ -24,7 +24,13 @@
   <meta name="twitter:image" content="https://rendimientos.co/og-image.png">
 
   <link rel="canonical" href="https://rendimientos.co/">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Rendimientos">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
   <script>!function(){var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}()</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,11 +49,8 @@
         <a href="#" class="currency-tab" id="header-ars">
           <span class="flag">🇦🇷</span> ARS
         </a>
-        <a href="#" class="currency-tab" id="header-cedears">
-          <span class="flag">📊</span> CEDEARs
-        </a>
         <a href="#" class="currency-tab" id="header-soberanos">
-          <span class="flag">🏛️</span> Bonos USD
+          <span class="flag">🏛️</span> Bonos
         </a>
       </nav>
       <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema">🌙</button>
@@ -57,6 +60,7 @@
   <!-- News Ticker -->
   <div class="news-ticker" id="news-ticker">
     <div class="news-ticker-track" id="news-ticker-track"></div>
+    <button class="news-ticker-close" id="news-ticker-close" aria-label="Cerrar noticias">&times;</button>
   </div>
 
   <nav class="subnav" style="display:none">
@@ -139,15 +143,6 @@
     </div>
 
     <!-- Tab: CEDEARs -->
-    <div id="tab-cedears" role="tabpanel" aria-labelledby="tab-cedears-tab" style="display:none">
-      <section class="section" id="cedears-section">
-        <h2>Arbitraje de CEDEARs</h2>
-        <p class="section-desc">CCL implícito por ticker y spread vs tipo de cambio de referencia — Datos en vivo</p>
-        <div id="cedears-list"></div>
-        <p class="section-source" id="cedears-source"></p>
-      </section>
-    </div>
-
     <!-- Tab: Soberanos USD -->
     <div id="tab-soberanos" style="display:none">
       <section class="section" id="soberanos-section">
@@ -169,11 +164,12 @@
 
   <footer class="footer">
     <p class="visit-counter" id="visit-counter"></p>
-    <p>FCIs: CAFCI via ArgentinaDatos. Plazos Fijos: BCRA via ArgentinaDatos. LECAPs/BONCAPs: data912. CEDEARs: data912 + Yahoo Finance. Soberanos: data912.</p>
+    <p>FCIs: CAFCI via ArgentinaDatos. Plazos Fijos: BCRA via ArgentinaDatos. LECAPs/BONCAPs: data912. Soberanos: data912.</p>
     <p>Hecho con ❤️ desde Argentina 🇦🇷</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="/app.js"></script>
+  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>
 </html>

@@ -122,21 +122,6 @@ app.get('/api/lecaps', async (req, res) => {
   }
 });
 
-// --- CEDEAR Arbitrage (data912 + Yahoo Finance) ---
-// In local dev, proxies to the Netlify function in production
-// Full logic (Yahoo Finance batch + auto-derived ratios) runs in the Netlify function
-
-app.get('/api/cedears', async (req, res) => {
-  try {
-    // In local dev, proxy to production Netlify function
-    const data = await fetch('https://rendimientos.co/api/cedears').then(r => r.json());
-    res.json(data);
-  } catch (err) {
-    console.error('CEDEAR proxy error:', err.message);
-    res.status(502).json({ error: 'Failed to fetch CEDEAR data' });
-  }
-});
-
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

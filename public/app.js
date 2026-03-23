@@ -327,7 +327,6 @@ function setupTabs() {
       document.getElementById('tab-billeteras').style.display = target === 'billeteras' ? '' : 'none';
       document.getElementById('tab-plazofijo').style.display = target === 'plazofijo' ? '' : 'none';
       document.getElementById('tab-lecaps').style.display = target === 'lecaps' ? '' : 'none';
-      document.getElementById('tab-cedears').style.display = 'none';
       document.getElementById('tab-soberanos').style.display = 'none';
 
       const hero = document.getElementById('hero');
@@ -352,9 +351,8 @@ function setupTabs() {
     });
   });
 
-  // Header-level switching: ARS vs CEDEARs
+  // Header-level switching
   const headerArs = document.getElementById('header-ars');
-  const headerCedears = document.getElementById('header-cedears');
   const subnav = document.querySelector('.subnav');
   const hero = document.getElementById('hero');
 
@@ -366,10 +364,9 @@ function setupTabs() {
     document.getElementById('tab-billeteras').style.display = 'none';
     document.getElementById('tab-plazofijo').style.display = 'none';
     document.getElementById('tab-lecaps').style.display = 'none';
-    document.getElementById('tab-cedears').style.display = 'none';
     document.getElementById('tab-soberanos').style.display = 'none';
     document.getElementById('section-mundo').style.display = 'none';
-    [headerArs, headerCedears, headerSoberanos, headerMundo].forEach(b => b && b.classList.remove('active'));
+    [headerArs, headerSoberanos, headerMundo].forEach(b => b && b.classList.remove('active'));
   }
 
   function updatePageTitle(section) {
@@ -377,7 +374,6 @@ function setupTabs() {
     const titles = {
       mundo: 'Monitor Global',
       ars: 'Billeteras y Fondos',
-      cedears: 'Arbitraje CEDEARs',
       bonos: 'Bonos Soberanos USD',
       plazofijo: 'Tasas Plazo Fijo',
       lecaps: 'LECAPs y BONCAPs'
@@ -417,19 +413,6 @@ function setupTabs() {
     updatePageTitle(sub === 'billeteras' ? 'ars' : sub);
   }
 
-  function switchToCedears() {
-    hideAllTabs();
-    headerCedears.classList.add('active');
-    subnav.style.display = 'none';
-    document.getElementById('tab-cedears').style.display = '';
-    hero.querySelector('h1').textContent = 'Arbitraje de CEDEARs';
-    hero.querySelector('p').textContent = 'CCL implícito por CEDEAR y spread vs tipo de cambio de referencia.';
-    updatePageTitle('cedears');
-    if (!document.getElementById('cedears-list').hasChildNodes()) {
-      loadCedears();
-    }
-  }
-
   function switchToSoberanos() {
     hideAllTabs();
     headerSoberanos.classList.add('active');
@@ -457,14 +440,12 @@ function setupTabs() {
   }
 
   if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); location.hash = 'ars'; });
-  if (headerCedears) headerCedears.addEventListener('click', (e) => { e.preventDefault(); switchToCedears(); location.hash = 'cedears'; });
   if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); location.hash = 'bonos'; });
   if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); location.hash = 'mundo'; });
 
   // Handle initial hash on page load
   const initialHash = location.hash.replace('#', '');
   if (initialHash === 'ars') switchToArs();
-  else if (initialHash === 'cedears') switchToCedears();
   else if (initialHash === 'bonos') switchToSoberanos();
   else if (initialHash === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
   else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
@@ -473,7 +454,6 @@ function setupTabs() {
   window.addEventListener('hashchange', () => {
     const h = location.hash.replace('#', '');
     if (h === 'ars') switchToArs();
-    else if (h === 'cedears') switchToCedears();
     else if (h === 'bonos') switchToSoberanos();
     else if (h === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
     else if (h === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
@@ -886,108 +866,6 @@ function fitPolyCurve(points, degree, n) {
   return result;
 }
 
-// ─── CEDEAR Arbitrage section ───
-
-async function loadCedears() {
-  const container = document.getElementById('cedears-list');
-  container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando CEDEARs...</p></div>`;
-
-  try {
-    const apiRes = await fetch('/api/cedears').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }));
-
-    const cedears = apiRes.data || [];
-    const cclRef = apiRes.ccl_reference || 0;
-
-    if (!cedears.length || !cclRef) {
-      container.innerHTML = '<div class="loading">No se pudieron cargar los datos de CEDEARs.</div>';
-      return;
-    }
-
-    // The API already calculates CCL implícito = (cedear_price * ratio) / usd_price
-    const items = cedears
-      .filter(c => c.cedear_price > 0)
-      .map(c => {
-        const hasCcl = c.ccl_implicit > 0;
-        const spread = hasCcl ? ((c.ccl_implicit / cclRef) - 1) * 100 : null;
-        return {
-          symbol: c.symbol,
-          nombre: c.nombre,
-          ratio: c.ratio,
-          cedearPrice: c.cedear_price,
-          adrPrice: c.usd_price || 0,
-          cclImplicit: c.ccl_implicit,
-          spread,
-          hasCcl,
-          volume: c.volume || 0,
-          pctChange: c.pct_change || 0,
-        };
-      });
-
-    // Sort by volume descending (most liquid first)
-    items.sort((a, b) => b.volume - a.volume);
-
-    renderCedearsTable(container, items, cclRef);
-
-    const withCcl = items.filter(i => i.hasCcl).length;
-    const source = document.getElementById('cedears-source');
-    if (source) {
-      source.textContent = `Fuente: data912 + Yahoo Finance — CCL referencia: $${cclRef.toFixed(2)} — ${items.length} tickers (${withCcl} con precio USD)`;
-    }
-  } catch (e) {
-    console.error('Error loading CEDEARs:', e);
-    container.innerHTML = '<div class="loading">Error al cargar datos de CEDEARs.</div>';
-  }
-}
-
-function renderCedearsTable(container, items, cclRef) {
-  const rows = items.map(item => {
-    const hasSpread = item.spread !== null;
-    const spreadClass = hasSpread ? (item.spread > 1 ? 'spread-positive' : item.spread < -1 ? 'spread-negative' : '') : '';
-    const spreadSign = hasSpread && item.spread > 0 ? '+' : '';
-    const spreadText = hasSpread ? `${spreadSign}${item.spread.toFixed(2)}%` : '-';
-    const cclText = item.hasCcl ? `$${item.cclImplicit.toFixed(0)}` : '-';
-    const adrText = item.hasCcl ? `US$${item.adrPrice.toFixed(2)}` : '-';
-    return `<tr>
-      <td><span class="cedear-ticker">${item.symbol}</span><br><span class="cedear-nombre">${item.nombre}</span></td>
-      <td class="col-ratio">${item.ratio}:1</td>
-      <td>$${item.cedearPrice.toLocaleString('es-AR')}</td>
-      <td class="col-adr">${adrText}</td>
-      <td class="cedear-ccl">${cclText}</td>
-      <td class="${spreadClass}">${spreadText}</td>
-      <td class="col-vol">${formatVolume(item.arsVolume || item.volume)}</td>
-    </tr>`;
-  }).join('');
-
-  container.innerHTML = `
-    <div class="cedear-table-wrap">
-      <table class="cedear-table">
-        <thead>
-          <tr>
-            <th class="col-cedear-ticker">Ticker</th>
-            <th class="col-ratio">Ratio</th>
-            <th>CEDEAR</th>
-            <th class="col-adr">ADR (USD)</th>
-            <th>CCL Impl.</th>
-            <th>Spread</th>
-            <th class="col-vol">Volumen</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>
-    <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:6px">
-      CCL referencia: $${cclRef.toFixed(2)} (mediana top-10 por volumen). Spread positivo = CEDEAR caro vs referencia.
-    </p>`;
-}
-
-function formatVolume(v) {
-  if (!v || v <= 0) return '-';
-  if (v >= 1e9) return '$' + (v / 1e9).toFixed(1) + 'B';
-  if (v >= 1e6) return '$' + (v / 1e6).toFixed(0) + 'M';
-  if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
-  return '$' + v.toString();
-}
-
 // ─── Soberanos USD section ───
 
 async function loadSoberanos() {
@@ -1331,6 +1209,8 @@ async function loadMundo() {
       const canvasId = `spark-${item.id}`;
       const card = document.createElement('div');
       card.className = 'mundo-card';
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', () => openMundoDetail(item.id, item.name, item.icon));
       card.innerHTML = `
         <div class="mundo-icon">${item.icon}</div>
         <div class="mundo-info">
@@ -1362,6 +1242,145 @@ async function loadMundo() {
   }
 }
 
+// ─── Mundo Detail Modal ───
+let mundoDetailChart = null;
+
+async function openMundoDetail(id, name, icon) {
+  // Remove existing modal
+  const existing = document.getElementById('mundo-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'mundo-modal';
+  modal.className = 'mundo-modal-overlay';
+  modal.innerHTML = `
+    <div class="mundo-modal">
+      <div class="mundo-modal-header">
+        <span class="mundo-modal-title">${icon} ${name}</span>
+        <div class="mundo-modal-tabs">
+          <button class="mundo-range-btn active" data-range="1d">1D</button>
+          <button class="mundo-range-btn" data-range="5d">5D</button>
+          <button class="mundo-range-btn" data-range="1mo">1M</button>
+          <button class="mundo-range-btn" data-range="3mo">3M</button>
+        </div>
+        <button class="mundo-modal-close">&times;</button>
+      </div>
+      <div class="mundo-modal-body">
+        <canvas id="mundo-detail-chart"></canvas>
+      </div>
+      <div class="mundo-modal-loading" id="mundo-modal-loading">Cargando...</div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Close handlers
+  modal.querySelector('.mundo-modal-close').addEventListener('click', () => modal.remove());
+  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+
+  // Range buttons
+  modal.querySelectorAll('.mundo-range-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      modal.querySelectorAll('.mundo-range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadMundoChart(id, name, btn.dataset.range);
+    });
+  });
+
+  loadMundoChart(id, name, '1d');
+}
+
+async function loadMundoChart(id, name, range) {
+  const loading = document.getElementById('mundo-modal-loading');
+  if (loading) loading.style.display = 'block';
+
+  try {
+    const res = await fetch(`/api/mundo?symbol=${id}&range=${range}`);
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+
+    if (loading) loading.style.display = 'none';
+
+    const canvas = document.getElementById('mundo-detail-chart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    if (mundoDetailChart) mundoDetailChart.destroy();
+
+    const points = data.points || [];
+    if (!points.length) return;
+
+    const isUp = points[points.length - 1].v >= points[0].v;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const lineColor = isUp ? '#34d399' : '#f87171';
+    const bgColor = isUp ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)';
+    const textColor = isDark ? '#a0a0a8' : '#71717a';
+    const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+
+    mundoDetailChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: points.map(p => p.t),
+        datasets: [{
+          data: points.map(p => p.v),
+          borderColor: lineColor,
+          backgroundColor: bgColor,
+          borderWidth: 2,
+          pointRadius: 0,
+          pointHitRadius: 10,
+          fill: true,
+          tension: 0.3,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 300 },
+        interaction: { intersect: false, mode: 'index' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (items) => {
+                const ts = points[items[0].dataIndex].t;
+                return new Date(ts).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+              },
+              label: (item) => {
+                const val = item.raw;
+                return val >= 1000 ? val.toLocaleString('es-AR', { maximumFractionDigits: 0 }) : val.toFixed(4);
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            display: true,
+            ticks: {
+              color: textColor,
+              maxTicksLimit: 6,
+              callback: function(val, index) {
+                const ts = points[index]?.t;
+                if (!ts) return '';
+                const d = new Date(ts);
+                if (range === '1d') return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                return d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
+              }
+            },
+            grid: { color: gridColor },
+          },
+          y: {
+            display: true,
+            ticks: { color: textColor, maxTicksLimit: 5 },
+            grid: { color: gridColor },
+          }
+        }
+      }
+    });
+  } catch (e) {
+    if (loading) loading.textContent = 'Error al cargar datos.';
+    console.error('Detail chart error:', e);
+  }
+}
+
 // ─── News Ticker ───
 async function loadNewsTicker() {
   try {
@@ -1383,7 +1402,12 @@ async function loadNewsTicker() {
     // Duplicate for seamless loop
     track.innerHTML = html + html;
 
-    document.getElementById('news-ticker').style.display = 'flex';
+    const ticker = document.getElementById('news-ticker');
+    ticker.style.display = 'flex';
+
+    document.getElementById('news-ticker-close').addEventListener('click', () => {
+      ticker.style.display = 'none';
+    });
   } catch (e) {
     // Silently fail — ticker is non-essential
     console.error('News ticker error:', e);

@@ -73,11 +73,34 @@ body {
   height: 30px;
   display: none;
   align-items: center;
+  position: relative;
 }
+.news-ticker-close {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.7rem;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  line-height: 1;
+  padding: 0;
+  transition: background 0.15s;
+}
+.news-ticker-close:hover { background: rgba(255,255,255,0.4); }
 .news-ticker-track {
   display: inline-flex;
   gap: 0;
-  animation: tickerScroll 120s linear infinite;
+  animation: tickerScroll 200s linear infinite;
   will-change: transform;
 }
 .news-ticker-track:hover { animation-play-state: paused; }
@@ -115,6 +138,90 @@ body {
   background: linear-gradient(90deg, #1e3a5f 0%, #1a2744 50%, #1e3a5f 100%);
 }
 
+/* Mundo Detail Modal */
+.mundo-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+.mundo-modal {
+  background: var(--card-bg);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
+  position: relative;
+}
+.mundo-modal-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.mundo-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  flex-shrink: 0;
+}
+.mundo-modal-tabs {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.mundo-range-btn {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mundo-range-btn.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.mundo-range-btn:hover:not(.active) {
+  background: var(--border);
+}
+.mundo-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  margin-left: 8px;
+}
+.mundo-modal-close:hover { color: var(--text); }
+.mundo-modal-body {
+  padding: 16px 20px 20px;
+  height: 350px;
+  position: relative;
+}
+.mundo-modal-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--text-tertiary);
+  font-size: 0.85rem;
+  display: none;
+}
+
 .header-inner {
   max-width: 780px;
   margin: 0 auto;
@@ -137,14 +244,14 @@ body {
   background: var(--bg-subtle);
   border-radius: var(--radius-sm);
   padding: 3px;
+  overflow: hidden;
 }
 
 .currency-tab {
   text-decoration: none;
   padding: 5px 12px;
   border-radius: 6px;
-  flex: 1;
-  min-width: 0;
+  width: 105px;
   text-align: center;
   justify-content: center;
   white-space: nowrap;
@@ -332,24 +439,6 @@ body {
   height: 420px;
 }
 
-/* CEDEAR Table */
-.cedear-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: 10px; }
-.cedear-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap; table-layout: fixed; }
-.cedear-table thead { background: var(--accent); color: #fff; }
-.cedear-table th { padding: 10px 14px; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; text-align: right; }
-.cedear-table th:first-child { text-align: left; }
-.cedear-table td { padding: 9px 14px; border-bottom: 1px solid var(--border-light); text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
-.cedear-table td:first-child { text-align: left; }
-.cedear-table tbody tr { background: var(--card-bg); }
-.cedear-table tbody tr:hover { background: var(--bg-subtle); }
-.cedear-table tbody tr:last-child td { border-bottom: none; }
-.cedear-table .col-cedear-ticker { width: 18%; text-align: left; }
-.cedear-table .col-ratio { width: 8%; }
-.cedear-table .col-adr { width: 14%; }
-.cedear-table .col-vol { width: 14%; }
-.cedear-ticker { font-weight: 700; color: var(--accent); }
-.cedear-nombre { font-size: 0.65rem; color: var(--text-tertiary); font-weight: 400; }
-.cedear-ccl { font-weight: 600; }
 .spread-positive { color: #ef4444; font-weight: 600; }
 .spread-negative { color: var(--green); font-weight: 600; }
 
@@ -987,16 +1076,6 @@ body {
   .lecap-table td:nth-child(6) { display: none; }
   .lecap-type-badge { font-size: 0.5rem; padding: 1px 4px; margin-left: 4px; }
   .scatter-plot { height: 280px; }
-  /* CEDEAR table mobile */
-  .cedear-table { table-layout: auto; font-size: 0.68rem; }
-  .cedear-table th { padding: 8px 8px; font-size: 0.6rem; }
-  .cedear-table td { padding: 7px 8px; }
-  .cedear-table .col-ratio { display: none; }
-  .cedear-table .col-adr { display: none; }
-  .cedear-table .col-vol { display: none; }
-  .cedear-table td:nth-child(2) { display: none; }
-  .cedear-table td:nth-child(4) { display: none; }
-  .cedear-table td:nth-child(7) { display: none; }
   /* Soberanos table mobile */
   .soberanos-table { table-layout: auto; font-size: 0.68rem; }
   .soberanos-table th { padding: 8px 8px; font-size: 0.6rem; }
