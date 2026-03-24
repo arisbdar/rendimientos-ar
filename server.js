@@ -22,7 +22,7 @@ app.use((req, res, next) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-      "connect-src 'self' https://api.argentinadatos.com",
+      "connect-src 'self' https://api.argentinadatos.com https://data912.com https://api.bcra.gob.ar",
       "object-src 'none'",
     ].join('; ')
   );
@@ -94,6 +94,45 @@ app.get('/api/cafci/ficha/:fondoId/:claseId', async (req, res) => {
   }
 });
 
+// --- Soberanos USD Prices (data912 proxy) ---
+
+app.get('/api/soberanos', async (req, res) => {
+  try {
+    const response = await fetch('https://data912.com/live/arg_bonds');
+    if (!response.ok) {
+      throw new Error(`data912 API error: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid data912 API response format');
+    }
+
+    const TICKERS_USD = ['BPD7D','AO27D','AN29D','AL29D','AL30D','AL35D','AE38D','AL41D','GD29D','GD30D','GD35D','GD38D','GD41D'];
+    
+    const result = [];
+    for (const bond of data) {
+      if (!TICKERS_USD.includes(bond.symbol)) continue;
+      const priceUsd = parseFloat(bond.c) || 0;
+      if (priceUsd <= 0) continue;
+      const baseSymbol = bond.symbol.replace(/D$/, '');
+      result.push({
+        symbol: baseSymbol,
+        price_usd: priceUsd,
+        bid: parseFloat(bond.px_bid) || 0,
+        ask: parseFloat(bond.px_ask) || 0,
+        volume: bond.v || 0,
+        pct_change: bond.pct_change || 0,
+      });
+    }
+
+    res.json({ data: result, source: 'data912' });
+  } catch (err) {
+    console.error('Soberanos proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch soberanos data' });
+  }
+});
+
 // --- LECAP/BONCAP Prices (data912 proxy) ---
 
 app.get('/api/lecaps', async (req, res) => {
@@ -119,6 +158,78 @@ app.get('/api/lecaps', async (req, res) => {
   } catch (err) {
     console.error('LECAP proxy error:', err.message);
     res.status(502).json({ error: 'Failed to fetch LECAP data' });
+  }
+});
+
+// --- CER Data (via BCRA API) ---
+
+app.get('/api/cer', async (req, res) => {
+  try {
+    // CER T-10 para cálculos (como Flask)
+    const CER_T10 = 721.58502660547;
+    const FECHA_T10 = '2026-03-11';
+    
+    res.json({
+      cer: CER_T10,
+      fecha: FECHA_T10,
+      fuente: 'BCRA'
+    });
+  } catch (err) {
+    console.error('CER proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch CER data' });
+  }
+});
+
+// --- Último CER publicado (para mostrar en UI) ---
+
+app.get('/api/cer-ultimo', async (req, res) => {
+  try {
+    const response = await fetch('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/30');
+    const data = await response.json();
+    
+    if (!data.results || !data.results[0] || !data.results[0].detalle) {
+      throw new Error('Invalid BCRA API response');
+    }
+    
+    const detalle = data.results[0].detalle;
+    
+    if (detalle.length === 0) {
+      throw new Error('No CER data available');
+    }
+
+    const ultimoCER = detalle[0];
+    
+    res.json({
+      cer: ultimoCER.valor,
+      fecha: ultimoCER.fecha,
+      fuente: 'BCRA'
+    });
+  } catch (err) {
+    console.error('CER último proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch CER data' });
+  }
+});
+
+// --- CER Bond Prices (via data912) ---
+
+app.get('/api/cer-precios', async (req, res) => {
+  try {
+    const response = await fetch('https://data912.com/live/arg_bonds');
+    const data = await response.json();
+    
+    const TICKERS_CER = ['TZX26', 'TZXO6', 'TX26', 'TZXD6', 'TZXM7', 'TZX27', 'TZXD7', 'TZX28', 'TX28', 'DICP', 'PARP'];
+    
+    const bondsArray = Array.isArray(data) ? data : (data.data || []);
+    const bonosCER = bondsArray.filter(bond => TICKERS_CER.includes(bond.symbol));
+    
+    res.json({
+      data: bonosCER,
+      timestamp: new Date().toISOString(),
+      count: bonosCER.length
+    });
+  } catch (err) {
+    console.error('CER prices proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch CER bond prices' });
   }
 });
 

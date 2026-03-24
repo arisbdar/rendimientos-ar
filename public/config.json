@@ -1286,5 +1286,1106 @@
       ]
     }
   },
-  "ons": {}
+  "ons": {},
+  "bonos_cer": {
+    "TZXM6": {
+      "tipo": "CER",
+      "vencimiento": "2026-03-31",
+      "cer_emision": 337.0341,
+      "flujos": [
+        {
+          "fecha": "2026-03-31",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZX26": {
+      "tipo": "CER",
+      "vencimiento": "2026-06-30",
+      "cer_emision": 200.388,
+      "flujos": [
+        {
+          "fecha": "2026-06-30",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZXO6": {
+      "tipo": "CER",
+      "vencimiento": "2026-10-30",
+      "cer_emision": 480.1526,
+      "flujos": [
+        {
+          "fecha": "2026-10-30",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TX26": {
+      "tipo": "CER",
+      "vencimiento": "2026-11-09",
+      "cer_emision": 22.544,
+      "flujos": [
+        {
+          "fecha": "2021-05-10",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-05-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-05-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-05-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-11-11",
+          "amortizacion": 0.2,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-05-09",
+          "amortizacion": 0.2,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-11-10",
+          "amortizacion": 0.2,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-05-11",
+          "amortizacion": 0.2,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-11-09",
+          "amortizacion": 0.2,
+          "tasa_interes": 0.02,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZXD6": {
+      "tipo": "CER",
+      "vencimiento": "2026-12-15",
+      "cer_emision": 271.0476,
+      "flujos": [
+        {
+          "fecha": "2026-12-15",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZXM7": {
+      "tipo": "CER",
+      "vencimiento": "2027-03-31",
+      "cer_emision": 361.3176,
+      "flujos": [
+        {
+          "fecha": "2027-03-31",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZX27": {
+      "tipo": "CER",
+      "vencimiento": "2027-06-30",
+      "cer_emision": 200.388,
+      "flujos": [
+        {
+          "fecha": "2027-06-30",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZXD7": {
+      "tipo": "CER",
+      "vencimiento": "2027-12-15",
+      "cer_emision": 271.0476,
+      "flujos": [
+        {
+          "fecha": "2027-12-15",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TZX28": {
+      "tipo": "CER",
+      "vencimiento": "2028-06-30",
+      "cer_emision": 200.388,
+      "flujos": [
+        {
+          "fecha": "2028-06-30",
+          "amortizacion": 1.0,
+          "tasa_interes": 0.0,
+          "base": 0.5
+        }
+      ]
+    },
+    "TX28": {
+      "tipo": "CER",
+      "vencimiento": "2028-11-09",
+      "cer_emision": 22.544,
+      "flujos": [
+        {
+          "fecha": "2021-05-10",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-05-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-05-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-11-09",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-05-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-11-11",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-05-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-11-10",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-05-11",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-11-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-05-10",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-11-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2028-05-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        },
+        {
+          "fecha": "2028-11-09",
+          "amortizacion": 0.1,
+          "tasa_interes": 0.0225,
+          "base": 0.5
+        }
+      ]
+    },
+    "DICP": {
+      "tipo": "CER",
+      "vencimiento": "2034-01-02",
+      "cer_emision": 1.4551,
+      "flujos": [
+        {
+          "fecha": "2004-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2004-12-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2005-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2006-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2006-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2007-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2007-07-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2008-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2008-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2008-12-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0279,
+          "base": 0.5
+        },
+        {
+          "fecha": "2009-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2009-12-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2010-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2011-01-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2011-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2012-01-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2012-07-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2012-12-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2013-07-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2014-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0406,
+          "base": 0.5
+        },
+        {
+          "fecha": "2014-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2015-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2015-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2015-12-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2016-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2017-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2017-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2018-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2018-07-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2019-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2019-07-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2020-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2020-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-01-04",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-01-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-06-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-01-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-07-01",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-01-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-01-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2028-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2029-01-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2029-07-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2029-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2030-07-01",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2030-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2031-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2031-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2032-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2032-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2033-06-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        },
+        {
+          "fecha": "2034-01-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0583,
+          "base": 0.5
+        }
+      ]
+    },
+    "PARP": {
+      "tipo": "CER",
+      "vencimiento": "2038-12-31",
+      "cer_emision": 1.4551,
+      "flujos": [
+        {
+          "fecha": "2004-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2005-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2005-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2006-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2006-10-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2007-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2007-10-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2008-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2008-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2009-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0063,
+          "base": 0.5
+        },
+        {
+          "fecha": "2009-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2010-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2010-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2011-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2011-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2012-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2012-10-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2013-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2013-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2014-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2014-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2015-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2015-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2016-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2016-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2017-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2017-10-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2018-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2018-10-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2019-04-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0118,
+          "base": 0.5
+        },
+        {
+          "fecha": "2019-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2020-04-01",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2020-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2021-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2022-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2023-10-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2024-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2025-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2026-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2027-09-30",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2028-03-31",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2028-10-02",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2029-04-03",
+          "amortizacion": 0.0,
+          "tasa_interes": 0.0177,
+          "base": 0.5
+        },
+        {
+          "fecha": "2029-10-01",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2030-04-01",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2030-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2031-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2031-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2032-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2032-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2033-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2033-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2034-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2034-10-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2035-04-02",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2035-10-01",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2036-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2036-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2037-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2037-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2038-03-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2038-09-30",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        },
+        {
+          "fecha": "2038-12-31",
+          "amortizacion": 0.05,
+          "tasa_interes": 0.0248,
+          "base": 0.5
+        }
+      ]
+    },
+    "TO26": {
+      "tipo": "CER",
+      "vencimiento": "2026-10-17",
+      "cer_emision": 0.0,
+      "flujos": [
+        {
+          "fecha": "2026-04-17",
+          "amortizacion": 0.0,
+          "tasa_interes": 7.75,
+          "base": 1.0
+        },
+        {
+          "fecha": "2026-10-17",
+          "amortizacion": 1.0,
+          "tasa_interes": 7.75,
+          "base": 1.0
+        }
+      ]
+    }
+  }
 }

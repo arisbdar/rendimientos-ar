@@ -417,12 +417,15 @@ function setupTabs() {
     hideAllTabs();
     headerSoberanos.classList.add('active');
     subnav.style.display = 'none';
-    document.getElementById('tab-soberanos').style.display = '';
-    hero.querySelector('h1').textContent = 'Bonos Soberanos USD';
+    document.getElementById('tab-soberanos').style.display = 'block';
+    hero.querySelector('h1').textContent = 'Bonos Soberanos';
     hero.querySelector('p').textContent = 'Rendimiento de bonos soberanos argentinos en dólares. Ley local y ley extranjera.';
     updatePageTitle('bonos');
     if (!document.getElementById('soberanos-list').hasChildNodes()) {
       loadSoberanos();
+    }
+    if (!document.getElementById('cer-list').hasChildNodes()) {
+      loadCER();
     }
   }
 
@@ -1412,5 +1415,218 @@ async function loadNewsTicker() {
     // Silently fail — ticker is non-essential
     console.error('News ticker error:', e);
   }
+}
+
+// ─── Bonos CER section ───
+
+async function loadCER() {
+  const container = document.getElementById('cer-list');
+  container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando bonos CER...</p></div>`;
+
+  try {
+    const [config, cerData, cerUltimo, preciosData] = await Promise.all([
+      fetch('/api/config').then(r => r.json()),
+      fetch('/api/cer').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }))
+    ]);
+
+    const bonosCER = config.bonos_cer || {};
+    const cerActual = cerData?.cer || 0; // CER T-10 para cálculos
+    const cerUltimoPublicado = cerUltimo?.cer || 0; // Último CER para mostrar
+    const fechaUltimoCER = cerUltimo?.fecha || '';
+    const bondPrices = preciosData.data || [];
+
+    if (!cerActual || !bondPrices.length) {
+      container.innerHTML = '<div class="loading">No se pudieron cargar los datos de bonos CER.</div>';
+      return;
+    }
+
+    const today = new Date();
+    const items = [];
+
+    for (const bp of bondPrices) {
+      const bondConfig = bonosCER[bp.symbol];
+      if (!bondConfig || !bondConfig.flujos) continue;
+
+      const precioARS = bp.c || bp.price;
+      if (!precioARS || precioARS <= 0) continue;
+
+      const cerEmision = bondConfig.cer_emision || 1;
+      let coefCER = cerActual / cerEmision;
+      
+      // DICP: factor especial 1.27 (intereses capitalizados históricos)
+      if (bp.symbol === 'DICP') {
+        coefCER = coefCER * 1.27;
+      }
+
+      // Calcular VR_antes para cada flujo (igual que Flask)
+      // Primero calcular VR para TODOS los flujos, luego filtrar futuros
+      let amortAcum = 0;
+      const todosLosFlujos = bondConfig.flujos.map(f => {
+        const vr_antes = 1 - amortAcum;
+        amortAcum += f.amortizacion;
+        return { ...f, vr_antes };
+      });
+
+      // Ahora filtrar solo flujos futuros y calcular flujos ajustados
+      const flujosAjustados = todosLosFlujos
+        .map(f => {
+          const fecha = parseLocalDate(f.fecha);
+          if (fecha <= today) return null;
+
+          // FF = (VR_antes × Tasa × Base + Amort) × Coef_CER
+          const interes = f.vr_antes * f.tasa_interes * f.base;
+          const flujoNominal = interes + f.amortizacion;
+          const flujoAjustado = flujoNominal * coefCER;
+
+          return { fecha, monto: flujoAjustado };
+        })
+        .filter(f => f !== null);
+
+      if (flujosAjustados.length === 0) continue;
+
+      // Precio se divide por 100 (igual que Flask: bid/100)
+      const precioNormalizado = precioARS / 100;
+
+      // Calcular TIR real
+      const ytm = calcYTM(precioNormalizado, flujosAjustados, today);
+
+      // Calcular duration
+      const duration = calcDuration(precioNormalizado, flujosAjustados, today, ytm);
+
+      items.push({
+        symbol: bp.symbol,
+        precioARS,
+        ytm,
+        duration,
+        vencimiento: bondConfig.vencimiento,
+        volume: bp.v || 0,
+      });
+    }
+
+    // Sort by duration (ascending)
+    items.sort((a, b) => a.duration - b.duration);
+
+    renderCERTable(container, items);
+
+    // Render yield curve
+    renderCERCurve(items);
+
+    const source = document.getElementById('cer-source');
+    if (source) {
+      source.textContent = `Fuente: data912 (precios en ARS), BCRA (CER: ${cerUltimoPublicado.toFixed(2)} al ${fechaUltimoCER}) — ${items.length} bonos`;
+    }
+  } catch (e) {
+    console.error('Error loading CER bonds:', e);
+    container.innerHTML = '<div class="loading">Error al cargar datos de bonos CER.</div>';
+  }
+}
+
+function renderCERTable(container, items) {
+  const rows = items.map(item => {
+    return `<tr>
+      <td><span class="soberano-ticker">${item.symbol}</span></td>
+      <td>$${item.precioARS.toFixed(2)}</td>
+      <td class="soberano-ytm">${item.ytm.toFixed(2)}%</td>
+      <td class="col-duration">${item.duration.toFixed(1)}</td>
+      <td class="col-vto">${item.vencimiento}</td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="soberanos-table-wrap">
+      <table class="soberanos-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Precio (ARS)</th>
+            <th>TIR Real</th>
+            <th class="col-duration">Duration</th>
+            <th class="col-vto">Vencimiento</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:6px">
+      TIR Real calculada con flujos ajustados por CER. Duration en años (Macaulay).
+    </p>`;
+}
+
+let cerChart = null;
+function renderCERCurve(items) {
+  const canvas = document.getElementById('cer-scatter');
+  if (!canvas) return;
+  if (cerChart) cerChart.destroy();
+
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+  const textColor = isDark ? '#a0a0a8' : '#71717a';
+
+  // Polynomial regression curve (degree 2, 300 points for smoothness)
+  const points = items.map(i => [i.duration, i.ytm]);
+  const curve = points.length >= 3 ? fitPolyCurve(points, 2, 300) : [];
+
+  const datasets = [];
+
+  if (curve.length) {
+    datasets.push({
+      label: 'Bonos CER (curva)',
+      data: curve,
+      borderColor: '#22c55e',
+      borderWidth: 2.5,
+      borderDash: [6, 3],
+      pointRadius: 0,
+      pointHitRadius: 0,
+      fill: false,
+      order: 2,
+    });
+  }
+
+  datasets.push({
+    label: 'Bonos CER',
+    data: items.map(i => ({ x: i.duration, y: i.ytm, label: i.symbol })),
+    backgroundColor: '#22c55e',
+    borderColor: '#16a34a',
+    borderWidth: 1.5,
+    pointRadius: 7,
+    pointHoverRadius: 9,
+    showLine: false,
+    order: 1,
+  });
+
+  cerChart = new Chart(canvas, {
+    type: 'line',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: textColor, filter: (item) => !item.text.includes('curva') } },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const d = ctx.raw;
+              return `${d.label || ''}: TIR Real ${d.y?.toFixed(2) || ctx.parsed.y.toFixed(2)}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Duration (años)', color: textColor },
+          grid: { color: gridColor },
+          ticks: { color: textColor },
+        },
+        y: {
+          title: { display: true, text: 'TIR Real (%)', color: textColor },
+          grid: { color: gridColor },
+          ticks: { color: textColor },
+        }
+      }
+    }
+  });
 }
 
