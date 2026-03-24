@@ -165,14 +165,48 @@ app.get('/api/lecaps', async (req, res) => {
 
 app.get('/api/cer', async (req, res) => {
   try {
-    // CER T-10 para cálculos (como Flask)
-    const CER_T10 = 721.58502660547;
-    const FECHA_T10 = '2026-03-11';
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Leer serie histórica de CER
+    const cerPath = path.join(__dirname, 'data_base', 'CER_serie.csv');
+    const cerData = fs.readFileSync(cerPath, 'utf-8');
+    const lines = cerData.trim().split('\n').slice(1); // Skip header
+    
+    // Parsear CSV
+    const cerSerie = lines.map(line => {
+      const [fecha, valor] = line.split(',');
+      return { fecha, valor: parseFloat(valor) };
+    });
+    
+    // Calcular fecha T-10 (10 días hábiles antes del settlement T+1)
+    // Aproximación: restar 14 días calendario desde hoy
+    const hoy = new Date();
+    const t1 = new Date(hoy);
+    t1.setDate(t1.getDate() + 1); // Settlement T+1
+    const fc = new Date(t1);
+    fc.setDate(fc.getDate() - 14); // T-10 aproximado
+    
+    const fcStr = fc.toISOString().split('T')[0];
+    
+    // Buscar CER más cercano a fc (T-10)
+    let cerT10 = null;
+    for (let i = cerSerie.length - 1; i >= 0; i--) {
+      if (cerSerie[i].fecha <= fcStr) {
+        cerT10 = cerSerie[i];
+        break;
+      }
+    }
+    
+    if (!cerT10) {
+      // Fallback: usar el último disponible
+      cerT10 = cerSerie[cerSerie.length - 1];
+    }
     
     res.json({
-      cer: CER_T10,
-      fecha: FECHA_T10,
-      fuente: 'BCRA'
+      cer: cerT10.valor,
+      fecha: cerT10.fecha,
+      fuente: 'Serie histórica CER'
     });
   } catch (err) {
     console.error('CER proxy error:', err.message);
@@ -184,25 +218,22 @@ app.get('/api/cer', async (req, res) => {
 
 app.get('/api/cer-ultimo', async (req, res) => {
   try {
-    const response = await fetch('https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/30');
-    const data = await response.json();
+    const fs = require('fs');
+    const path = require('path');
     
-    if (!data.results || !data.results[0] || !data.results[0].detalle) {
-      throw new Error('Invalid BCRA API response');
-    }
+    // Leer serie histórica de CER
+    const cerPath = path.join(__dirname, 'data_base', 'CER_serie.csv');
+    const cerData = fs.readFileSync(cerPath, 'utf-8');
+    const lines = cerData.trim().split('\n').slice(1); // Skip header
     
-    const detalle = data.results[0].detalle;
-    
-    if (detalle.length === 0) {
-      throw new Error('No CER data available');
-    }
-
-    const ultimoCER = detalle[0];
+    // Último CER es la última línea
+    const lastLine = lines[lines.length - 1];
+    const [fecha, valor] = lastLine.split(',');
     
     res.json({
-      cer: ultimoCER.valor,
-      fecha: ultimoCER.fecha,
-      fuente: 'BCRA'
+      cer: parseFloat(valor),
+      fecha: fecha,
+      fuente: 'Serie histórica CER'
     });
   } catch (err) {
     console.error('CER último proxy error:', err.message);

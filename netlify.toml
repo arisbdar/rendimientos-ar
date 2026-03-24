@@ -48,6 +48,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/cer-ultimo"
+  to = "/.netlify/functions/cer-ultimo"
+  status = 200
+
+[[redirects]]
   from = "/api/config"
   to = "/config.json"
   status = 200

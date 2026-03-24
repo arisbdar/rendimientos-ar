@@ -26,29 +26,8 @@ exports.handler = async (event, context) => {
       throw new Error('No CER data available');
     }
 
-    // Calcular fecha T-10 (10 días hábiles antes del settlement T+1)
-    // Aproximación: restar 14 días calendario desde hoy
-    const hoy = new Date();
-    const t1 = new Date(hoy);
-    t1.setDate(t1.getDate() + 1); // Settlement T+1
-    const fc = new Date(t1);
-    fc.setDate(fc.getDate() - 14); // T-10 aproximado
-    
-    const fcStr = fc.toISOString().split('T')[0];
-    
-    // Buscar CER más cercano a fc (T-10) en la serie del BCRA
-    let cerT10 = null;
-    for (const item of detalle) {
-      if (item.fecha <= fcStr) {
-        cerT10 = item;
-        break;
-      }
-    }
-    
-    // Si no se encuentra, usar el más reciente
-    if (!cerT10) {
-      cerT10 = detalle[0];
-    }
+    // Último CER publicado
+    const ultimoCER = detalle[0];
     
     return {
       statusCode: 200,
@@ -58,23 +37,20 @@ exports.handler = async (event, context) => {
         'Cache-Control': 'public, max-age=86400'
       },
       body: JSON.stringify({
-        cer: cerT10.valor,
-        fecha: cerT10.fecha,
-        fuente: 'BCRA (T-10)'
+        cer: ultimoCER.valor,
+        fecha: ultimoCER.fecha,
+        fuente: 'BCRA'
       })
     };
   } catch (error) {
-    console.error('Error fetching CER:', error);
+    console.error('Error fetching último CER:', error);
     return {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify({
-        error: 'Failed to fetch CER data',
-        message: error.message
-      })
+      body: JSON.stringify({ error: 'Failed to fetch último CER data' })
     };
   }
 };
