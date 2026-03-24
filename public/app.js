@@ -1905,7 +1905,7 @@ function openLecapCalculator(item) {
     <div class="mundo-modal">
       <div class="mundo-modal-header">
         <div><h3 style="margin:0">${item.ticker} — Calculadora</h3>
-        <p style="margin:4px 0 0;color:var(--text-secondary);font-size:0.85rem">${item.tipo || 'LECAP'} — Vence: ${item.vencimiento} — Pago final: ${item.pagoFinal}</p></div>
+        <p style="margin:4px 0 0;color:var(--text-secondary);font-size:0.85rem">${item.tipo || 'LECAP'} — Vence: ${item.vencimiento} — Pago final: ${item.pago_final}</p></div>
         <button class="mundo-modal-close">&times;</button>
       </div>
       <div class="mundo-modal-body" style="padding:16px">
@@ -1928,8 +1928,8 @@ function openLecapCalculator(item) {
   document.getElementById('lecap-calc-price').addEventListener('input', function() {
     const p = parseFloat(this.value);
     if (!p || p <= 0) return;
-    const tna = (item.pagoFinal / p - 1) * (365 / item.dias) * 100;
-    const tir = (Math.pow(item.pagoFinal / p, 365 / item.dias) - 1) * 100;
+    const tna = (item.pago_final / p - 1) * (365 / item.dias) * 100;
+    const tir = (Math.pow(item.pago_final / p, 365 / item.dias) - 1) * 100;
     document.getElementById('lecap-calc-tna').textContent = tna.toFixed(2) + '%';
     const tirEl = document.getElementById('lecap-calc-tir');
     tirEl.textContent = tir.toFixed(2) + '%';
