@@ -1469,7 +1469,7 @@ async function loadCER() {
   try {
     const [config, cerData, cerUltimo, preciosData] = await Promise.all([
       fetch('/api/config').then(r => r.json()),
-      fetch('/api/cer').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/cer?v=2').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }))
     ]);
