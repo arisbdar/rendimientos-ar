@@ -1581,6 +1581,7 @@ async function loadCER() {
         duration,
         vencimiento: bondConfig.vencimiento,
         volume: bp.v || 0,
+        flujosAjustados,
       });
     }
 
@@ -1606,9 +1607,11 @@ async function loadCER() {
   }
 }
 
+let _cerItems = [];
 function renderCERTable(container, items) {
-  const rows = items.map(item => {
-    return `<tr>
+  _cerItems = items;
+  const rows = items.map((item, idx) => {
+    return `<tr data-cer-idx="${idx}" style="cursor:pointer">
       <td><span class="soberano-ticker">${item.symbol}</span></td>
       <td>$${item.priceArs.toFixed(2)}</td>
       <td class="soberano-ytm">${item.ytm.toFixed(2)}%</td>
@@ -1618,6 +1621,7 @@ function renderCERTable(container, items) {
   }).join('');
 
   container.innerHTML = `
+    <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:8px">📊 Click en un bono para abrir la calculadora</p>
     <div class="soberanos-table-wrap">
       <table class="soberanos-table cer-table">
         <thead>
@@ -1635,6 +1639,82 @@ function renderCERTable(container, items) {
     <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:6px">
       TIR Real calculada con flujos ajustados por CER. Duration en años (Macaulay).
     </p>`;
+  container.querySelectorAll('tr[data-cer-idx]').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const item = _cerItems[parseInt(tr.dataset.cerIdx)];
+      if (item) openCERCalculator(item);
+    });
+  });
+  const table = container.querySelector('.cer-table');
+  if (table) makeSortable(table);
+}
+
+function openCERCalculator(item) {
+  document.querySelector('.mundo-modal-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'mundo-modal-overlay';
+  const inputStyle = 'display:block;font-size:1.1rem;font-weight:700;width:140px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)';
+  overlay.innerHTML = `
+    <div class="mundo-modal">
+      <div class="mundo-modal-header">
+        <div><h3 style="margin:0">${item.symbol} — Calculadora CER</h3>
+        <p style="margin:4px 0 0;color:var(--text-secondary);font-size:0.85rem">Vencimiento: ${item.vencimiento}</p></div>
+        <button class="mundo-modal-close">&times;</button>
+      </div>
+      <div class="mundo-modal-body" style="padding:16px">
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">Precio (AR$)</label>
+            <input type="number" id="cer-calc-price" value="${item.priceArs.toFixed(2)}" step="0.01" style="${inputStyle}"></div>
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">Monto a invertir ($)</label>
+            <input type="number" id="cer-calc-monto" value="1000000" step="10000" style="${inputStyle}"></div>
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">TIR Real</label>
+            <div id="cer-calc-tir" style="font-size:1.5rem;font-weight:700;color:${item.ytm >= 0 ? 'var(--green)' : 'var(--red)'}">${item.ytm.toFixed(2)}%</div></div>
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">Duration</label>
+            <div id="cer-calc-duration" style="font-size:1.2rem;font-weight:600;color:var(--text)">${item.duration.toFixed(1)} años</div></div>
+        </div>
+        <div id="cer-calc-resumen"></div>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('.mundo-modal-close').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+
+  function renderCERResumen() {
+    const price = parseFloat(document.getElementById('cer-calc-price').value) || item.priceArs;
+    const monto = parseFloat(document.getElementById('cer-calc-monto').value) || 1000000;
+    const nominales = monto / price;
+    // Show adjusted flows if available
+    const flujos = item.flujosAjustados || [];
+    let flowsHTML = '';
+    let totalCobro = 0;
+    if (flujos.length > 0) {
+      flowsHTML = flujos.map(f => {
+        const scaled = f.monto * nominales;
+        totalCobro += scaled;
+        return `<tr><td>${f.fecha instanceof Date ? f.fecha.toLocaleDateString('es-AR') : f.fecha}</td><td style="text-align:right">$${f.monto.toFixed(4)}</td><td style="text-align:right;font-weight:600">$${scaled.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</td></tr>`;
+      }).join('');
+    }
+    const ganancia = totalCobro - monto;
+    document.getElementById('cer-calc-resumen').innerHTML = `
+      <div style="background:var(--bg-subtle);border-radius:8px;padding:12px 16px;font-size:0.85rem;margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Comprás</span><strong>${nominales.toFixed(0)} VN a $${price.toFixed(2)}</strong></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Invertís</span><strong>$${monto.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+        ${totalCobro > 0 ? `<div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Cobrás (estimado)</span><strong>$${totalCobro.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:${ganancia >= 0 ? 'var(--green)' : 'var(--red)'}">
+          <span>Ganancia estimada</span><strong>${ganancia >= 0 ? '+' : ''}$${ganancia.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>` : ''}
+      </div>
+      ${flowsHTML ? `<h4 style="margin:8px 0;font-size:0.85rem;color:var(--text-secondary)">Flujos ajustados por CER</h4>
+      <div style="max-height:250px;overflow-y:auto">
+        <table style="width:100%;font-size:0.8rem;border-collapse:collapse">
+          <thead><tr><th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)">Fecha</th>
+          <th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Por 1 VN</th>
+          <th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Tu inversión</th></tr></thead>
+          <tbody>${flowsHTML}</tbody>
+        </table></div>` : '<p style="font-size:0.8rem;color:var(--text-tertiary)">Nota: Los flujos futuros dependen de la evolución del CER (inflación).</p>'}`;
+  }
+  renderCERResumen();
+  document.getElementById('cer-calc-price').addEventListener('input', renderCERResumen);
+  document.getElementById('cer-calc-monto').addEventListener('input', renderCERResumen);
 }
 
 let cerChart = null;
@@ -1815,9 +1895,7 @@ function openONCalculator(item) {
   document.querySelector('.mundo-modal-overlay')?.remove();
   const overlay = document.createElement('div');
   overlay.className = 'mundo-modal-overlay';
-  const flowsHTML = item.flujos.map(f =>
-    `<tr><td>${f.fecha.toLocaleDateString('es-AR')}</td><td style="text-align:right">${f.monto.toFixed(4)}</td></tr>`
-  ).join('');
+  const inputStyle = 'display:block;font-size:1.1rem;font-weight:700;width:130px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)';
   overlay.innerHTML = `
     <div class="mundo-modal">
       <div class="mundo-modal-header">
@@ -1826,34 +1904,60 @@ function openONCalculator(item) {
         <button class="mundo-modal-close">&times;</button>
       </div>
       <div class="mundo-modal-body" style="padding:16px">
-        <div style="display:flex;gap:24px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
+        <div style="display:flex;gap:20px;align-items:center;margin-bottom:16px;flex-wrap:wrap">
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">Precio USD</label>
-            <input type="number" id="on-calc-price" value="${item.priceUSD.toFixed(2)}" step="0.01"
-              style="display:block;font-size:1.2rem;font-weight:700;width:120px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"></div>
+            <input type="number" id="on-calc-price" value="${item.priceUSD.toFixed(2)}" step="0.01" style="${inputStyle}"></div>
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">Monto a invertir (USD)</label>
+            <input type="number" id="on-calc-monto" value="10000" step="100" style="${inputStyle}"></div>
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">TIR</label>
             <div id="on-calc-tir" style="font-size:1.5rem;font-weight:700;color:${item.ytm >= 0 ? 'var(--green)' : 'var(--red)'}">${item.ytm.toFixed(2)}%</div></div>
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">Duration</label>
             <div id="on-calc-duration" style="font-size:1.2rem;font-weight:600;color:var(--text)">${item.duration.toFixed(2)} años</div></div>
         </div>
-        <h4 style="margin:12px 0 8px;font-size:0.85rem;color:var(--text-secondary)">Flujos de fondos (por 100 VN)</h4>
-        <div style="max-height:300px;overflow-y:auto">
-          <table style="width:100%;font-size:0.8rem;border-collapse:collapse">
-            <thead><tr><th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)">Fecha</th>
-            <th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Monto</th></tr></thead>
-            <tbody>${flowsHTML}</tbody>
-            <tfoot><tr style="font-weight:700;border-top:2px solid var(--border)">
-              <td style="padding:4px 8px">Total</td>
-              <td style="text-align:right;padding:4px 8px">${item.flujos.reduce((s, f) => s + f.monto, 0).toFixed(4)}</td></tr></tfoot>
-          </table></div>
+        <h4 style="margin:12px 0 8px;font-size:0.85rem;color:var(--text-secondary)">Flujos de fondos</h4>
+        <div id="on-calc-flows" style="max-height:300px;overflow-y:auto"></div>
       </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.querySelector('.mundo-modal-close').addEventListener('click', () => overlay.remove());
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+
+  function renderONFlows() {
+    const price = parseFloat(document.getElementById('on-calc-price').value) || item.priceUSD;
+    const monto = parseFloat(document.getElementById('on-calc-monto').value) || 10000;
+    const nominales = monto / (price / 100); // VN comprados
+    const scale = nominales / 100; // factor para escalar flujos de 100VN a la inversión
+    const flowsHTML = item.flujos.map(f => {
+      const scaled = f.monto * scale;
+      return `<tr><td>${f.fecha.toLocaleDateString('es-AR')}</td><td style="text-align:right">$${f.monto.toFixed(4)}</td><td style="text-align:right;font-weight:600">$${scaled.toFixed(2)}</td></tr>`;
+    }).join('');
+    const totalPer100 = item.flujos.reduce((s, f) => s + f.monto, 0);
+    const totalScaled = totalPer100 * scale;
+    const ganancia = totalScaled - monto;
+    document.getElementById('on-calc-flows').innerHTML = `
+      <table style="width:100%;font-size:0.8rem;border-collapse:collapse">
+        <thead><tr><th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--border)">Fecha</th>
+        <th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Por 100 VN</th>
+        <th style="text-align:right;padding:4px 8px;border-bottom:1px solid var(--border)">Tu inversión</th></tr></thead>
+        <tbody>${flowsHTML}</tbody>
+        <tfoot>
+          <tr style="font-weight:700;border-top:2px solid var(--border)">
+            <td style="padding:4px 8px">Total cobros</td><td style="text-align:right;padding:4px 8px">$${totalPer100.toFixed(4)}</td>
+            <td style="text-align:right;padding:4px 8px">$${totalScaled.toFixed(2)}</td></tr>
+          <tr style="font-weight:700;color:${ganancia >= 0 ? 'var(--green)' : 'var(--red)'}">
+            <td style="padding:4px 8px">Ganancia</td><td></td>
+            <td style="text-align:right;padding:4px 8px">${ganancia >= 0 ? '+' : ''}$${ganancia.toFixed(2)}</td></tr>
+        </tfoot>
+      </table>
+      <p style="font-size:0.7rem;color:var(--text-tertiary);margin-top:8px">Comprás ${nominales.toFixed(0)} VN a $${price.toFixed(2)} cada 100 VN</p>`;
+  }
+  renderONFlows();
+
   const priceInput = document.getElementById('on-calc-price');
+  const montoInput = document.getElementById('on-calc-monto');
   const tirDisplay = document.getElementById('on-calc-tir');
   const durDisplay = document.getElementById('on-calc-duration');
-  priceInput.addEventListener('input', () => {
+  function recalc() {
     const newPrice = parseFloat(priceInput.value);
     if (!newPrice || newPrice <= 0) return;
     const today = new Date();
@@ -1861,7 +1965,10 @@ function openONCalculator(item) {
     const newDur = calcDuration(newPrice / 100, item.flujos, today, newYtm);
     if (isFinite(newYtm)) { tirDisplay.textContent = newYtm.toFixed(2) + '%'; tirDisplay.style.color = newYtm >= 0 ? 'var(--green)' : 'var(--red)'; }
     if (isFinite(newDur)) { durDisplay.textContent = newDur.toFixed(2) + ' años'; }
-  });
+    renderONFlows();
+  }
+  priceInput.addEventListener('input', recalc);
+  montoInput.addEventListener('input', renderONFlows);
 }
 
 // ─── Generic sortable table ───
@@ -1901,6 +2008,7 @@ function openLecapCalculator(item) {
   document.querySelector('.mundo-modal-overlay')?.remove();
   const overlay = document.createElement('div');
   overlay.className = 'mundo-modal-overlay';
+  const inputStyle = 'display:block;font-size:1.1rem;font-weight:700;width:130px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)';
   overlay.innerHTML = `
     <div class="mundo-modal">
       <div class="mundo-modal-header">
@@ -1909,10 +2017,11 @@ function openLecapCalculator(item) {
         <button class="mundo-modal-close">&times;</button>
       </div>
       <div class="mundo-modal-body" style="padding:16px">
-        <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:16px">
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">Precio</label>
-            <input type="number" id="lecap-calc-price" value="${item.precio.toFixed(2)}" step="0.01"
-              style="display:block;font-size:1.2rem;font-weight:700;width:120px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)"></div>
+            <input type="number" id="lecap-calc-price" value="${item.precio.toFixed(2)}" step="0.01" style="${inputStyle}"></div>
+          <div><label style="font-size:0.8rem;color:var(--text-secondary)">Monto a invertir ($)</label>
+            <input type="number" id="lecap-calc-monto" value="1000000" step="10000" style="${inputStyle}"></div>
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">TNA</label>
             <div id="lecap-calc-tna" style="font-size:1.3rem;font-weight:700;color:var(--text)">${item.tna.toFixed(2)}%</div></div>
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">TIR</label>
@@ -1920,13 +2029,32 @@ function openLecapCalculator(item) {
           <div><label style="font-size:0.8rem;color:var(--text-secondary)">Días</label>
             <div style="font-size:1.2rem;font-weight:600;color:var(--text)">${item.dias}</div></div>
         </div>
+        <div id="lecap-calc-resumen"></div>
       </div>
     </div>`;
   document.body.appendChild(overlay);
   overlay.querySelector('.mundo-modal-close').addEventListener('click', () => overlay.remove());
   overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-  document.getElementById('lecap-calc-price').addEventListener('input', function() {
-    const p = parseFloat(this.value);
+
+  function renderLecapResumen() {
+    const price = parseFloat(document.getElementById('lecap-calc-price').value) || item.precio;
+    const monto = parseFloat(document.getElementById('lecap-calc-monto').value) || 1000000;
+    const nominales = monto / price * 100; // VN comprados (precio es por 100 VN)
+    const cobro = nominales / 100 * item.pago_final;
+    const ganancia = cobro - monto;
+    document.getElementById('lecap-calc-resumen').innerHTML = `
+      <div style="background:var(--bg-subtle);border-radius:8px;padding:12px 16px;font-size:0.85rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Comprás</span><strong>${nominales.toFixed(0)} VN a $${price.toFixed(2)}</strong></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Invertís</span><strong>$${monto.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span>Al vencimiento cobrás</span><strong>$${cobro.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:${ganancia >= 0 ? 'var(--green)' : 'var(--red)'}">
+          <span>Ganancia</span><strong>${ganancia >= 0 ? '+' : ''}$${ganancia.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}</strong></div>
+      </div>`;
+  }
+  renderLecapResumen();
+
+  function recalcLecap() {
+    const p = parseFloat(document.getElementById('lecap-calc-price').value);
     if (!p || p <= 0) return;
     const tna = (item.pago_final / p - 1) * (365 / item.dias) * 100;
     const tir = (Math.pow(item.pago_final / p, 365 / item.dias) - 1) * 100;
@@ -1934,5 +2062,8 @@ function openLecapCalculator(item) {
     const tirEl = document.getElementById('lecap-calc-tir');
     tirEl.textContent = tir.toFixed(2) + '%';
     tirEl.style.color = tir >= 0 ? 'var(--green)' : 'var(--red)';
-  });
+    renderLecapResumen();
+  }
+  document.getElementById('lecap-calc-price').addEventListener('input', recalcLecap);
+  document.getElementById('lecap-calc-monto').addEventListener('input', renderLecapResumen);
 }
