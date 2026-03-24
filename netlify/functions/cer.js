@@ -36,18 +36,19 @@ exports.handler = async (event, context) => {
     
     const fcStr = fc.toISOString().split('T')[0];
     
-    // Buscar CER más cercano a fc (T-10) en la serie del BCRA
+    // BCRA retorna datos en orden descendente (más reciente primero)
+    // Buscar el CER más cercano a fc (T-10) que sea <= fc
     let cerT10 = null;
-    for (const item of detalle) {
-      if (item.fecha <= fcStr) {
-        cerT10 = item;
+    for (let i = detalle.length - 1; i >= 0; i--) {
+      if (detalle[i].fecha <= fcStr) {
+        cerT10 = detalle[i];
         break;
       }
     }
     
-    // Si no se encuentra, usar el más reciente
+    // Si no se encuentra, usar el más antiguo disponible
     if (!cerT10) {
-      cerT10 = detalle[0];
+      cerT10 = detalle[detalle.length - 1];
     }
     
     return {

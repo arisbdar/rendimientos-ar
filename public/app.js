@@ -1467,16 +1467,17 @@ async function loadCER() {
   container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando bonos CER...</p></div>`;
 
   try {
-    const [config, cerData, preciosData] = await Promise.all([
+    const [config, cerData, cerUltimo, preciosData] = await Promise.all([
       fetch('/api/config').then(r => r.json()),
       fetch('/api/cer').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }))
     ]);
 
     const bonosCER = config.bonos_cer || {};
-    const cerActual = cerData?.cer || 0;
-    const cerUltimoPublicado = cerActual;
-    const fechaUltimoCER = cerData?.fecha || '';
+    const cerActual = cerData?.cer || 0; // CER T-10 para cálculos
+    const cerUltimoPublicado = cerUltimo?.cer || 0; // Último CER para mostrar en UI
+    const fechaUltimoCER = cerUltimo?.fecha || '';
     const bondPrices = preciosData.data || [];
 
     if (!cerActual || !bondPrices.length) {
@@ -1539,7 +1540,7 @@ async function loadCER() {
 
       items.push({
         symbol: bp.symbol,
-        precioARS,
+        priceArs: precioARS,
         ytm,
         duration,
         vencimiento: bondConfig.vencimiento,
@@ -1553,7 +1554,11 @@ async function loadCER() {
     renderCERTable(container, items);
 
     // Render yield curve
-    renderCERCurve(items);
+    try {
+      renderCERCurve(items);
+    } catch (chartError) {
+      console.warn('Chart.js not available, skipping curve:', chartError.message);
+    }
 
     const source = document.getElementById('cer-source');
     if (source) {
@@ -1569,7 +1574,7 @@ function renderCERTable(container, items) {
   const rows = items.map(item => {
     return `<tr>
       <td><span class="soberano-ticker">${item.symbol}</span></td>
-      <td>$${item.precioARS.toFixed(2)}</td>
+      <td>$${item.priceArs.toFixed(2)}</td>
       <td class="soberano-ytm">${item.ytm.toFixed(2)}%</td>
       <td class="col-duration">${item.duration.toFixed(1)}</td>
       <td class="col-vto">${item.vencimiento}</td>
@@ -1578,14 +1583,14 @@ function renderCERTable(container, items) {
 
   container.innerHTML = `
     <div class="soberanos-table-wrap">
-      <table class="soberanos-table">
+      <table class="soberanos-table cer-table">
         <thead>
           <tr>
-            <th>Ticker</th>
-            <th>Precio (ARS)</th>
-            <th>TIR Real</th>
-            <th class="col-duration">Duration</th>
-            <th class="col-vto">Vencimiento</th>
+            <th>TICKER</th>
+            <th>PRECIO (AR$)</th>
+            <th>TIR REAL</th>
+            <th class="col-duration">DURATION</th>
+            <th class="col-vto">VENCIMIENTO</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>

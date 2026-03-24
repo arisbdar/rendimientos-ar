@@ -36,6 +36,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // External resources (Chart.js, Google Fonts): always network, no cache
+  if (url.hostname === 'cdn.jsdelivr.net' || url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   // Static assets: network first, fallback to cache
   event.respondWith(
     fetch(event.request)

@@ -459,7 +459,7 @@ body {
 .soberano-ley.ley-ny { background: #dbeafe; color: #1e40af; }
 [data-theme="dark"] .soberano-ley.ley-local { background: #422006; color: #fbbf24; }
 [data-theme="dark"] .soberano-ley.ley-ny { background: #1e3a5f; color: #93bbfd; }
-.soberano-ytm { font-weight: 700; color: var(--green); }
+.soberano-ytm { font-weight: 700; }
 
 .admin-link {
   font-size: 0.72rem;
@@ -1092,5 +1092,7 @@ body {
   .soberanos-table td:nth-child(2) { display: none; }
   .soberanos-table td:nth-child(5) { display: none; }
   .soberanos-table td:nth-child(6) { display: none; }
+  /* CER table mobile - mostrar precio (columna 2) */
+  .cer-table td:nth-child(2) { display: table-cell !important; }
   .footer { padding: 24px 16px 40px; }
 }
