@@ -229,7 +229,6 @@ async function init() {
   if (all.length === 0) {
     mainList.innerHTML = '<div class="loading">No se pudieron cargar los datos.</div>';
   } else {
-    all[0].card.classList.add('highlighted');
     all.forEach(item => mainList.appendChild(item.card));
   }
 
@@ -700,7 +699,6 @@ async function loadPlazoFijo() {
         rateDate: `Actualizado: ${dateStr}`
       });
 
-      if (idx === 0) card.classList.add('highlighted');
       if (PROMOTED.includes(banco.nombre)) card.classList.add('promoted');
 
       if (banco.enlace) {
