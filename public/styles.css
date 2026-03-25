@@ -439,7 +439,8 @@ body {
   font-weight: 700;
   color: var(--accent);
 }
-.lecap-table .lecap-tir {
+.lecap-table .lecap-tir,
+.soberanos-table .lecap-tir {
   font-weight: 700;
   color: var(--green);
 }
