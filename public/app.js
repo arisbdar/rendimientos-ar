@@ -459,6 +459,8 @@ function setupTabs() {
   const headerPortfolio = document.getElementById('header-portfolio');
   const headerForo = document.getElementById('header-foro');
 
+  const sectionHome = document.getElementById('section-home');
+
   function hideAllTabs() {
     document.getElementById('tab-billeteras').style.display = 'none';
     document.getElementById('tab-plazofijo').style.display = 'none';
@@ -469,13 +471,25 @@ function setupTabs() {
     document.getElementById('section-mundo').style.display = 'none';
     document.getElementById('tab-portfolio').style.display = 'none';
     document.getElementById('tab-foro').style.display = 'none';
+    if (sectionHome) sectionHome.classList.remove('active');
+    document.querySelector('.container').style.display = '';
     [headerArs, headerSoberanos, headerONs, headerMundo, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
     hero.style.display = '';
+  }
+
+  function switchToHome() {
+    hideAllTabs();
+    if (sectionHome) sectionHome.classList.add('active');
+    hero.style.display = 'none';
+    subnav.style.display = 'none';
+    document.querySelector('.container').style.display = 'none';
+    updatePageTitle('home');
   }
 
   function updatePageTitle(section) {
     const base = 'Rendimientos AR';
     const titles = {
+      home: 'Asistente de Inversiones',
       mundo: 'Monitor Global',
       ars: 'Billeteras y Fondos',
       bonos: 'Bonos Soberanos USD',
@@ -598,6 +612,10 @@ function setupTabs() {
     }
   }
 
+  // Logo click → home
+  const logoEl = document.querySelector('.logo');
+  if (logoEl) logoEl.addEventListener('click', (e) => { e.preventDefault(); switchToHome(); location.hash = ''; });
+
   if (headerArs) headerArs.addEventListener('click', (e) => { e.preventDefault(); switchToArs(); location.hash = 'ars'; });
   if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); location.hash = 'bonos'; });
   if (headerONs) headerONs.addEventListener('click', (e) => { e.preventDefault(); switchToONs(); location.hash = 'ons'; });
@@ -608,7 +626,8 @@ function setupTabs() {
 
   // Handle initial hash on page load
   const initialHash = location.hash.replace('#', '');
-  if (initialHash === 'ars') switchToArs();
+  if (initialHash === 'mundo') switchToMundo();
+  else if (initialHash === 'ars') switchToArs();
   else if (initialHash === 'bonos') switchToSoberanos();
   else if (initialHash === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
   else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
@@ -617,6 +636,7 @@ function setupTabs() {
   else if (initialHash === 'portfolio') switchToPortfolio();
   else if (initialHash === 'foro') switchToForo();
   else if (initialHash.startsWith('foro/')) switchToForo(initialHash.split('/')[1]);
+  else switchToHome();
 
   // Handle back/forward navigation (skip if subnav tab already active)
   let _hashChanging = false;
@@ -631,9 +651,10 @@ function setupTabs() {
     else if (h === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
     else if (h === 'ons') switchToONs();
     else if (h === 'portfolio') switchToPortfolio();
+    else if (h === 'mundo') switchToMundo();
     else if (h === 'foro') switchToForo();
     else if (h.startsWith('foro/')) switchToForo(h.split('/')[1]);
-    else switchToMundo();
+    else switchToHome();
     _hashChanging = false;
   });
 }
@@ -1506,23 +1527,14 @@ function renderYieldCurve(items) {
 
 // ─── AI Chat Assistant ───
 (function initChat() {
-  const chatBody = document.getElementById('chat-body');
-  const chatToggle = document.getElementById('chat-toggle');
-  const chatHeader = document.querySelector('.chat-header');
   const chatInput = document.getElementById('chat-input');
   const chatSend = document.getElementById('chat-send');
   const chatMessages = document.getElementById('chat-messages');
   const chatSuggestions = document.getElementById('chat-suggestions');
-  if (!chatBody || !chatInput) return;
+  if (!chatInput) return;
 
   let history = [];
   let isLoading = false;
-
-  // Toggle collapse
-  chatHeader.addEventListener('click', () => {
-    chatBody.classList.toggle('collapsed');
-    chatToggle.classList.toggle('collapsed');
-  });
 
   // Suggestion buttons
   chatSuggestions.addEventListener('click', (e) => {
@@ -1541,6 +1553,7 @@ function renderYieldCurve(items) {
   chatSend.addEventListener('click', () => sendMessage(chatInput.value));
 
   function addMessage(role, content) {
+    chatMessages.classList.add('has-messages');
     const div = document.createElement('div');
     div.className = `chat-msg ${role}`;
     const bubble = document.createElement('div');

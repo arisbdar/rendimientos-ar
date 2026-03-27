@@ -43,7 +43,7 @@
     <div class="header-inner">
       <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Rendimientos</div>
       <nav class="currency-tabs">
-        <a href="#" class="currency-tab active" id="header-mundo">
+        <a href="#" class="currency-tab" id="header-mundo">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Mundo
         </a>
         <a href="#" class="currency-tab" id="header-ars">
@@ -99,41 +99,28 @@
     <p>Principales indicadores del mercado mundial en tiempo real.</p>
   </section>
 
-  <!-- AI Chat Assistant -->
-  <div class="chat-section" id="chat-section">
-    <div class="chat-container">
-      <div class="chat-header">
-        <div class="chat-header-left">
-          <div class="chat-avatar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10c0 5.52-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-          </div>
-          <div>
-            <span class="chat-title">Asistente Rendimientos</span>
-            <span class="chat-subtitle">Preguntá sobre inversiones, tasas y cotizaciones</span>
-          </div>
-        </div>
-        <button class="chat-toggle" id="chat-toggle" aria-label="Expandir/colapsar chat">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-        </button>
+  <!-- Home: AI Chat (Claude-style landing) -->
+  <div id="section-home" class="chat-home">
+    <div class="chat-home-center">
+      <div class="chat-home-logo">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       </div>
-      <div class="chat-body" id="chat-body">
-        <div class="chat-messages" id="chat-messages">
-          <div class="chat-welcome">
-            <p>Hola! Soy el asistente de <strong>Rendimientos.co</strong>. Puedo ayudarte a comparar inversiones con datos en tiempo real.</p>
-          </div>
-          <div class="chat-suggestions" id="chat-suggestions">
-            <button class="chat-suggestion" data-q="¿Qué billetera paga más?">¿Qué billetera paga más?</button>
-            <button class="chat-suggestion" data-q="¿Conviene plazo fijo o LECAP?">¿Plazo fijo o LECAP?</button>
-            <button class="chat-suggestion" data-q="¿Cómo está el dólar hoy?">¿Cómo está el dólar?</button>
-            <button class="chat-suggestion" data-q="¿Qué rinde más en pesos?">¿Qué rinde más en pesos?</button>
-          </div>
-        </div>
-        <div class="chat-input-area">
-          <input type="text" class="chat-input" id="chat-input" placeholder="Preguntá lo que quieras..." maxlength="500" autocomplete="off">
-          <button class="chat-send" id="chat-send" aria-label="Enviar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <h1 class="chat-home-title">¿En qué puedo ayudarte?</h1>
+      <p class="chat-home-sub">Preguntá sobre tasas, billeteras, bonos, dólar y más — con datos en tiempo real.</p>
+      <div class="chat-home-input-wrap" id="chat-input-wrap">
+        <div class="chat-home-messages" id="chat-messages"></div>
+        <div class="chat-home-input-box">
+          <input type="text" class="chat-home-input" id="chat-input" placeholder="¿Qué querés saber?" maxlength="500" autocomplete="off">
+          <button class="chat-home-send" id="chat-send" aria-label="Enviar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
+      </div>
+      <div class="chat-home-suggestions" id="chat-suggestions">
+        <button class="chat-suggestion" data-q="¿Qué billetera paga más hoy?">¿Qué billetera paga más?</button>
+        <button class="chat-suggestion" data-q="¿Conviene plazo fijo o LECAP?">¿Plazo fijo o LECAP?</button>
+        <button class="chat-suggestion" data-q="¿Cómo está el dólar hoy?">¿Cómo está el dólar?</button>
+        <button class="chat-suggestion" data-q="¿Qué rinde más en pesos hoy?">¿Qué rinde más en pesos?</button>
       </div>
     </div>
   </div>
