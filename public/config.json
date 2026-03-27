@@ -3103,19 +3103,6 @@
     }
   },
   "bonos_cer": {
-    "TZXM6": {
-      "tipo": "CER",
-      "vencimiento": "2026-03-31",
-      "cer_emision": 337.0341,
-      "flujos": [
-        {
-          "fecha": "2026-03-31",
-          "amortizacion": 1.0,
-          "tasa_interes": 0.0,
-          "base": 0.5
-        }
-      ]
-    },
     "TZX26": {
       "tipo": "CER",
       "vencimiento": "2026-06-30",
