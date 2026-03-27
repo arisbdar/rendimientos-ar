@@ -2,6 +2,31 @@
 // Fetches live data from internal APIs and uses it as context for Claude
 const https = require('https');
 
+// ─── Rate Limiting (in-memory, resets on cold start) ───
+const DAILY_LIMIT = 50;
+const rateMap = new Map(); // ip -> { count, date }
+
+function checkRateLimit(ip) {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  const entry = rateMap.get(ip);
+  if (!entry || entry.date !== today) {
+    rateMap.set(ip, { count: 1, date: today });
+    return { allowed: true, remaining: DAILY_LIMIT - 1 };
+  }
+  if (entry.count >= DAILY_LIMIT) {
+    return { allowed: false, remaining: 0 };
+  }
+  entry.count++;
+  return { allowed: true, remaining: DAILY_LIMIT - entry.count };
+}
+
+function getClientIP(event) {
+  return event.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || event.headers['client-ip']
+    || event.headers['x-real-ip']
+    || 'unknown';
+}
+
 function fetchJSON(url, timeout = 10000) {
   return new Promise((resolve, reject) => {
     const req = https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, res => {
@@ -167,6 +192,13 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  // Rate limit check
+  const clientIP = getClientIP(event);
+  const { allowed, remaining } = checkRateLimit(clientIP);
+  if (!allowed) {
+    return { statusCode: 429, headers, body: JSON.stringify({ error: 'Alcanzaste el límite de 50 consultas por día. Volvé mañana!' }) };
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
