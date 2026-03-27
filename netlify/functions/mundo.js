@@ -7,12 +7,12 @@ const SYMBOLS = [
   { id: 'nasdaq', symbol: 'NQ%3DF', name: 'Nasdaq 100', icon: '💻', group: 'Índices' },
   { id: 'dow', symbol: 'YM%3DF', name: 'Dow Jones', icon: '🏦', group: 'Índices' },
   // Tasas
-  { id: 'tnx', symbol: '%5ETNX', name: 'Tasa 10Y USA', icon: '🇺🇸', group: 'Tasas' },
-  { id: 'us30y', symbol: '%5ETYX', name: 'Tasa 30Y USA', icon: '🇺🇸', group: 'Tasas' },
-  { id: 'us5y', symbol: '%5EFVX', name: 'Tasa 5Y USA', icon: '🇺🇸', group: 'Tasas' },
+  { id: 'tnx', symbol: '%5ETNX', name: 'UST 10Y', icon: '🇺🇸', group: 'Tasas' },
+  { id: 'us30y', symbol: '%5ETYX', name: 'UST 30Y', icon: '🇺🇸', group: 'Tasas' },
+  { id: 'us5y', symbol: '%5EFVX', name: 'UST 5Y', icon: '🇺🇸', group: 'Tasas' },
   // Energía
-  { id: 'oil', symbol: 'CL%3DF', name: 'Petróleo WTI', icon: '🛢️', group: 'Energía' },
-  { id: 'brent', symbol: 'BZ%3DF', name: 'Petróleo Brent', icon: '🛢️', group: 'Energía' },
+  { id: 'oil', symbol: 'CL%3DF', name: 'WTI', icon: '🛢️', group: 'Energía' },
+  { id: 'brent', symbol: 'BZ%3DF', name: 'Brent', icon: '🛢️', group: 'Energía' },
   { id: 'gasoline', symbol: 'RB%3DF', name: 'Gasolina', icon: '⛽', group: 'Energía' },
   // Metales
   { id: 'gold', symbol: 'GC%3DF', name: 'Oro', icon: '🥇', group: 'Metales' },
