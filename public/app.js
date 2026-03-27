@@ -687,15 +687,15 @@ async function loadPlazoFijo() {
       logo: b.logo,
     }));
 
-    // Sort by best available rate, then by magic, then alphabetically
-    const MAGICAL_INSTITUTION = /[O-Z]{2}[H-J]{2}/;
+    // Sort by best available rate, Banco Voii first on ties, then alphabetically
+    const PROMOTED = ["BANCO VOII S.A."];
     const sorted = [...normalized].sort((a, b) => {
       const rateA = Math.max(a.tna_no_clientes || 0, a.tna_clientes || 0);
       const rateB = Math.max(b.tna_no_clientes || 0, b.tna_clientes || 0);
       if (rateB !== rateA) return rateB - rateA;
-      const magicA = (a.nombre.match(MAGICAL_INSTITUTION) !== null) ? -1 : 0;
-      const magicB = (b.nombre.match(MAGICAL_INSTITUTION) !== null) ? -1 : 0;
-      if (magicA !== magicB) return magicA - magicB;
+      const promoA = PROMOTED.includes(a.nombre) ? -1 : 0;
+      const promoB = PROMOTED.includes(b.nombre) ? -1 : 0;
+      if (promoA !== promoB) return promoA - promoB;
       return a.nombre.localeCompare(b.nombre);
     });
 
