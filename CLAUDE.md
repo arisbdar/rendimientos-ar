@@ -9,14 +9,14 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 - **Frontend**: Vanilla JS + CSS (no framework), Chart.js para graficos, SVG inline icons (Lucide/Feather style)
 - **Backend**: Express.js (local dev), Netlify Functions (prod)
 - **Auth + DB**: Supabase (Google OAuth, PostgreSQL con RLS)
-- **Datos**: ArgentinaDatos API (FCIs, Plazo Fijo), data912 (LECAPs, Bonos, ONs), Yahoo Finance (Monitor Global), Google News RSS
+- **Datos**: ArgentinaDatos API (FCIs, Plazo Fijo), data912 (LECAPs, Bonos, ONs), Yahoo Finance (Monitor Global), Google News RSS, Google Sheets (Hipotecarios UVA)
 - **Analytics**: Supabase (tabla `page_views`)
 - **Deploy**: Netlify (`npx netlify deploy --prod`)
 - **Dominio**: rendimientos.co (canonical), rendimientos-ar.netlify.app (legacy)
 
 ## Estructura clave
 
-- `public/index.html` - SPA con 5 secciones: Mundo, ARS, Bonos, ONs, Portfolio
+- `public/index.html` - SPA con 7 secciones: Mundo, ARS, Bonos, ONs, Hipotecarios, Portfolio, Foro
 - `public/app.js` - Toda la logica del frontend (~2900 lineas)
 - `public/config.json` - Config estatica (billeteras, LECAPs, flujos bonos)
 - `public/styles.css` - Estilos + dark mode con CSS variables
@@ -32,6 +32,7 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 - `ons.js` - Obligaciones Negociables via data912
 - `mundo.js` - Monitor global via Yahoo Finance
 - `news.js` - Noticias financieras via Google News RSS
+- `hipotecarios.js` - Créditos hipotecarios UVA via Google Sheets CSV export
 - `auth-config.js` - Devuelve Supabase URL + anon key desde env vars
 
 ### Supabase (DB)
@@ -60,7 +61,7 @@ Nota: Las Netlify functions (mundo, soberanos, news, etc) solo funcionan en prod
 - Mantener el sitio vanilla (sin frameworks JS/CSS)
 - No usar emojis en la UI — usar SVGs inline (estilo Lucide/Feather, stroke-based). Helper `_icon()` en app.js para generar iconos.
 - Respetar el sistema de temas dark/light con CSS variables
-- Los logos de bancos vienen de BCRA (http -> siempre upgradar a https)
+- Los logos de bancos se guardan en `public/logos/` (SVGs de icons.com.ar + PNGs de logo_cache). Mapeos en `PLAZO_FIJO_LOGOS` y `HIPOTECARIO_LOGOS` en app.js. Fallback: BCRA API (http -> upgradar a https) o iniciales con color.
 - Los datos de billeteras/cuentas remuneradas son manuales en config.json
 - El SEO usa el dominio `rendimientos.co`, no el legacy de Netlify
 - Las calculadoras de bonos incluyen campos de Arancel e Impuestos (editables por el usuario)
@@ -78,6 +79,16 @@ El feature de portfolio soporta estos tipos de activos:
 - **Billeteras** - monto fijo con TNA
 - **Cash** - USD o ARS
 - **Custom** - activos personalizados (Bitcoin, acciones, etc) con precio manual
+
+## Hipotecarios UVA
+
+Sección de ranking de créditos hipotecarios UVA. Los datos se consumen de un Google Sheet publicado (ID: `1h191b61YRkAI9Xv3_dDuNf7ejst_ziw9kacfJsnvLoM`, GID: `1120229027`) que exporta como CSV con columnas: Banco, TNA, Plazo Máximo, Relación Cuota/Ingreso, % Financiamiento.
+
+- **Fuente**: [@SalinasAndres](https://x.com/SalinasAndres) (atribuido en la UI)
+- **Endpoint**: `/api/hipotecarios` (Netlify function `hipotecarios.js`)
+- **Logos**: `HIPOTECARIO_LOGOS` en app.js, archivos en `public/logos/`
+- **Ordenamiento**: TNA ascendente (menor tasa = mejor para el tomador)
+- **Renderizado**: Cards con tags (plazo, financiamiento, cuota/ingreso) + gráfico de barras horizontal
 
 ---
 
@@ -144,11 +155,20 @@ Cuando se emite una nueva LECAP/BONCAP, agrega la entrada con:
 Los precios se obtienen en vivo de data912, no hace falta actualizar precios.
 ```
 
+### Actualizar hipotecarios UVA
+
+```
+Los datos de hipotecarios UVA se consumen de un Google Sheet publicado.
+Si se agrega un nuevo banco al sheet, verificar que tenga logo en public/logos/.
+Si no tiene, buscarlo en https://icons.com.ar/ y descargarlo como SVG.
+Luego agregar el mapping en HIPOTECARIO_LOGOS en public/app.js.
+```
+
 ### Dogfood / QA del sitio
 
 ```
 Navega https://rendimientos.co/ como un usuario real.
-Revisa cada seccion: Mundo, ARS (Billeteras, Plazo Fijo, LECAPs, CER), Bonos, ONs, Portfolio.
+Revisa cada seccion: Mundo, ARS (Billeteras, Plazo Fijo, LECAPs, CER), Bonos, ONs, Hipotecarios, Portfolio, Foro.
 Busca:
 - Links rotos o que no funcionan
 - Datos desactualizados o inconsistentes
