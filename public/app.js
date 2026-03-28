@@ -455,6 +455,7 @@ function setupTabs() {
   const headerSoberanos = document.getElementById('header-soberanos');
   const headerONs = document.getElementById('header-ons');
   const headerMundo = document.getElementById('header-mundo');
+  const headerHipotecarios = document.getElementById('header-hipotecarios');
 
   const headerPortfolio = document.getElementById('header-portfolio');
   const headerForo = document.getElementById('header-foro');
@@ -466,6 +467,7 @@ function setupTabs() {
     document.getElementById('tab-plazofijo').style.display = 'none';
     document.getElementById('tab-lecaps').style.display = 'none';
     document.getElementById('tab-cer').style.display = 'none';
+    document.getElementById('tab-hipotecarios').style.display = 'none';
     document.getElementById('tab-ons').style.display = 'none';
     document.getElementById('tab-soberanos').style.display = 'none';
     document.getElementById('section-mundo').style.display = 'none';
@@ -473,7 +475,7 @@ function setupTabs() {
     document.getElementById('tab-foro').style.display = 'none';
     if (sectionHome) sectionHome.classList.remove('active');
     document.querySelector('.container').style.display = '';
-    [headerArs, headerSoberanos, headerONs, headerMundo, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
+    [headerArs, headerSoberanos, headerONs, headerMundo, headerHipotecarios, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
     hero.style.display = '';
   }
 
@@ -495,6 +497,7 @@ function setupTabs() {
       bonos: 'Bonos Soberanos USD',
       plazofijo: 'Tasas Plazo Fijo',
       lecaps: 'LECAPs y BONCAPs',
+      hipotecarios: 'Hipotecarios UVA',
       portfolio: 'Mi Portfolio',
       foro: 'Foro'
     };
@@ -597,6 +600,19 @@ function setupTabs() {
     }
   }
 
+  function switchToHipotecarios() {
+    hideAllTabs();
+    headerHipotecarios.classList.add('active');
+    subnav.style.display = 'none';
+    document.getElementById('tab-hipotecarios').style.display = 'block';
+    hero.querySelector('h1').textContent = 'Créditos Hipotecarios UVA';
+    hero.querySelector('p').textContent = 'Compará tasas y condiciones de préstamos hipotecarios UVA de bancos argentinos.';
+    updatePageTitle('hipotecarios');
+    if (!document.getElementById('hipotecarios-list').hasChildNodes()) {
+      loadHipotecarios();
+    }
+  }
+
   function switchToForo(threadId) {
     hideAllTabs();
     headerForo.classList.add('active');
@@ -620,6 +636,7 @@ function setupTabs() {
   if (headerSoberanos) headerSoberanos.addEventListener('click', (e) => { e.preventDefault(); switchToSoberanos(); location.hash = 'bonos'; });
   if (headerONs) headerONs.addEventListener('click', (e) => { e.preventDefault(); switchToONs(); location.hash = 'ons'; });
   if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); location.hash = 'mundo'; });
+  if (headerHipotecarios) headerHipotecarios.addEventListener('click', (e) => { e.preventDefault(); switchToHipotecarios(); location.hash = 'hipotecarios'; });
   if (headerPortfolio) headerPortfolio.addEventListener('click', (e) => { e.preventDefault(); switchToPortfolio(); location.hash = 'portfolio'; });
   if (headerForo) headerForo.addEventListener('click', (e) => { e.preventDefault(); switchToForo(); location.hash = 'foro'; });
   window._switchToPortfolio = switchToPortfolio;
@@ -632,6 +649,7 @@ function setupTabs() {
   else if (initialHash === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
   else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
   else if (initialHash === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
+  else if (initialHash === 'hipotecarios') switchToHipotecarios();
   else if (initialHash === 'ons') switchToONs();
   else if (initialHash === 'portfolio') switchToPortfolio();
   else if (initialHash === 'foro') switchToForo();
@@ -649,6 +667,7 @@ function setupTabs() {
     else if (h === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
     else if (h === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
     else if (h === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
+    else if (h === 'hipotecarios') switchToHipotecarios();
     else if (h === 'ons') switchToONs();
     else if (h === 'portfolio') switchToPortfolio();
     else if (h === 'mundo') switchToMundo();
@@ -856,6 +875,141 @@ function getSettlementDate(from) {
     steps++;
   }
   return d;
+}
+
+// ─── Hipotecarios UVA ───
+
+const HIPOTECARIO_LOGOS = {
+  'Hipotecario': '/logos/Banco_Hipotecario.png',
+  'Ciudad': '/logos/Banco_Ciudad.png',
+  'ICBC': '/logos/ICBC_Argentina.png',
+  'BNA': '/logos/Banco_Nación.png',
+  'Santander': '/logos/Banco_Santander.png',
+  'Macro': '/logos/Banco_Macro.png',
+  'BBVA': '/logos/BBVA_Argentina.png',
+  'Galicia': '/logos/Banco_Galicia.png',
+  'Credicoop': '/logos/Banco_Credicoop.png',
+  'Comafi': '/logos/Banco_Comafi.png',
+  'Banco de Chubut': '/logos/Banco_del_Chubut.png',
+  'Banco de la Provincia': '/logos/Banco_de_la_Prov__de_Buenos_Aires.png',
+  'Supervielle': '/logos/Banco_Supervielle.svg',
+  'Brubank': '/logos/Brubank.svg',
+  'Patagonia': '/logos/Banco_Patagonia.svg',
+  'Banco del Sol': '/logos/Banco_del_Sol.svg',
+  'BANCOR': '/logos/BANCOR.svg',
+  'Banco de Corrientes': '/logos/Banco_de_Corrientes.svg',
+  'Grupo Petersen': '/logos/Grupo_Petersen.svg',
+};
+
+const HIPOTECARIO_COLORS = {
+  'Hipotecario': '#1a3a5c',
+  'Ciudad': '#0066b2',
+  'Supervielle': '#e4002b',
+  'ICBC': '#c8102e',
+  'Brubank': '#6c3baa',
+  'BNA': '#005baa',
+  'Santander': '#ec0000',
+  'Macro': '#003366',
+  'BBVA': '#004481',
+  'Galicia': '#ff6600',
+  'Patagonia': '#003399',
+  'Credicoop': '#006633',
+  'Banco del Sol': '#ffcc00',
+  'Comafi': '#1a1a6c',
+  'BANCOR': '#0072bc',
+  'Banco de Corrientes': '#006341',
+  'Grupo Petersen': '#2d2d6e',
+  'Banco de Chubut': '#003d6b',
+};
+
+async function loadHipotecarios() {
+  const container = document.getElementById('hipotecarios-list');
+  container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando hipotecarios UVA...</p></div>`;
+
+  try {
+    const res = await fetch('/api/hipotecarios');
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const { data } = await res.json();
+    if (!data || !data.length) {
+      container.innerHTML = '<div class="loading">No se pudieron cargar los datos.</div>';
+      return;
+    }
+
+    container.innerHTML = '';
+    const today = new Date();
+    const dateStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
+
+    data.forEach((item, idx) => {
+      const initials = item.banco.substring(0, 2).toUpperCase();
+      const logoSrc = HIPOTECARIO_LOGOS[item.banco] || null;
+      const logoBg = HIPOTECARIO_COLORS[item.banco] || stringToColor(item.banco);
+
+      const tags = [];
+      tags.push({ text: `${item.plazo_max_anios} años`, type: 'billetera' });
+      tags.push({ text: `Financia ${item.financiamiento}`, type: 'fci' });
+      tags.push({ text: `Cuota/Ingreso ${item.relacion_cuota_ingreso}`, type: '' });
+
+      const card = createCard({
+        logo: initials,
+        logoBg,
+        logoSrc,
+        name: item.banco,
+        tags,
+        rate: `${item.tna.toFixed(1)}%`,
+        rateLabel: 'TNA',
+        rateDate: `Actualizado: ${dateStr}`,
+        highlighted: idx === 0,
+      });
+
+      container.appendChild(card);
+    });
+
+    // Render bar chart (ascending — lower TNA is better for hipotecarios)
+    renderHipotecariosChart(data);
+  } catch (err) {
+    console.error('Error loading hipotecarios:', err);
+    container.innerHTML = '<div class="loading">Error al cargar datos de hipotecarios.</div>';
+  }
+}
+
+function renderHipotecariosChart(data) {
+  const container = document.getElementById('hipotecarios-chart');
+  if (!container || !data.length) return;
+
+  const sorted = [...data].sort((a, b) => a.tna - b.tna);
+  const maxTna = Math.max(...sorted.map(i => i.tna));
+  const minTna = Math.min(...sorted.map(i => i.tna));
+
+  function getBarColor(tna) {
+    const ratio = 1 - ((tna - minTna) / (maxTna - minTna || 1));
+    const h = 160;
+    const s = 45 + ratio * 30;
+    const l = 55 - ratio * 15;
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  }
+
+  const rows = sorted.map(item => {
+    const pct = Math.max(15, (item.tna / maxTna) * 100);
+    const color = getBarColor(item.tna);
+    const logoSrc = HIPOTECARIO_LOGOS[item.banco];
+    const initials = item.banco.substring(0, 2).toUpperCase();
+    const logoBg = logoSrc ? 'transparent' : (HIPOTECARIO_COLORS[item.banco] || stringToColor(item.banco));
+    const logoInner = logoSrc
+      ? `<img src="${logoSrc}" alt="${item.banco}" onerror="this.parentElement.textContent='${initials}'">`
+      : initials;
+
+    return `
+      <div class="chart-row">
+        <div class="chart-logo" style="background:${logoBg}">${logoInner}</div>
+        <div class="chart-bar-wrap">
+          <div class="chart-bar" style="width:${pct}%;background:${color}">
+            <span class="chart-value">${item.tna.toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = rows;
 }
 
 async function loadLecaps() {

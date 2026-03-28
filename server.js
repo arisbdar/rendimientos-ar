@@ -21,8 +21,8 @@ app.use((req, res, next) => {
       "img-src 'self' data: https:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
-      "connect-src 'self' https://api.argentinadatos.com https://data912.com https://api.bcra.gob.ar https://*.supabase.co",
+      "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com",
+      "connect-src 'self' https://api.argentinadatos.com https://data912.com https://api.bcra.gob.ar https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.googletagmanager.com",
       "frame-src https://*.supabase.co",
       "object-src 'none'",
     ].join('; ')
@@ -308,6 +308,55 @@ app.get('/api/hot-movers', async (req, res) => {
     res.status(502).json({ error: 'Failed to fetch hot movers data' });
   }
 });
+
+// --- Hipotecarios UVA (Google Sheets) ---
+
+app.get('/api/hipotecarios', async (req, res) => {
+  const SHEET_ID = '1h191b61YRkAI9Xv3_dDuNf7ejst_ziw9kacfJsnvLoM';
+  const GID = '1120229027';
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+
+  try {
+    const resp = await fetch(csvUrl, { redirect: 'follow' });
+    if (!resp.ok) throw new Error(`Google Sheets export error: ${resp.status}`);
+    const csv = await resp.text();
+
+    const rows = csv.split('\n').filter(l => l.trim());
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+      const cells = parseCSVRow(rows[i]);
+      if (cells.length < 5 || !cells[0].trim()) continue;
+      const tna = parseFloat(cells[1].replace('%', '').replace(',', '.')) || 0;
+      if (tna <= 0) continue;
+      data.push({
+        banco: cells[0].trim(),
+        tna,
+        plazo_max_anios: parseInt(cells[2], 10) || 0,
+        relacion_cuota_ingreso: cells[3].trim(),
+        financiamiento: cells[4].trim(),
+      });
+    }
+    data.sort((a, b) => a.tna - b.tna);
+    res.json({ data, source: 'google-sheets', updated: new Date().toISOString() });
+  } catch (err) {
+    console.error('Hipotecarios proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch hipotecarios data' });
+  }
+});
+
+function parseCSVRow(line) {
+  const cells = [];
+  let current = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { cells.push(current); current = ''; }
+    else { current += ch; }
+  }
+  cells.push(current);
+  return cells;
+}
 
 // --- Cotizaciones (Dólar Oficial, CCL, MEP, Riesgo País) ---
 
