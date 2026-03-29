@@ -90,6 +90,7 @@ function updateAuthUI() {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupThemeToggle();
+  setupA11yReadAloud();
   init();
   setupTabs();
   setupKeyboardNav();
@@ -119,6 +120,129 @@ function setupThemeToggle() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });
+}
+
+// ─── Accessibility: Read Aloud Mode ───
+let a11yReadAloud = false;
+
+function setupA11yReadAloud() {
+  const btn = document.getElementById('a11y-toggle');
+  if (!btn || !window.speechSynthesis) return;
+
+  btn.addEventListener('click', () => {
+    a11yReadAloud = !a11yReadAloud;
+    btn.classList.toggle('active', a11yReadAloud);
+
+    if (a11yReadAloud) {
+      readCurrentSection();
+    } else {
+      speechSynthesis.cancel();
+    }
+  });
+}
+
+function speak(text) {
+  if (!a11yReadAloud || !window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'es-AR';
+  utterance.rate = 0.95;
+  speechSynthesis.speak(utterance);
+}
+
+function readCurrentSection() {
+  if (!a11yReadAloud) return;
+
+  // Read cotizaciones strip
+  const cotiz = document.getElementById('cotizaciones-strip-inner');
+  if (cotiz && cotiz.offsetParent) {
+    const items = cotiz.querySelectorAll('.cotiz-item');
+    let cotizText = 'Cotizaciones: ';
+    items.forEach(item => {
+      const label = item.querySelector('.cotiz-label')?.textContent?.trim();
+      const price = item.querySelector('.cotiz-price')?.textContent?.trim();
+      if (label && price) cotizText += `${label} ${price}. `;
+    });
+    speak(cotizText);
+    return;
+  }
+
+  // Read visible fund cards
+  const visibleCards = document.querySelectorAll('.fund-card');
+  if (visibleCards.length > 0) {
+    let cardsText = 'Rendimientos: ';
+    let count = 0;
+    visibleCards.forEach(card => {
+      if (card.offsetParent === null || count >= 10) return;
+      const name = card.querySelector('.fund-name')?.textContent?.trim();
+      const rate = card.querySelector('.rate-value')?.textContent?.trim();
+      const label = card.querySelector('.rate-label')?.textContent?.trim();
+      if (name && rate) {
+        cardsText += `${name}, ${rate} ${label || ''}. `;
+        count++;
+      }
+    });
+    if (count > 0) { speak(cardsText); return; }
+  }
+
+  // Read mundo cards
+  const mundoCards = document.querySelectorAll('.mundo-card');
+  if (mundoCards.length > 0) {
+    let mundoText = 'Monitor Global: ';
+    let count = 0;
+    mundoCards.forEach(card => {
+      if (card.offsetParent === null || count >= 12) return;
+      const name = card.querySelector('.mundo-name')?.textContent?.trim();
+      const price = card.querySelector('.mundo-price')?.textContent?.trim();
+      const change = card.querySelector('.mundo-change')?.textContent?.trim();
+      if (name && price) {
+        mundoText += `${name} ${price}, ${change || ''}. `;
+        count++;
+      }
+    });
+    if (count > 0) { speak(mundoText); return; }
+  }
+
+  // Read hot movers
+  const hotCards = document.querySelectorAll('.hot-card');
+  if (hotCards.length > 0) {
+    let hotText = 'Acciones con mayor movimiento: ';
+    hotCards.forEach(card => {
+      if (card.offsetParent === null) return;
+      const symbol = card.querySelector('.hot-symbol')?.textContent?.trim();
+      const price = card.querySelector('.hot-price')?.textContent?.trim();
+      const change = card.querySelector('.hot-change')?.textContent?.trim();
+      if (symbol) hotText += `${symbol} ${price || ''} ${change || ''}. `;
+    });
+    speak(hotText);
+    return;
+  }
+
+  // Read table data
+  const tables = document.querySelectorAll('.lecap-table, .soberanos-table');
+  for (const table of tables) {
+    if (table.offsetParent === null) continue;
+    let tableText = 'Tabla de datos: ';
+    const rows = table.querySelectorAll('tbody tr');
+    let count = 0;
+    rows.forEach(row => {
+      if (count >= 8) return;
+      const cells = row.querySelectorAll('td');
+      if (cells.length > 0) {
+        const ticker = cells[0]?.textContent?.trim();
+        const lastCell = cells[cells.length - 1]?.textContent?.trim();
+        tableText += `${ticker}, rendimiento ${lastCell}. `;
+        count++;
+      }
+    });
+    if (count > 0) { speak(tableText); return; }
+  }
+
+  // Fallback: read hero
+  const hero = document.getElementById('hero');
+  if (hero && hero.offsetParent) {
+    speak(hero.textContent.trim());
+  }
 }
 
 // Entity name → base64 data URI logo mapping
@@ -589,6 +713,7 @@ function setupTabs() {
     }
     const sub = document.querySelector('.subnav-tab.active')?.dataset.tab || 'ars';
     updatePageTitle(sub === 'billeteras' ? 'ars' : sub);
+    setTimeout(readCurrentSection, 1500);
   }
 
   function switchToSoberanos() {
@@ -602,6 +727,7 @@ function setupTabs() {
     if (!document.getElementById('soberanos-list').hasChildNodes()) {
       loadSoberanos();
     }
+    setTimeout(readCurrentSection, 1500);
   }
 
   function switchToMundo() {
@@ -616,6 +742,7 @@ function setupTabs() {
       loadMundo();
       loadHotMovers();
     }
+    setTimeout(readCurrentSection, 1500);
   }
 
   function switchToONs() {

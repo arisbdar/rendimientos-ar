@@ -1015,6 +1015,39 @@ body {
 }
 
 /* Theme Toggle */
+/* Accessibility / Read Aloud Toggle */
+.a11y-toggle {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+.a11y-toggle:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.a11y-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.a11y-toggle.active:hover {
+  opacity: 0.9;
+}
+[data-theme="dark"] .a11y-toggle {
+  color: var(--text);
+}
+[data-theme="dark"] .a11y-toggle.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
 .theme-toggle {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
