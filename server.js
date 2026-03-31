@@ -400,7 +400,7 @@ app.get('/api/bcra', async (req, res) => {
 
   // Single variable history
   if (variable) {
-    let url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/${variable}?limit=365`;
+    let url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/${variable}?limit=3000`;
     if (desde) url += `&desde=${desde}`;
     if (hasta) url += `&hasta=${hasta}`;
     try {

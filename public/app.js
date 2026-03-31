@@ -774,7 +774,7 @@ function setupTabs() {
     }
   }
 
-  function switchToBcra(subtab) {
+  function switchToBcra() {
     hideAllTabs();
     headerBcra.classList.add('active');
     subnav.style.display = 'none';
@@ -782,7 +782,9 @@ function setupTabs() {
     hero.querySelector('h1').textContent = 'BCRA';
     hero.querySelector('p').textContent = 'Datos oficiales del Banco Central: tasas, inflación, reservas, tipo de cambio y más.';
     updatePageTitle('bcra');
-    activateBcraTab(subtab || 'indicadores');
+    if (!document.getElementById('bcra-list').querySelector('.bcra-category')) {
+      loadBcra();
+    }
   }
 
   function switchToForo(threadId) {
@@ -1136,26 +1138,6 @@ const HIPOTECARIO_COLORS = {
 
 let _bcraData = null;
 let _bcraChart = null;
-let _bcraCambiariasLoaded = false;
-
-function activateBcraTab(tab) {
-  const tabs = document.querySelectorAll('.bcra-tab');
-  tabs.forEach(t => t.classList.toggle('active', t.dataset.bcraTab === tab));
-  document.getElementById('bcra-panel-indicadores').style.display = tab === 'indicadores' ? '' : 'none';
-  document.getElementById('bcra-panel-cambiarias').style.display = tab === 'cambiarias' ? '' : 'none';
-  if (tab === 'indicadores') {
-    if (!document.getElementById('bcra-list').querySelector('.bcra-category')) loadBcra();
-  } else if (tab === 'cambiarias') {
-    if (!_bcraCambiariasLoaded) loadBcraCambiarias();
-  }
-}
-
-// Wire up BCRA subtabs (called once DOM is ready)
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.bcra-tab').forEach(t => {
-    t.addEventListener('click', e => { e.preventDefault(); activateBcraTab(t.dataset.bcraTab); });
-  });
-});
 
 async function loadBcra() {
   const container = document.getElementById('bcra-list');
@@ -1277,11 +1259,16 @@ async function loadBcra() {
 async function loadBcraChart(idVariable) {
   const canvas = document.getElementById('bcra-chart');
   if (!canvas) return;
-  const days = parseInt(document.getElementById('bcra-chart-range')?.value || '90', 10);
+  const days = parseInt(document.getElementById('bcra-chart-range')?.value || '365', 10);
   const hasta = new Date().toISOString().split('T')[0];
-  const desdeDate = new Date();
-  desdeDate.setDate(desdeDate.getDate() - days);
-  const desde = desdeDate.toISOString().split('T')[0];
+
+  // days=0 → todo el histórico (sin filtro de fecha)
+  let url = `/api/bcra?variable=${idVariable}`;
+  if (days > 0) {
+    const desdeDate = new Date();
+    desdeDate.setDate(desdeDate.getDate() - days);
+    url += `&desde=${desdeDate.toISOString().split('T')[0]}&hasta=${hasta}`;
+  }
 
   // Find variable name
   const varDef = _bcraData?.find(v => v.id === idVariable);
@@ -1289,7 +1276,7 @@ async function loadBcraChart(idVariable) {
 
   try {
     canvas.style.opacity = '0.4';
-    const res = await fetch(`/api/bcra?variable=${idVariable}&desde=${desde}&hasta=${hasta}`);
+    const res = await fetch(url);
     if (!res.ok) throw new Error(`Error ${res.status}`);
     const json = await res.json();
     const detalle = json.results?.[0]?.detalle || [];

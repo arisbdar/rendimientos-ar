@@ -72,7 +72,9 @@ exports.handler = async (event) => {
     const id = parseInt(params.variable, 10);
     const desde = params.desde || '';
     const hasta = params.hasta || '';
-    let url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/${id}?limit=365`;
+    // Sin fechas = todo el histórico, usar límite máximo del API (3000)
+    const limit = (desde || hasta) ? 3000 : 3000;
+    let url = `https://api.bcra.gob.ar/estadisticas/v4.0/Monetarias/${id}?limit=${limit}`;
     if (desde) url += `&desde=${desde}`;
     if (hasta) url += `&hasta=${hasta}`;
     try {

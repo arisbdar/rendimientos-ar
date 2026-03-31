@@ -268,41 +268,28 @@
 
     <!-- Tab: BCRA -->
     <div id="tab-bcra" style="display:none">
-      <!-- BCRA sub-nav -->
-      <nav class="bcra-subnav">
-        <a href="#" class="bcra-tab active" data-bcra-tab="indicadores">Indicadores</a>
-        <a href="#" class="bcra-tab" data-bcra-tab="cambiarias">Cambiarias</a>
-      </nav>
-
-      <!-- Sub-tab: Indicadores -->
-      <div id="bcra-panel-indicadores">
-        <section class="section">
-          <div id="bcra-list"></div>
-        </section>
-        <section class="section">
-          <h2>Histórico</h2>
-          <div style="margin-bottom:12px">
-            <select id="bcra-chart-selector" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem">
-              <option value="">Elegí una variable...</option>
-            </select>
-            <select id="bcra-chart-range" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem;margin-left:6px">
-              <option value="30">30 días</option>
-              <option value="90" selected>90 días</option>
-              <option value="365">1 año</option>
-            </select>
-          </div>
-          <div class="chart-wrapper">
-            <canvas id="bcra-chart"></canvas>
-          </div>
-        </section>
-      </div>
-
-      <!-- Sub-tab: Cambiarias -->
-      <div id="bcra-panel-cambiarias" style="display:none">
-        <section class="section">
-          <div id="bcra-cambiarias-list"></div>
-        </section>
-      </div>
+      <section class="section">
+        <div id="bcra-list"></div>
+      </section>
+      <section class="section">
+        <h2>Histórico</h2>
+        <div style="margin-bottom:12px">
+          <select id="bcra-chart-selector" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem">
+            <option value="">Elegí una variable...</option>
+          </select>
+          <select id="bcra-chart-range" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem;margin-left:6px">
+            <option value="30">30 días</option>
+            <option value="90">90 días</option>
+            <option value="365" selected>1 año</option>
+            <option value="1825">5 años</option>
+            <option value="3650">10 años</option>
+            <option value="0">Todo el histórico</option>
+          </select>
+        </div>
+        <div class="chart-wrapper">
+          <canvas id="bcra-chart"></canvas>
+        </div>
+      </section>
     </div>
 
     <!-- Tab: Portfolio -->
