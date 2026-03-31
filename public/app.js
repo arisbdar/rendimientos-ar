@@ -613,6 +613,7 @@ function setupTabs() {
   const headerHipotecarios = document.getElementById('header-hipotecarios');
 
   const headerBcra = document.getElementById('header-bcra');
+  const headerMundial = document.getElementById('header-mundial');
   const headerPortfolio = document.getElementById('header-portfolio');
   const headerForo = document.getElementById('header-foro');
 
@@ -630,9 +631,10 @@ function setupTabs() {
     document.getElementById('tab-portfolio').style.display = 'none';
     document.getElementById('tab-foro').style.display = 'none';
     document.getElementById('tab-bcra').style.display = 'none';
+    document.getElementById('tab-mundial').style.display = 'none';
     if (sectionHome) sectionHome.classList.remove('active');
     document.querySelector('.container').style.display = '';
-    [headerArs, headerSoberanos, headerONs, headerMundo, headerHipotecarios, headerBcra, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
+    [headerArs, headerSoberanos, headerONs, headerMundo, headerHipotecarios, headerBcra, headerMundial, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
     hero.style.display = '';
   }
 
@@ -657,6 +659,7 @@ function setupTabs() {
       hipotecarios: 'Hipotecarios UVA',
       bcra: 'Indicadores BCRA',
       portfolio: 'Mi Portfolio',
+      mundial: 'Mundial 2026',
       foro: 'Foro'
     };
     document.title = titles[section] ? `${titles[section]} — ${base}` : base;
@@ -802,6 +805,19 @@ function setupTabs() {
     }
   }
 
+  function switchToMundial() {
+    hideAllTabs();
+    headerMundial.classList.add('active');
+    subnav.style.display = 'none';
+    document.getElementById('tab-mundial').style.display = 'block';
+    hero.querySelector('h1').textContent = 'Mundial 2026';
+    hero.querySelector('p').textContent = 'FIFA World Cup USA/Mexico/Canada 2026 — Fixture completo, grupos y bracket.';
+    updatePageTitle('mundial');
+    if (!document.getElementById('mundial-groups').hasChildNodes()) {
+      renderMundial();
+    }
+  }
+
   // Logo click → home
   const logoEl = document.querySelector('.logo');
   if (logoEl) logoEl.addEventListener('click', (e) => { e.preventDefault(); switchToHome(); location.hash = ''; });
@@ -812,6 +828,7 @@ function setupTabs() {
   if (headerMundo) headerMundo.addEventListener('click', (e) => { e.preventDefault(); switchToMundo(); location.hash = 'mundo'; });
   if (headerHipotecarios) headerHipotecarios.addEventListener('click', (e) => { e.preventDefault(); switchToHipotecarios(); location.hash = 'hipotecarios'; });
   if (headerBcra) headerBcra.addEventListener('click', (e) => { e.preventDefault(); switchToBcra(); location.hash = 'bcra'; });
+  if (headerMundial) headerMundial.addEventListener('click', (e) => { e.preventDefault(); switchToMundial(); location.hash = 'mundial'; });
   if (headerPortfolio) headerPortfolio.addEventListener('click', (e) => { e.preventDefault(); switchToPortfolio(); location.hash = 'portfolio'; });
   if (headerForo) headerForo.addEventListener('click', (e) => { e.preventDefault(); switchToForo(); location.hash = 'foro'; });
   window._switchToPortfolio = switchToPortfolio;
@@ -827,6 +844,7 @@ function setupTabs() {
   else if (initialHash === 'hipotecarios') switchToHipotecarios();
   else if (initialHash === 'bcra') switchToBcra();
   else if (initialHash === 'ons') switchToONs();
+  else if (initialHash === 'mundial') switchToMundial();
   else if (initialHash === 'portfolio') switchToPortfolio();
   else if (initialHash === 'foro') switchToForo();
   else if (initialHash.startsWith('foro/')) switchToForo(initialHash.split('/')[1]);
@@ -846,6 +864,7 @@ function setupTabs() {
     else if (h === 'hipotecarios') switchToHipotecarios();
     else if (h === 'bcra') switchToBcra();
     else if (h === 'ons') switchToONs();
+    else if (h === 'mundial') switchToMundial();
     else if (h === 'portfolio') switchToPortfolio();
     else if (h === 'mundo') switchToMundo();
     else if (h === 'foro') switchToForo();
@@ -2373,9 +2392,12 @@ async function loadMundo() {
         const changeColor = isUp ? 'var(--green)' : 'var(--red)';
         const arrow = isUp ? '▲' : '▼';
 
+        const isAgro = item.group === 'Agro';
         let priceStr;
         if (isRate) {
           priceStr = item.price.toFixed(3) + '%';
+        } else if (isAgro) {
+          priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 1 }) + ' /Tn';
         } else if (item.price >= 10000) {
           priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 0 });
         } else if (item.price >= 100) {
@@ -4658,4 +4680,616 @@ function openNewThreadModal() {
       btn.textContent = 'Publicar';
     }
   });
+}
+
+// ─── Retro 90s Zone ───
+(function initRetroZone() {
+  // Sparkle cursor
+  const sparkleCanvas = document.createElement('canvas');
+  sparkleCanvas.id = 'sparkle-canvas';
+  sparkleCanvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99999;';
+  document.body.appendChild(sparkleCanvas);
+  const ctx = sparkleCanvas.getContext('2d');
+  let sparks = [];
+  function resizeCanvas() { sparkleCanvas.width = window.innerWidth; sparkleCanvas.height = window.innerHeight; }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  document.addEventListener('mousemove', (e) => {
+    for (let i = 0; i < 3; i++) {
+      sparks.push({
+        x: e.clientX + (Math.random() - 0.5) * 10,
+        y: e.clientY + (Math.random() - 0.5) * 10,
+        vx: (Math.random() - 0.5) * 2,
+        vy: (Math.random() - 0.5) * 2 - 1,
+        life: 1,
+        size: Math.random() * 3 + 1,
+        color: ['#FFD700', '#FF69B4', '#00FFFF', '#FF4500', '#7CFC00', '#FF00FF'][Math.floor(Math.random() * 6)]
+      });
+    }
+  });
+  function animateSparks() {
+    ctx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+    sparks = sparks.filter(s => s.life > 0);
+    for (const s of sparks) {
+      ctx.globalAlpha = s.life;
+      ctx.fillStyle = s.color;
+      ctx.beginPath();
+      // Draw star shape
+      const spikes = 4; const outerR = s.size * s.life; const innerR = outerR * 0.4;
+      for (let i = 0; i < spikes * 2; i++) {
+        const r = i % 2 === 0 ? outerR : innerR;
+        const angle = (i * Math.PI) / spikes - Math.PI / 2;
+        if (i === 0) ctx.moveTo(s.x + r * Math.cos(angle), s.y + r * Math.sin(angle));
+        else ctx.lineTo(s.x + r * Math.cos(angle), s.y + r * Math.sin(angle));
+      }
+      ctx.closePath(); ctx.fill();
+      s.x += s.vx; s.y += s.vy; s.vy += 0.05; s.life -= 0.025;
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(animateSparks);
+  }
+  animateSparks();
+
+  // Horoscope
+  const signs = [
+    { name: 'Aries', icon: '\u2648', dates: 'Mar 21 - Abr 19' },
+    { name: 'Tauro', icon: '\u2649', dates: 'Abr 20 - May 20' },
+    { name: 'Geminis', icon: '\u264A', dates: 'May 21 - Jun 20' },
+    { name: 'Cancer', icon: '\u264B', dates: 'Jun 21 - Jul 22' },
+    { name: 'Leo', icon: '\u264C', dates: 'Jul 23 - Ago 22' },
+    { name: 'Virgo', icon: '\u264D', dates: 'Ago 23 - Sep 22' },
+    { name: 'Libra', icon: '\u264E', dates: 'Sep 23 - Oct 22' },
+    { name: 'Escorpio', icon: '\u264F', dates: 'Oct 23 - Nov 21' },
+    { name: 'Sagitario', icon: '\u2650', dates: 'Nov 22 - Dic 21' },
+    { name: 'Capricornio', icon: '\u2651', dates: 'Dic 22 - Ene 19' },
+    { name: 'Acuario', icon: '\u2652', dates: 'Ene 20 - Feb 18' },
+    { name: 'Piscis', icon: '\u2653', dates: 'Feb 19 - Mar 20' },
+  ];
+  const predictions = [
+    'Hoy es un excelente dia para comprar LECAPs. Los astros favorecen la renta fija.',
+    'Venus en retrogrado sugiere que NO es momento de vender dolares.',
+    'Mercurio alineado con Jupiter: tu portfolio subira un 3.7% esta semana (fuente: los astros).',
+    'La luna llena indica que deberias diversificar. Compra Bonos CER.',
+    'Marte en tu casa 8 dice que alguien te debe plata. Cobra HOY.',
+    'Saturno favorece las inversiones a largo plazo. Compra AL30.',
+    'Neptuno en Piscis: cuidado con las criptomonedas esta semana.',
+    'El sol en tu signo potencia tu olfato financiero. Confia en tu instinto.',
+    'Urano dice que es hora de probar algo nuevo. Fondos comunes?',
+    'Jupiter amplifica las ganancias. Buen momento para el plazo fijo.',
+    'La conjuncion planetaria sugiere revisar tu cartera de ONs.',
+    'Hoy los astros dicen: mejor quedarse en billetera digital.',
+  ];
+  const horoscopoEl = document.getElementById('retro-horoscopo');
+  if (horoscopoEl) {
+    // Show 3 random signs
+    const shuffled = [...signs].sort(() => Math.random() - 0.5).slice(0, 3);
+    horoscopoEl.innerHTML = shuffled.map(s =>
+      `<p style="margin-bottom:10px;"><strong style="color:gold;">${s.icon} ${s.name}</strong> <span style="color:#a080c0;font-size:0.7rem;">(${s.dates})</span><br>${predictions[Math.floor(Math.random() * predictions.length)]}</p>`
+    ).join('');
+  }
+
+  // Guestbook
+  const defaultEntries = [
+    { name: 'Juan_Trader_97', date: '15/03/1997', msg: 'Muy buena pagina!!! La mejor de Yahoo! Finanzas no tiene nada que ver. Saludos desde Tucuman!!!' },
+    { name: 'xX_InversorPro_Xx', date: '22/07/1998', msg: 'me pueden explicar que es un bono?? gracias de antemano, muy buena la pagina' },
+    { name: 'MariaFinanzas', date: '01/01/2000', msg: 'FELIZ AÑO NUEVO!!! No se rompio nada con el Y2K por suerte jaja. Sigan asi con la pagina!!' },
+    { name: 'ElRataFinanciero', date: '03/05/2001', msg: 'puse todo en plazo fijo y me fue bien, gracias rendimientos.co los quiero' },
+    { name: 'CryptoNoExiste', date: '12/08/1999', msg: 'che alguien sabe que onda esas monedas digitales? suena a estafa piramidal' },
+    { name: 'Webmaster_Carlos', date: '28/11/1997', msg: 'Muy linda pagina, le puse 5 estrellas en mi ranking de GeoCities. Visiten mi pagina de MIDI!!' },
+  ];
+  const gbEntries = document.getElementById('retro-guestbook-entries');
+  const gbName = document.getElementById('retro-gb-name');
+  const gbMsg = document.getElementById('retro-gb-msg');
+  const gbSubmit = document.getElementById('retro-gb-submit');
+  let entries = [...defaultEntries];
+
+  function renderGB() {
+    if (!gbEntries) return;
+    gbEntries.innerHTML = entries.map(e =>
+      `<div style="border-bottom:1px dashed #cc9900;padding:8px 0;">
+        <strong style="color:#990000;">${e.name}</strong> <span style="color:#999;font-size:0.65rem;">(${e.date})</span><br>
+        <span style="color:#333;">${e.msg}</span>
+      </div>`
+    ).join('');
+    gbEntries.scrollTop = gbEntries.scrollHeight;
+  }
+  renderGB();
+
+  if (gbSubmit) {
+    gbSubmit.addEventListener('click', () => {
+      const name = gbName.value.trim() || 'Anonimo';
+      const msg = gbMsg.value.trim();
+      if (!msg) return;
+      const now = new Date();
+      entries.push({ name, date: now.toLocaleDateString('es-AR'), msg });
+      renderGB();
+      gbName.value = ''; gbMsg.value = '';
+      // Easter egg: the submit button text
+      gbSubmit.textContent = 'FIRMADO!!!';
+      setTimeout(() => { gbSubmit.textContent = 'FIRMAR'; }, 2000);
+    });
+  }
+
+  // Counter animation
+  const counterEl = document.getElementById('retro-counter');
+  if (counterEl) {
+    let count = 4837;
+    setInterval(() => {
+      count += Math.floor(Math.random() * 3);
+      const digits = String(count).padStart(6, '0').split('');
+      const spans = counterEl.querySelectorAll('span');
+      digits.forEach((d, i) => { if (spans[i]) spans[i].textContent = d; });
+    }, 5000);
+  }
+})();
+
+// ─── Mundial 2026 ───
+function renderMundial() {
+  const MUNDIAL_GROUPS = [
+    { letter: 'A', venue: 'Mexico', teams: [
+      { name: 'Mexico', flag: '\uD83C\uDDF2\uD83C\uDDFD', tag: 'host' },
+      { name: 'Corea del Sur', flag: '\uD83C\uDDF0\uD83C\uDDF7' },
+      { name: 'Sudafrica', flag: '\uD83C\uDDFF\uD83C\uDDE6' },
+      { name: 'Playoff UEFA D', flag: '\uD83C\uDDEA\uD83C\uDDFA', tag: 'playoff' },
+    ], matches: [
+      { date: '11 Jun', t1: 'Mexico', t2: 'Sudafrica', city: 'Mexico City' },
+      { date: '12 Jun', t1: 'Corea del Sur', t2: 'Playoff UEFA D', city: 'Guadalajara' },
+      { date: '16 Jun', t1: 'Mexico', t2: 'Corea del Sur', city: 'Mexico City' },
+      { date: '16 Jun', t1: 'Sudafrica', t2: 'Playoff UEFA D', city: 'Guadalajara' },
+      { date: '20 Jun', t1: 'Sudafrica', t2: 'Corea del Sur', city: 'Monterrey' },
+      { date: '20 Jun', t1: 'Playoff UEFA D', t2: 'Mexico', city: 'Mexico City' },
+    ]},
+    { letter: 'B', venue: 'Canada', teams: [
+      { name: 'Canada', flag: '\uD83C\uDDE8\uD83C\uDDE6', tag: 'host' },
+      { name: 'Suiza', flag: '\uD83C\uDDE8\uD83C\uDDED' },
+      { name: 'Qatar', flag: '\uD83C\uDDF6\uD83C\uDDE6' },
+      { name: 'Playoff UEFA A', flag: '\uD83C\uDDEA\uD83C\uDDFA', tag: 'playoff' },
+    ], matches: [
+      { date: '12 Jun', t1: 'Canada', t2: 'Qatar', city: 'Vancouver' },
+      { date: '12 Jun', t1: 'Suiza', t2: 'Playoff UEFA A', city: 'Toronto' },
+      { date: '17 Jun', t1: 'Canada', t2: 'Suiza', city: 'Vancouver' },
+      { date: '17 Jun', t1: 'Qatar', t2: 'Playoff UEFA A', city: 'Toronto' },
+      { date: '21 Jun', t1: 'Qatar', t2: 'Suiza', city: 'Toronto' },
+      { date: '21 Jun', t1: 'Playoff UEFA A', t2: 'Canada', city: 'Vancouver' },
+    ]},
+    { letter: 'C', venue: 'USA West', teams: [
+      { name: 'Brasil', flag: '\uD83C\uDDE7\uD83C\uDDF7' },
+      { name: 'Marruecos', flag: '\uD83C\uDDF2\uD83C\uDDE6' },
+      { name: 'Escocia', flag: '\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F' },
+      { name: 'Haiti', flag: '\uD83C\uDDED\uD83C\uDDF9' },
+    ], matches: [
+      { date: '13 Jun', t1: 'Brasil', t2: 'Marruecos', city: 'Los Angeles' },
+      { date: '13 Jun', t1: 'Haiti', t2: 'Escocia', city: 'San Francisco' },
+      { date: '17 Jun', t1: 'Brasil', t2: 'Haiti', city: 'Los Angeles' },
+      { date: '18 Jun', t1: 'Marruecos', t2: 'Escocia', city: 'San Francisco' },
+      { date: '22 Jun', t1: 'Escocia', t2: 'Brasil', city: 'Los Angeles' },
+      { date: '22 Jun', t1: 'Marruecos', t2: 'Haiti', city: 'San Francisco' },
+    ]},
+    { letter: 'D', venue: 'USA East', teams: [
+      { name: 'Estados Unidos', flag: '\uD83C\uDDFA\uD83C\uDDF8', tag: 'host' },
+      { name: 'Paraguay', flag: '\uD83C\uDDF5\uD83C\uDDFE' },
+      { name: 'Australia', flag: '\uD83C\uDDE6\uD83C\uDDFA' },
+      { name: 'Playoff UEFA C', flag: '\uD83C\uDDEA\uD83C\uDDFA', tag: 'playoff' },
+    ], matches: [
+      { date: '12 Jun', t1: 'Estados Unidos', t2: 'Australia', city: 'Philadelphia' },
+      { date: '13 Jun', t1: 'Paraguay', t2: 'Playoff UEFA C', city: 'Houston' },
+      { date: '17 Jun', t1: 'Estados Unidos', t2: 'Paraguay', city: 'New York/NJ' },
+      { date: '17 Jun', t1: 'Australia', t2: 'Playoff UEFA C', city: 'Houston' },
+      { date: '21 Jun', t1: 'Australia', t2: 'Paraguay', city: 'Houston' },
+      { date: '21 Jun', t1: 'Playoff UEFA C', t2: 'Estados Unidos', city: 'Philadelphia' },
+    ]},
+    { letter: 'E', venue: 'USA South', teams: [
+      { name: 'Alemania', flag: '\uD83C\uDDE9\uD83C\uDDEA' },
+      { name: 'Costa de Marfil', flag: '\uD83C\uDDE8\uD83C\uDDEE' },
+      { name: 'Ecuador', flag: '\uD83C\uDDEA\uD83C\uDDE8' },
+      { name: 'Curazao', flag: '\uD83C\uDDE8\uD83C\uDDFC' },
+    ], matches: [
+      { date: '13 Jun', t1: 'Alemania', t2: 'Costa de Marfil', city: 'Atlanta' },
+      { date: '14 Jun', t1: 'Ecuador', t2: 'Curazao', city: 'Miami' },
+      { date: '18 Jun', t1: 'Alemania', t2: 'Ecuador', city: 'Atlanta' },
+      { date: '18 Jun', t1: 'Costa de Marfil', t2: 'Curazao', city: 'Miami' },
+      { date: '22 Jun', t1: 'Curazao', t2: 'Alemania', city: 'Atlanta' },
+      { date: '22 Jun', t1: 'Costa de Marfil', t2: 'Ecuador', city: 'Miami' },
+    ]},
+    { letter: 'F', venue: 'USA', teams: [
+      { name: 'Paises Bajos', flag: '\uD83C\uDDF3\uD83C\uDDF1' },
+      { name: 'Japon', flag: '\uD83C\uDDEF\uD83C\uDDF5' },
+      { name: 'Tunez', flag: '\uD83C\uDDF9\uD83C\uDDF3' },
+      { name: 'Playoff UEFA B', flag: '\uD83C\uDDEA\uD83C\uDDFA', tag: 'playoff' },
+    ], matches: [
+      { date: '14 Jun', t1: 'Paises Bajos', t2: 'Playoff UEFA B', city: 'Boston' },
+      { date: '14 Jun', t1: 'Tunez', t2: 'Japon', city: 'Kansas City' },
+      { date: '18 Jun', t1: 'Paises Bajos', t2: 'Tunez', city: 'Boston' },
+      { date: '19 Jun', t1: 'Japon', t2: 'Playoff UEFA B', city: 'Kansas City' },
+      { date: '23 Jun', t1: 'Japon', t2: 'Paises Bajos', city: 'Kansas City' },
+      { date: '23 Jun', t1: 'Playoff UEFA B', t2: 'Tunez', city: 'Boston' },
+    ]},
+    { letter: 'G', venue: 'USA', teams: [
+      { name: 'Belgica', flag: '\uD83C\uDDE7\uD83C\uDDEA' },
+      { name: 'Egipto', flag: '\uD83C\uDDEA\uD83C\uDDEC' },
+      { name: 'Iran', flag: '\uD83C\uDDEE\uD83C\uDDF7' },
+      { name: 'Nueva Zelanda', flag: '\uD83C\uDDF3\uD83C\uDDFF' },
+    ], matches: [
+      { date: '14 Jun', t1: 'Belgica', t2: 'Egipto', city: 'Dallas' },
+      { date: '15 Jun', t1: 'Iran', t2: 'Nueva Zelanda', city: 'Seattle' },
+      { date: '19 Jun', t1: 'Belgica', t2: 'Iran', city: 'Dallas' },
+      { date: '19 Jun', t1: 'Egipto', t2: 'Nueva Zelanda', city: 'Seattle' },
+      { date: '23 Jun', t1: 'Nueva Zelanda', t2: 'Belgica', city: 'Dallas' },
+      { date: '23 Jun', t1: 'Egipto', t2: 'Iran', city: 'Seattle' },
+    ]},
+    { letter: 'H', venue: 'USA East', teams: [
+      { name: 'Espana', flag: '\uD83C\uDDEA\uD83C\uDDF8' },
+      { name: 'Uruguay', flag: '\uD83C\uDDFA\uD83C\uDDFE' },
+      { name: 'Arabia Saudita', flag: '\uD83C\uDDF8\uD83C\uDDE6' },
+      { name: 'Cabo Verde', flag: '\uD83C\uDDE8\uD83C\uDDFB' },
+    ], matches: [
+      { date: '15 Jun', t1: 'Espana', t2: 'Cabo Verde', city: 'New York/NJ' },
+      { date: '15 Jun', t1: 'Arabia Saudita', t2: 'Uruguay', city: 'Philadelphia' },
+      { date: '19 Jun', t1: 'Espana', t2: 'Arabia Saudita', city: 'New York/NJ' },
+      { date: '20 Jun', t1: 'Uruguay', t2: 'Cabo Verde', city: 'Philadelphia' },
+      { date: '24 Jun', t1: 'Uruguay', t2: 'Espana', city: 'New York/NJ' },
+      { date: '24 Jun', t1: 'Cabo Verde', t2: 'Arabia Saudita', city: 'Philadelphia' },
+    ]},
+    { letter: 'I', venue: 'USA/Mexico', teams: [
+      { name: 'Francia', flag: '\uD83C\uDDEB\uD83C\uDDF7' },
+      { name: 'Senegal', flag: '\uD83C\uDDF8\uD83C\uDDF3' },
+      { name: 'Noruega', flag: '\uD83C\uDDF3\uD83C\uDDF4' },
+      { name: 'Interconf. Playoff 2', flag: '\uD83C\uDDFA\uD83C\uDDF3', tag: 'playoff' },
+    ], matches: [
+      { date: '15 Jun', t1: 'Francia', t2: 'Noruega', city: 'Los Angeles' },
+      { date: '16 Jun', t1: 'Senegal', t2: 'Interconf. Playoff 2', city: 'Monterrey' },
+      { date: '20 Jun', t1: 'Francia', t2: 'Senegal', city: 'Los Angeles' },
+      { date: '20 Jun', t1: 'Noruega', t2: 'Interconf. Playoff 2', city: 'Monterrey' },
+      { date: '24 Jun', t1: 'Interconf. Playoff 2', t2: 'Francia', city: 'Los Angeles' },
+      { date: '24 Jun', t1: 'Noruega', t2: 'Senegal', city: 'Monterrey' },
+    ]},
+    { letter: 'J', venue: 'USA South', teams: [
+      { name: 'Argentina', flag: '\uD83C\uDDE6\uD83C\uDDF7' },
+      { name: 'Argelia', flag: '\uD83C\uDDE9\uD83C\uDDFF' },
+      { name: 'Austria', flag: '\uD83C\uDDE6\uD83C\uDDF9' },
+      { name: 'Jordania', flag: '\uD83C\uDDEF\uD83C\uDDF4' },
+    ], matches: [
+      { date: '16 Jun', t1: 'Argentina', t2: 'Austria', city: 'Miami' },
+      { date: '16 Jun', t1: 'Jordania', t2: 'Argelia', city: 'Atlanta' },
+      { date: '21 Jun', t1: 'Argentina', t2: 'Jordania', city: 'Miami' },
+      { date: '21 Jun', t1: 'Austria', t2: 'Argelia', city: 'Atlanta' },
+      { date: '25 Jun', t1: 'Argelia', t2: 'Argentina', city: 'Miami' },
+      { date: '25 Jun', t1: 'Austria', t2: 'Jordania', city: 'Atlanta' },
+    ]},
+    { letter: 'K', venue: 'USA', teams: [
+      { name: 'Portugal', flag: '\uD83C\uDDF5\uD83C\uDDF9' },
+      { name: 'Colombia', flag: '\uD83C\uDDE8\uD83C\uDDF4' },
+      { name: 'Uzbekistan', flag: '\uD83C\uDDFA\uD83C\uDDFF' },
+      { name: 'Interconf. Playoff 1', flag: '\uD83C\uDDFA\uD83C\uDDF3', tag: 'playoff' },
+    ], matches: [
+      { date: '14 Jun', t1: 'Portugal', t2: 'Colombia', city: 'Houston' },
+      { date: '15 Jun', t1: 'Uzbekistan', t2: 'Interconf. Playoff 1', city: 'Dallas' },
+      { date: '19 Jun', t1: 'Portugal', t2: 'Uzbekistan', city: 'Houston' },
+      { date: '19 Jun', t1: 'Colombia', t2: 'Interconf. Playoff 1', city: 'Dallas' },
+      { date: '23 Jun', t1: 'Interconf. Playoff 1', t2: 'Portugal', city: 'Houston' },
+      { date: '23 Jun', t1: 'Colombia', t2: 'Uzbekistan', city: 'Dallas' },
+    ]},
+    { letter: 'L', venue: 'USA', teams: [
+      { name: 'Inglaterra', flag: '\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F' },
+      { name: 'Croacia', flag: '\uD83C\uDDED\uD83C\uDDF7' },
+      { name: 'Ghana', flag: '\uD83C\uDDEC\uD83C\uDDED' },
+      { name: 'Panama', flag: '\uD83C\uDDF5\uD83C\uDDE6' },
+    ], matches: [
+      { date: '15 Jun', t1: 'Inglaterra', t2: 'Croacia', city: 'Boston' },
+      { date: '16 Jun', t1: 'Ghana', t2: 'Panama', city: 'Seattle' },
+      { date: '20 Jun', t1: 'Inglaterra', t2: 'Ghana', city: 'Boston' },
+      { date: '20 Jun', t1: 'Croacia', t2: 'Panama', city: 'Seattle' },
+      { date: '24 Jun', t1: 'Panama', t2: 'Inglaterra', city: 'Boston' },
+      { date: '24 Jun', t1: 'Croacia', t2: 'Ghana', city: 'Seattle' },
+    ]},
+  ];
+
+  const KNOCKOUT_ROUNDS = [
+    { name: 'Octavos de Final', dates: '28 Jun - 2 Jul', matches: 16 },
+    { name: 'Cuartos de Final', dates: '4 - 5 Jul', matches: 8 },
+    { name: 'Semifinales', dates: '8 - 9 Jul', matches: 4 },
+    { name: 'Tercer Puesto', dates: '18 Jul', matches: 1 },
+    { name: 'Final', dates: '19 Jul', venue: 'MetLife Stadium, New York/NJ', matches: 1 },
+  ];
+
+  const groupsEl = document.getElementById('mundial-groups');
+  const bracketEl = document.getElementById('mundial-bracket');
+
+  // Render groups
+  let groupsHTML = '<div class="mundial-groups-grid">';
+  for (const group of MUNDIAL_GROUPS) {
+    groupsHTML += `<div class="mundial-group-card">
+      <div class="mundial-group-header">
+        <span class="mundial-group-letter">${group.letter}</span>
+        Grupo ${group.letter}
+        <span class="mundial-group-venue">${group.venue}</span>
+      </div>
+      <div class="mundial-stats-header">
+        <span class="mundial-team-pos"></span>
+        <span class="mundial-team-flag"></span>
+        <span class="mundial-team-name">Equipo</span>
+        <span class="mundial-team-stats">
+          <span class="mundial-team-stat">PJ</span>
+          <span class="mundial-team-stat">G</span>
+          <span class="mundial-team-stat">E</span>
+          <span class="mundial-team-stat">P</span>
+          <span class="mundial-team-stat">Pts</span>
+        </span>
+      </div>`;
+    group.teams.forEach((team, i) => {
+      const tagHTML = team.tag === 'host'
+        ? '<span class="mundial-team-tag host">Sede</span>'
+        : team.tag === 'playoff'
+        ? '<span class="mundial-team-tag playoff">Playoff</span>'
+        : '';
+      groupsHTML += `<div class="mundial-team-row">
+        <span class="mundial-team-pos">${i + 1}</span>
+        <span class="mundial-team-flag">${team.flag}</span>
+        <span class="mundial-team-name">${team.name}</span>
+        ${tagHTML}
+        <span class="mundial-team-stats">
+          <span class="mundial-team-stat">0</span>
+          <span class="mundial-team-stat">0</span>
+          <span class="mundial-team-stat">0</span>
+          <span class="mundial-team-stat">0</span>
+          <span class="mundial-team-stat">0</span>
+        </span>
+      </div>`;
+    });
+    // Matches
+    groupsHTML += '<div class="mundial-group-matches">';
+    groupsHTML += '<div class="mundial-group-matches-title">Partidos</div>';
+    for (const m of group.matches) {
+      groupsHTML += `<div class="mundial-group-match">
+        <span class="mundial-group-match-date">${m.date}</span>
+        <span>${m.t1}</span>
+        <span class="mundial-group-match-vs">vs</span>
+        <span>${m.t2}</span>
+        <span class="mundial-group-venue">${m.city}</span>
+      </div>`;
+    }
+    groupsHTML += '</div></div>';
+  }
+  groupsHTML += '</div>';
+  groupsEl.innerHTML = groupsHTML;
+
+  // Render bracket placeholder
+  let bracketHTML = '<div class="mundial-bracket-container">';
+  for (const round of KNOCKOUT_ROUNDS) {
+    bracketHTML += `<div class="mundial-bracket-round">
+      <div class="mundial-bracket-round-title">${round.name} <span style="font-weight:400;color:var(--text-tertiary);font-size:0.75rem;margin-left:8px">${round.dates}${round.venue ? ' — ' + round.venue : ''}</span></div>
+      <div class="mundial-bracket-matches">`;
+    for (let i = 0; i < round.matches; i++) {
+      const label = round.name === 'Octavos de Final'
+        ? `Partido ${i + 1}`
+        : round.name === 'Cuartos de Final'
+        ? `QF${i + 1}`
+        : round.name === 'Semifinales'
+        ? `SF${i + 1}`
+        : round.name;
+      bracketHTML += `<div class="mundial-match-card">
+        <div class="mundial-match-header">
+          <span>${label}</span>
+          <span>${round.dates}</span>
+        </div>
+        <div class="mundial-match-teams">
+          <div class="mundial-match-team">
+            <span style="color:var(--text-tertiary);font-size:0.8rem">Por definir</span>
+            <span class="mundial-match-score">-</span>
+          </div>
+          <div class="mundial-match-team">
+            <span style="color:var(--text-tertiary);font-size:0.8rem">Por definir</span>
+            <span class="mundial-match-score">-</span>
+          </div>
+        </div>
+      </div>`;
+    }
+    bracketHTML += '</div></div>';
+  }
+  bracketHTML += '</div>';
+  bracketEl.innerHTML = bracketHTML;
+
+  // Phase toggle
+  const toggleBtns = document.querySelectorAll('.mundial-phase-btn');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const phase = btn.dataset.phase;
+      document.getElementById('mundial-groups').style.display = phase === 'groups' ? '' : 'none';
+      document.getElementById('mundial-bracket').style.display = phase === 'bracket' ? '' : 'none';
+    });
+  });
+
+  // Fetch live data from football-data.org via Netlify function
+  fetchMundialLiveData(MUNDIAL_GROUPS);
+}
+
+async function fetchMundialLiveData(groups) {
+  try {
+    const resp = await fetch('/api/mundial');
+    if (!resp.ok) return;
+    const data = await resp.json();
+
+    // Map team names from API to our local names
+    const NAME_MAP = {
+      'Mexico': 'Mexico', 'Korea Republic': 'Corea del Sur', 'South Africa': 'Sudafrica',
+      'Canada': 'Canada', 'Switzerland': 'Suiza', 'Qatar': 'Qatar',
+      'Brazil': 'Brasil', 'Morocco': 'Marruecos', 'Scotland': 'Escocia', 'Haiti': 'Haiti',
+      'United States': 'Estados Unidos', 'Paraguay': 'Paraguay', 'Australia': 'Australia',
+      'Germany': 'Alemania', 'Ivory Coast': 'Costa de Marfil', "Côte d'Ivoire": 'Costa de Marfil',
+      'Ecuador': 'Ecuador', 'Curaçao': 'Curazao', 'Curacao': 'Curazao',
+      'Netherlands': 'Paises Bajos', 'Japan': 'Japon', 'Tunisia': 'Tunez',
+      'Belgium': 'Belgica', 'Egypt': 'Egipto', 'Iran': 'Iran', 'New Zealand': 'Nueva Zelanda',
+      'Spain': 'Espana', 'Uruguay': 'Uruguay', 'Saudi Arabia': 'Arabia Saudita', 'Cape Verde': 'Cabo Verde',
+      'France': 'Francia', 'Senegal': 'Senegal', 'Norway': 'Noruega',
+      'Argentina': 'Argentina', 'Algeria': 'Argelia', 'Austria': 'Austria', 'Jordan': 'Jordania',
+      'Portugal': 'Portugal', 'Colombia': 'Colombia', 'Uzbekistan': 'Uzbekistan',
+      'England': 'Inglaterra', 'Croatia': 'Croacia', 'Ghana': 'Ghana', 'Panama': 'Panama',
+    };
+
+    // Update standings if available
+    if (data.standings?.standings) {
+      updateMundialStandings(data.standings.standings, NAME_MAP, groups);
+    }
+
+    // Update match results if available
+    if (data.matches?.matches) {
+      updateMundialMatches(data.matches.matches, NAME_MAP, groups);
+    }
+  } catch (e) {
+    console.log('Mundial live data not available:', e.message);
+  }
+}
+
+function updateMundialStandings(apiStandings, nameMap, groups) {
+  // apiStandings is an array of group standings
+  for (const groupStanding of apiStandings) {
+    const stage = groupStanding.stage;
+    const groupName = groupStanding.group; // e.g. "GROUP_A"
+    if (!groupName) continue;
+    const letter = groupName.replace('GROUP_', '');
+    const table = groupStanding.table;
+    if (!table || !table.length) continue;
+
+    // Find the group card by letter
+    const groupCards = document.querySelectorAll('.mundial-group-card');
+    for (const card of groupCards) {
+      const headerLetter = card.querySelector('.mundial-group-letter');
+      if (!headerLetter || headerLetter.textContent !== letter) continue;
+
+      const rows = card.querySelectorAll('.mundial-team-row');
+      // Sort teams by API table order and update
+      for (let i = 0; i < table.length && i < rows.length; i++) {
+        const apiTeam = table[i];
+        const row = rows[i];
+        const localName = nameMap[apiTeam.team?.name] || apiTeam.team?.shortName || apiTeam.team?.name;
+        const nameEl = row.querySelector('.mundial-team-name');
+        const stats = row.querySelectorAll('.mundial-team-stat');
+        const posEl = row.querySelector('.mundial-team-pos');
+
+        if (nameEl && localName) nameEl.textContent = localName;
+        if (posEl) posEl.textContent = i + 1;
+        if (stats.length >= 5) {
+          stats[0].textContent = apiTeam.playedGames ?? 0;
+          stats[1].textContent = apiTeam.won ?? 0;
+          stats[2].textContent = apiTeam.draw ?? 0;
+          stats[3].textContent = apiTeam.lost ?? 0;
+          stats[4].textContent = apiTeam.points ?? 0;
+        }
+
+        // Highlight qualified teams (top 2 advance)
+        if (i < 2 && apiTeam.playedGames > 0) {
+          row.classList.add('mundial-qualified');
+        } else {
+          row.classList.remove('mundial-qualified');
+        }
+      }
+      break;
+    }
+  }
+}
+
+function updateMundialMatches(apiMatches, nameMap, groups) {
+  // Update group stage match scores
+  const groupMatches = apiMatches.filter(m => m.stage === 'GROUP_STAGE');
+  const knockoutMatches = apiMatches.filter(m => m.stage !== 'GROUP_STAGE');
+
+  // Update group match scores in the match list
+  for (const match of groupMatches) {
+    if (match.status === 'SCHEDULED' || match.status === 'TIMED') continue;
+    const homeTeam = nameMap[match.homeTeam?.name] || match.homeTeam?.shortName || '';
+    const awayTeam = nameMap[match.awayTeam?.name] || match.awayTeam?.shortName || '';
+    const homeScore = match.score?.fullTime?.home;
+    const awayScore = match.score?.fullTime?.away;
+    if (homeScore == null || awayScore == null) continue;
+
+    // Find the match row in the DOM
+    const matchRows = document.querySelectorAll('.mundial-group-match');
+    for (const row of matchRows) {
+      const spans = row.querySelectorAll('span');
+      const t1 = spans[1]?.textContent?.trim();
+      const t2 = spans[3]?.textContent?.trim();
+      if ((t1 === homeTeam && t2 === awayTeam) || (t1 === awayTeam && t2 === homeTeam)) {
+        const vsEl = row.querySelector('.mundial-group-match-vs');
+        if (vsEl) {
+          if (t1 === homeTeam) {
+            vsEl.textContent = `${homeScore} - ${awayScore}`;
+          } else {
+            vsEl.textContent = `${awayScore} - ${homeScore}`;
+          }
+          vsEl.style.fontWeight = '600';
+          vsEl.style.fontFamily = 'var(--font-mono)';
+          vsEl.style.color = 'var(--text)';
+        }
+        break;
+      }
+    }
+  }
+
+  // Update knockout bracket
+  if (knockoutMatches.length > 0) {
+    updateMundialBracket(knockoutMatches, nameMap);
+  }
+}
+
+function updateMundialBracket(matches, nameMap) {
+  const ROUND_MAP = {
+    'LAST_32': 'Octavos de Final',
+    'ROUND_OF_16': 'Octavos de Final',
+    'LAST_16': 'Octavos de Final',
+    'QUARTER_FINALS': 'Cuartos de Final',
+    'SEMI_FINALS': 'Semifinales',
+    'THIRD_PLACE': 'Tercer Puesto',
+    'FINAL': 'Final',
+  };
+
+  const bracketEl = document.getElementById('mundial-bracket');
+  const roundDivs = bracketEl.querySelectorAll('.mundial-bracket-round');
+
+  for (const match of matches) {
+    const roundName = ROUND_MAP[match.stage] || ROUND_MAP[match.group];
+    if (!roundName) continue;
+    const homeTeam = nameMap[match.homeTeam?.name] || match.homeTeam?.shortName || match.homeTeam?.name;
+    const awayTeam = nameMap[match.awayTeam?.name] || match.awayTeam?.shortName || match.awayTeam?.name;
+    const homeScore = match.score?.fullTime?.home;
+    const awayScore = match.score?.fullTime?.away;
+
+    // Find the right round
+    for (const roundDiv of roundDivs) {
+      const titleEl = roundDiv.querySelector('.mundial-bracket-round-title');
+      if (!titleEl || !titleEl.textContent.includes(roundName)) continue;
+
+      // Find an empty match card or matching card
+      const cards = roundDiv.querySelectorAll('.mundial-match-card');
+      for (const card of cards) {
+        const teamEls = card.querySelectorAll('.mundial-match-team');
+        if (teamEls.length < 2) continue;
+        const t1Text = teamEls[0].querySelector('span')?.textContent;
+        const t2Text = teamEls[1].querySelector('span')?.textContent;
+
+        // Fill empty slots
+        if (t1Text === 'Por definir' || t1Text === homeTeam) {
+          if (homeTeam && homeTeam !== 'null') {
+            teamEls[0].innerHTML = `<span>${homeTeam}</span><span class="mundial-match-score">${homeScore != null ? homeScore : '-'}</span>`;
+          }
+          if (awayTeam && awayTeam !== 'null') {
+            teamEls[1].innerHTML = `<span>${awayTeam}</span><span class="mundial-match-score">${awayScore != null ? awayScore : '-'}</span>`;
+          }
+          // Highlight winner
+          if (homeScore != null && awayScore != null) {
+            if (homeScore > awayScore) {
+              teamEls[0].classList.add('winner');
+              teamEls[1].classList.add('loser');
+            } else if (awayScore > homeScore) {
+              teamEls[1].classList.add('winner');
+              teamEls[0].classList.add('loser');
+            }
+          }
+          break;
+        }
+      }
+      break;
+    }
+  }
 }

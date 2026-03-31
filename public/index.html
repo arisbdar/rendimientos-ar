@@ -50,7 +50,9 @@
   <!-- Header -->
   <header class="header">
     <div class="header-inner">
-      <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> RENDIMIENTOS.CO</div>
+      <div class="header-left">
+        <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> RENDIMIENTOS.CO</div>
+      </div>
       <nav class="currency-tabs">
         <a href="#" class="currency-tab" id="header-mundo">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Mundo
@@ -73,18 +75,23 @@
         <a href="#" class="currency-tab" id="header-portfolio">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span> Portfolio
         </a>
+        <a href="#" class="currency-tab" id="header-mundial">
+          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 L14.5 8 L12 14 L9.5 8 Z"/><path d="M2 12 L8 9.5 L14 12 L8 14.5 Z"/><path d="M12 22 L9.5 16 L12 10 L14.5 16 Z"/><path d="M22 12 L16 14.5 L10 12 L16 9.5 Z"/></svg></span> Mundial
+        </a>
         <a href="#" class="currency-tab" id="header-foro">
           <span class="flag">💬</span> Foro
         </a>
       </nav>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
-          <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-      <div class="auth-area" id="auth-area">
-        <div class="auth-user" id="auth-user" style="display:none">
-          <img class="auth-avatar" id="auth-avatar" src="" alt="" referrerpolicy="no-referrer">
-          <button class="auth-logout-btn" id="auth-logout-btn" title="Cerrar sesión">Salir</button>
+      <div class="header-right">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+            <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+        <div class="auth-area" id="auth-area">
+          <div class="auth-user" id="auth-user" style="display:none">
+            <img class="auth-avatar" id="auth-avatar" src="" alt="" referrerpolicy="no-referrer">
+            <button class="auth-logout-btn" id="auth-logout-btn" title="Cerrar sesión">Salir</button>
+          </div>
         </div>
       </div>
     </div>
@@ -328,12 +335,126 @@
       </div>
     </div>
 
+    <!-- Tab: Mundial -->
+    <div id="tab-mundial" style="display:none">
+      <section class="section" id="mundial-section">
+        <div class="mundial-phase-toggle" id="mundial-phase-toggle">
+          <button class="mundial-phase-btn active" data-phase="groups">Fase de Grupos</button>
+          <button class="mundial-phase-btn" data-phase="bracket">Bracket</button>
+        </div>
+        <div id="mundial-groups"></div>
+        <div id="mundial-bracket" style="display:none"></div>
+      </section>
+    </div>
+
     <!-- Tab: Foro -->
     <div id="tab-foro" style="display:none">
       <div id="foro-content"></div>
     </div>
 
   </main>
+
+  <!-- RETRO 90s ZONE -->
+  <div id="retro-zone" style="background:url('https://web.archive.org/web/20091027065033im_/http://www.geocities.com/SoHo/7373/stars.gif') repeat; border-top: 4px dashed magenta; margin-top: 0; padding: 0; font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;">
+    <!-- Marquee -->
+    <marquee behavior="scroll" direction="left" scrollamount="5" style="background:linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet);color:#fff;font-weight:bold;font-size:1.1rem;padding:8px 0;text-shadow:2px 2px #000;">
+      &#9733; BIENVENIDOS A RENDIMIENTOS.CO &#9733; SITIO EN CONSTRUCCION &#9733; MEJOR VISTO EN NETSCAPE NAVIGATOR 4.0 CON RESOLUCION 800x600 &#9733; FIRMÁ EL LIBRO DE VISITAS &#9733; NO TE OLVIDES DE AGREGAR ESTE SITIO A TUS FAVORITOS &#9733;
+    </marquee>
+
+    <div style="max-width:800px;margin:0 auto;padding:24px 16px;text-align:center;">
+
+      <!-- Under Construction GIF -->
+      <div style="margin-bottom:20px;">
+        <img src="https://web.archive.org/web/20091027065033im_/http://www.geocities.com/SoHo/7373/const6.gif" alt="Under Construction" style="image-rendering:pixelated;max-width:400px;">
+      </div>
+
+      <!-- Visitor Counter -->
+      <div style="margin:20px auto;background:#000;display:inline-block;padding:8px 16px;border:3px ridge silver;border-radius:0;">
+        <p style="color:lime;font-size:0.75rem;margin-bottom:4px;font-family:monospace;">VISITANTE NUMERO:</p>
+        <div style="display:flex;gap:2px;justify-content:center;" id="retro-counter">
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">0</span>
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">0</span>
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">4</span>
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">8</span>
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">3</span>
+          <span style="background:#111;color:lime;font-family:'Courier New',monospace;font-size:1.8rem;padding:4px 6px;border:1px inset #333;min-width:24px;text-align:center">7</span>
+        </div>
+        <p style="color:#888;font-size:0.6rem;margin-top:4px;font-family:monospace;">desde el 15/03/1997</p>
+      </div>
+
+      <hr style="border:none;border-top:2px dashed yellow;margin:24px 0;">
+
+      <!-- Clima -->
+      <div style="background:#000080;border:3px outset #c0c0c0;padding:16px;margin:16px auto;max-width:350px;text-align:left;">
+        <h3 style="color:yellow;font-size:1rem;margin-bottom:8px;text-decoration:underline;">&#9728; EL CLIMA EN BUENOS AIRES</h3>
+        <p style="color:white;font-size:0.85rem;">&#127780; Parcialmente nublado</p>
+        <p style="color:cyan;font-size:1.5rem;font-weight:bold;">22°C</p>
+        <p style="color:#ccc;font-size:0.75rem;">Humedad: 65% | Viento: 15 km/h SE</p>
+        <p style="color:yellow;font-size:0.7rem;margin-top:8px;">Mañana: &#9729; 19°C - Probabilidad de lluvia 40%</p>
+        <p style="color:#888;font-size:0.6rem;margin-top:4px;">Actualizado: hace 3 horas (mentira, es hardcodeado)</p>
+      </div>
+
+      <hr style="border:none;border-top:2px dashed cyan;margin:24px 0;">
+
+      <!-- Horoscopo -->
+      <div style="background:linear-gradient(135deg,#1a0033,#330066);border:3px ridge gold;padding:16px;margin:16px auto;max-width:400px;text-align:left;">
+        <h3 style="color:gold;font-size:1rem;margin-bottom:12px;text-align:center;">&#9733; HOROSCOPO DEL DIA &#9733;</h3>
+        <div id="retro-horoscopo" style="color:#e0c0ff;font-size:0.82rem;line-height:1.5;"></div>
+        <p style="color:gold;font-size:0.7rem;margin-top:12px;text-align:center;">&#9733; Los astros no se responsabilizan por sus inversiones &#9733;</p>
+      </div>
+
+      <hr style="border:none;border-top:2px dashed magenta;margin:24px 0;">
+
+      <!-- Libro de visitas -->
+      <div style="background:#ffffcc;border:3px ridge #cc9900;padding:16px;margin:16px auto;max-width:450px;text-align:left;color:#333;">
+        <h3 style="color:#990000;font-size:1rem;margin-bottom:12px;text-align:center;text-decoration:underline;">&#9997; LIBRO DE VISITAS &#9997;</h3>
+        <div id="retro-guestbook-entries" style="margin-bottom:12px;max-height:200px;overflow-y:auto;font-size:0.78rem;"></div>
+        <div style="border-top:1px dashed #cc9900;padding-top:12px;">
+          <p style="font-size:0.8rem;margin-bottom:8px;font-weight:bold;">Dejá tu mensaje:</p>
+          <input type="text" id="retro-gb-name" placeholder="Tu nombre" style="width:100%;padding:6px;margin-bottom:6px;border:2px inset #ccc;font-family:'Comic Sans MS',cursive;font-size:0.8rem;background:#fff;">
+          <textarea id="retro-gb-msg" placeholder="Tu mensaje..." rows="3" style="width:100%;padding:6px;margin-bottom:8px;border:2px inset #ccc;font-family:'Comic Sans MS',cursive;font-size:0.8rem;resize:none;background:#fff;"></textarea>
+          <button id="retro-gb-submit" style="background:#990000;color:#fff;border:2px outset #cc0000;padding:6px 20px;font-family:'Comic Sans MS',cursive;font-weight:bold;cursor:pointer;font-size:0.85rem;">FIRMAR</button>
+        </div>
+      </div>
+
+      <hr style="border:none;border-top:2px dashed lime;margin:24px 0;">
+
+      <!-- Badges y GIFs -->
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;align-items:center;margin:16px 0;">
+        <img src="https://web.archive.org/web/20091027065033im_/http://geocities.com/SoHo/7373/netscape.gif" alt="Netscape Now" style="image-rendering:pixelated;height:40px;">
+        <img src="https://web.archive.org/web/20091027065033im_/http://geocities.com/SoHo/7373/ie_logo.gif" alt="IE" style="image-rendering:pixelated;height:40px;">
+        <div style="border:2px ridge silver;padding:4px 8px;background:#000;color:lime;font-family:monospace;font-size:0.6rem;">
+          HTML 3.2<br>CERTIFIED
+        </div>
+        <div style="border:2px ridge silver;padding:4px 8px;background:#000;color:cyan;font-family:monospace;font-size:0.6rem;">
+          Y2K<br>COMPLIANT
+        </div>
+        <div style="border:2px ridge silver;padding:4px 8px;background:#000;color:yellow;font-family:monospace;font-size:0.6rem;">
+          LIBRE DE<br>VIRUS
+        </div>
+      </div>
+
+      <!-- Email link -->
+      <p style="color:yellow;font-size:0.8rem;margin:16px 0;">
+        &#9993; <a href="mailto:webmaster@rendimientos.co" style="color:cyan;">webmaster@rendimientos.co</a> &#9993;
+      </p>
+      <p style="color:#aaa;font-size:0.65rem;">Esta pagina fue hecha con el Bloc de Notas de Windows 95</p>
+      <p style="color:#888;font-size:0.6rem;">Copyright &copy; 1997-2026 Rendimientos GeoCities Inc. Todos los derechos reservados.</p>
+
+      <!-- Dancing baby or fire GIF -->
+      <div style="margin-top:16px;">
+        <img src="https://media.tenor.com/jq92PxVbwNUAAAAj/fire.gif" alt="fire" style="height:30px;image-rendering:pixelated;">
+        <img src="https://media.tenor.com/jq92PxVbwNUAAAAj/fire.gif" alt="fire" style="height:30px;image-rendering:pixelated;">
+        <img src="https://media.tenor.com/jq92PxVbwNUAAAAj/fire.gif" alt="fire" style="height:30px;image-rendering:pixelated;">
+      </div>
+    </div>
+
+    <!-- Second marquee -->
+    <marquee behavior="alternate" scrollamount="3" style="color:yellow;font-size:0.8rem;padding:6px;background:#000080;font-family:'Comic Sans MS',cursive;">
+      &#127918; GRACIAS POR VISITAR MI PAGINA WEB !!! &#127918; VOLVE PRONTO !!! &#127918; AGREGA ESTE SITIO A FAVORITOS (Ctrl+D) &#127918;
+    </marquee>
+  </div>
+  <!-- END RETRO ZONE -->
 
   <footer class="footer">
     <p>Fuentes: CAFCI, ArgentinaDatos, BCRA, data912</p>

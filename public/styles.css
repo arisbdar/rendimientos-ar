@@ -358,6 +358,20 @@ body {
   padding: 8px 20px;
   display: flex;
   align-items: center;
+  gap: 12px;
+}
+
+.header-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
 
@@ -378,7 +392,7 @@ body {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 0;
 }
 .currency-tabs::-webkit-scrollbar { display: none; }
@@ -2406,3 +2420,267 @@ body {
 }
 .bcra-cards-otras { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
 .bcra-camb-card .bcra-card-nombre { font-size: 0.76rem; }
+
+/* ─── Mundial 2026 ─── */
+.mundial-phase-toggle {
+  display: flex;
+  gap: 2px;
+  background: var(--bg-subtle);
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+.mundial-phase-btn {
+  padding: 8px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font);
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.mundial-phase-btn:hover { color: var(--text); }
+.mundial-phase-btn.active {
+  background: var(--card-bg);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+.mundial-groups-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.mundial-group-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.mundial-group-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.mundial-group-header {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-subtle);
+}
+.mundial-group-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.mundial-group-venue {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-left: auto;
+}
+
+.mundial-team-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background 0.1s;
+  cursor: default;
+}
+.mundial-team-row:last-child { border-bottom: none; }
+.mundial-team-row:hover { background: var(--bg-subtle); }
+.mundial-team-row.mundial-qualified {
+  background: var(--green-bg);
+}
+
+.mundial-team-pos {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  width: 18px;
+  text-align: center;
+}
+.mundial-team-flag {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+.mundial-team-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+}
+.mundial-team-tag {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+}
+.mundial-team-tag.host {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+}
+.mundial-team-tag.playoff {
+  background: var(--yellow);
+  color: #000;
+  opacity: 0.8;
+}
+
+.mundial-team-stats {
+  display: flex;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+}
+.mundial-team-stat {
+  min-width: 20px;
+  text-align: center;
+}
+
+.mundial-stats-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mundial-stats-header .mundial-team-stats {
+  font-family: var(--font);
+  font-weight: 600;
+}
+
+/* Bracket */
+.mundial-bracket-container {
+  overflow-x: auto;
+  padding: 20px 0;
+}
+.mundial-bracket-round {
+  margin-bottom: 32px;
+}
+.mundial-bracket-round-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  display: inline-block;
+}
+.mundial-bracket-matches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+.mundial-match-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.mundial-match-header {
+  padding: 8px 12px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  background: var(--bg-subtle);
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-light);
+}
+.mundial-match-teams {
+  padding: 4px 0;
+}
+.mundial-match-team {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: background 0.1s;
+}
+.mundial-match-team:first-child {
+  border-bottom: 1px solid var(--border-light);
+}
+.mundial-match-team .mundial-team-flag { font-size: 1.1rem; }
+.mundial-match-score {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  min-width: 20px;
+  text-align: center;
+}
+.mundial-match-team.winner {
+  background: var(--green-bg);
+}
+.mundial-match-team.loser {
+  opacity: 0.5;
+}
+
+/* Matches list in group view */
+.mundial-group-matches {
+  padding: 8px 12px 12px;
+}
+.mundial-group-matches-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  margin: 8px 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.mundial-group-match {
+  display: flex;
+  align-items: center;
+  padding: 6px 0;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  gap: 6px;
+}
+.mundial-group-match-date {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  min-width: 45px;
+}
+.mundial-group-match-vs {
+  color: var(--text-tertiary);
+  font-size: 0.7rem;
+}
+
+@media (max-width: 640px) {
+  .mundial-groups-grid {
+    grid-template-columns: 1fr;
+  }
+  .mundial-bracket-matches {
+    grid-template-columns: 1fr;
+  }
+}

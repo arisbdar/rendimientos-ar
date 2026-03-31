@@ -79,6 +79,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/mundial"
+  to = "/.netlify/functions/mundial"
+  status = 200
+
+[[redirects]]
   from = "/api/auth-config"
   to = "/.netlify/functions/auth-config"
   status = 200
