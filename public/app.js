@@ -1314,10 +1314,15 @@ async function loadBcraChart(idVariable) {
         plugins: {
           legend: { display: false },
           tooltip: {
+            backgroundColor: 'rgba(0,0,0,0.75)',
+            titleColor: '#fff',
+            bodyColor: '#ccc',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
             callbacks: {
               label: ctx => {
                 const v = ctx.parsed.y;
-                if (!varDef) return v;
+                if (!varDef) return String(v);
                 if (varDef.formato === 'pct') return `${v.toFixed(2)}%`;
                 return v.toLocaleString('es-AR', { maximumFractionDigits: 4 }) + (varDef.unidad ? ' ' + varDef.unidad : '');
               }
@@ -1325,8 +1330,16 @@ async function loadBcraChart(idVariable) {
           }
         },
         scales: {
-          x: { ticks: { maxTicksLimit: 8, color: 'var(--text-secondary)' }, grid: { color: 'var(--border)' } },
-          y: { ticks: { color: 'var(--text-secondary)' }, grid: { color: 'var(--border)' } }
+          x: {
+            ticks: { maxTicksLimit: 8, color: '#888', font: { size: 11 } },
+            grid: { display: false },
+            border: { display: false }
+          },
+          y: {
+            ticks: { color: '#888', font: { size: 11 }, maxTicksLimit: 6 },
+            grid: { color: 'rgba(128,128,128,0.12)', drawBorder: false },
+            border: { display: false }
+          }
         }
       }
     });

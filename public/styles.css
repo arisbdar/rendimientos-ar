@@ -353,13 +353,13 @@ body {
 }
 
 .header-inner {
-  max-width: 960px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 12px 24px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 6px;
 }
 
 .logo {
@@ -381,13 +381,13 @@ body {
 
 .currency-tab {
   text-decoration: none;
-  padding: 6px 14px;
+  padding: 5px 10px;
   border-radius: 20px;
   width: auto;
   text-align: center;
   justify-content: center;
   white-space: nowrap;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
   color: var(--text-secondary);
   transition: background 0.15s, color 0.15s, box-shadow 0.15s;
