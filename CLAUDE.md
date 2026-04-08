@@ -7,12 +7,12 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 ## Stack
 
 - **Frontend**: Vanilla JS + CSS (no framework), Chart.js para graficos, SVG inline icons (Lucide/Feather style)
-- **Backend**: Express.js (local dev), Netlify Functions (prod)
+- **Backend**: Express.js (local dev), Vercel Serverless Functions (prod)
 - **Auth + DB**: Supabase (Google OAuth, PostgreSQL con RLS)
 - **Datos**: ArgentinaDatos API (FCIs, Plazo Fijo), data912 (LECAPs, Bonos, ONs), Yahoo Finance (Monitor Global), Google News RSS, Google Sheets (Hipotecarios UVA)
 - **Analytics**: Supabase (tabla `page_views`)
-- **Deploy**: Netlify (`npx netlify deploy --prod`)
-- **Dominio**: rendimientos.co (canonical), rendimientos-ar.netlify.app (legacy)
+- **Deploy**: Vercel (`npx vercel --prod`)
+- **Dominio**: rendimientos.co (canonical), comparatasas.vercel.app (Vercel)
 
 ## Estructura clave
 
@@ -21,9 +21,9 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 - `public/config.json` - Config estatica (billeteras, LECAPs, flujos bonos)
 - `public/styles.css` - Estilos + dark mode con CSS variables
 - `server.js` - Server Express para dev local
-- `netlify/functions/` - Funciones serverless (proxies de APIs + auth-config)
+- `api/` - Funciones serverless Vercel (proxies de APIs + auth-config)
 
-### Funciones Netlify
+### Funciones Serverless (api/)
 
 - `cafci.js` - Proxy para FCIs via ArgentinaDatos
 - `cer.js`, `cer-precios.js`, `cer-ultimo.js` - Datos CER (BCRA + data912)
@@ -54,7 +54,7 @@ SUPABASE_URL=https://xxx.supabase.co
 SUPABASE_ANON_KEY=eyJ...
 ```
 
-Nota: Las Netlify functions (mundo, soberanos, news, etc) solo funcionan en produccion. El server local sirve FCIs, config y auth-config.
+Nota: Las funciones serverless (mundo, soberanos, news, etc) solo funcionan en produccion. El server local sirve FCIs, config y auth-config.
 
 ## Reglas
 
@@ -182,6 +182,6 @@ Documenta cada hallazgo con severidad, categoria y pasos para reproducir.
 ### Deploy
 
 ```
-Ejecuta `npx netlify deploy --prod` desde la raiz del repo.
+Ejecuta `npx vercel --prod` desde la raiz del repo.
 Verifica que el sitio cargue correctamente en https://rendimientos.co/
 ```

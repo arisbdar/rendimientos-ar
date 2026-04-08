@@ -4389,20 +4389,18 @@ const DOLAR_LOGO_FILE = {
   ripioexchange: '/logos/exchanges/ripio.svg',
   satoshitango: '/logos/exchanges/satoshitango.svg',
   wallbit: '/logos/exchanges/wallbit.svg',
+  bitsoalpha: '/logos/exchanges/bitso.svg',
+  bybit: '/logos/exchanges/bybit.svg',
+  decrypto: '/logos/exchanges/decrypto.svg',
+  cryptomkt: '/logos/exchanges/cryptomkt.svg',
+  p2pme: '/logos/exchanges/p2pme.svg',
 };
 const DOLAR_LOGO_ENTITY = {
   lbfinanzas: 'LB Finanzas',
 };
 const DOLAR_LOGO_INITIALS = {
-  binance: { t: 'BN', bg: '#f0b90b', c: '#000' },
-  bybit: { t: 'BY', bg: '#f7a600', c: '#000' },
-  decrypto: { t: 'DC', bg: '#1a1a2e' },
   tiendacrypto: { t: 'TC', bg: '#2563eb' },
-  bitsoalpha: { t: 'BT', bg: '#00d4aa' },
   vibrant: { t: 'VB', bg: '#6366f1' },
-  peanut: { t: 'PN', bg: '#f97316' },
-  cryptomkt: { t: 'CM', bg: '#2563eb' },
-  p2pme: { t: 'P2', bg: '#3b82f6' },
   saldo: { t: 'SA', bg: '#10b981' },
 };
 function getDolarExchangeLogo(id, name) {
