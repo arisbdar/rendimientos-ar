@@ -33,8 +33,6 @@ async function initSupabase() {
       updateAuthUI(); // handles portfolio-login-prompt / portfolio-content visibility
       // If user is on portfolio tab, load holdings now that we have the session
       if (location.hash === '#portfolio') loadPortfolio();
-      // If user is on foro tab, load forum now that supabase is ready
-      if (location.hash === '#foro' || location.hash.startsWith('#foro/')) loadForum();
     }
 
     supabaseClient.auth.onAuthStateChange((event, session) => {
@@ -616,7 +614,7 @@ function setupTabs() {
   const headerBcra = document.getElementById('header-bcra');
   const headerMundial = document.getElementById('header-mundial');
   const headerPortfolio = document.getElementById('header-portfolio');
-  const headerForo = document.getElementById('header-foro');
+
   const headerPix = document.getElementById('header-pix');
 
   const sectionHome = document.getElementById('section-home');
@@ -631,14 +629,14 @@ function setupTabs() {
     document.getElementById('tab-soberanos').style.display = 'none';
     document.getElementById('section-mundo').style.display = 'none';
     document.getElementById('tab-portfolio').style.display = 'none';
-    document.getElementById('tab-foro').style.display = 'none';
+
     document.getElementById('tab-dolar').style.display = 'none';
     document.getElementById('tab-pix').style.display = 'none';
     document.getElementById('tab-bcra').style.display = 'none';
     document.getElementById('tab-mundial').style.display = 'none';
     if (sectionHome) sectionHome.classList.remove('active');
     document.querySelector('.container').style.display = '';
-    [headerArs, headerSoberanos, headerONs, headerMundo, headerHipotecarios, headerDolar, headerPix, headerBcra, headerMundial, headerPortfolio, headerForo].forEach(b => b && b.classList.remove('active'));
+    [headerArs, headerSoberanos, headerONs, headerMundo, headerHipotecarios, headerDolar, headerPix, headerBcra, headerMundial, headerPortfolio].forEach(b => b && b.classList.remove('active'));
     hero.style.display = '';
   }
 
@@ -666,7 +664,6 @@ function setupTabs() {
       pix: 'PIX Brasil',
       portfolio: 'Mi Portfolio',
       mundial: 'Mundial 2026',
-      foro: 'Foro'
     };
     document.title = titles[section] ? `${titles[section]} — ${base}` : base;
   }
@@ -796,21 +793,6 @@ function setupTabs() {
     }
   }
 
-  function switchToForo(threadId) {
-    hideAllTabs();
-    headerForo.classList.add('active');
-    subnav.style.display = 'none';
-    document.getElementById('tab-foro').style.display = 'block';
-    hero.querySelector('h1').textContent = 'Foro';
-    hero.querySelector('p').textContent = 'Discutí estrategias, compartí ideas y aprendé con la comunidad.';
-    updatePageTitle('foro');
-    if (threadId) {
-      openThread(threadId);
-    } else {
-      loadForum();
-    }
-  }
-
   function switchToDolar() {
     hideAllTabs();
     headerDolar.classList.add('active');
@@ -864,7 +846,7 @@ function setupTabs() {
   if (headerBcra) headerBcra.addEventListener('click', (e) => { e.preventDefault(); switchToBcra(); location.hash = 'bcra'; });
   if (headerMundial) headerMundial.addEventListener('click', (e) => { e.preventDefault(); switchToMundial(); location.hash = 'mundial'; });
   if (headerPortfolio) headerPortfolio.addEventListener('click', (e) => { e.preventDefault(); switchToPortfolio(); location.hash = 'portfolio'; });
-  if (headerForo) headerForo.addEventListener('click', (e) => { e.preventDefault(); switchToForo(); location.hash = 'foro'; });
+
   window._switchToPortfolio = switchToPortfolio;
 
   // Handle initial hash on page load
@@ -882,9 +864,7 @@ function setupTabs() {
   else if (initialHash === 'ons') switchToONs();
   else if (initialHash === 'mundial') switchToMundial();
   else if (initialHash === 'portfolio') switchToPortfolio();
-  else if (initialHash === 'foro') switchToForo();
-  else if (initialHash.startsWith('foro/')) switchToForo(initialHash.split('/')[1]);
-  else switchToHome();
+  else switchToMundo();
 
   // Handle back/forward navigation (skip if subnav tab already active)
   let _hashChanging = false;
@@ -905,8 +885,6 @@ function setupTabs() {
     else if (h === 'mundial') switchToMundial();
     else if (h === 'portfolio') switchToPortfolio();
     else if (h === 'mundo') switchToMundo();
-    else if (h === 'foro') switchToForo();
-    else if (h.startsWith('foro/')) switchToForo(h.split('/')[1]);
     else switchToHome();
     _hashChanging = false;
   });
@@ -4388,338 +4366,6 @@ function renderCashflowChart(months) {
         yUSD: { position: 'left', title: { display: true, text: 'USD', color: textColor }, ticks: { color: textColor }, grid: { color: gridColor } },
         yARS: { position: 'right', title: { display: true, text: 'ARS', color: textColor }, ticks: { color: textColor }, grid: { display: false } },
       }
-    }
-  });
-}
-
-// ─── FORO ──────────────────────────────────────────────────────────
-const FORO_CATEGORIES = [
-  { id: 'general', label: 'General', color: '#6b7280' },
-  { id: 'mercado', label: 'Mercado', color: '#3b82f6' },
-  { id: 'lecaps', label: 'LECAPs', color: '#f59e0b' },
-  { id: 'bonos', label: 'Bonos', color: '#10b981' },
-  { id: 'ons', label: 'ONs', color: '#8b5cf6' },
-  { id: 'portfolio', label: 'Portfolio', color: '#ef4444' },
-];
-
-function foroCategoryBadge(cat) {
-  const c = FORO_CATEGORIES.find(c => c.id === cat) || FORO_CATEGORIES[0];
-  return `<span class="foro-cat-badge" style="background:${c.color}">${c.label}</span>`;
-}
-
-function foroTimeAgo(dateStr) {
-  const now = new Date();
-  const d = new Date(dateStr);
-  const secs = Math.floor((now - d) / 1000);
-  if (secs < 60) return 'hace un momento';
-  const mins = Math.floor(secs / 60);
-  if (mins < 60) return `hace ${mins}m`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `hace ${hrs}h`;
-  const days = Math.floor(hrs / 24);
-  if (days < 30) return `hace ${days}d`;
-  return d.toLocaleDateString('es-AR');
-}
-
-let _foroFilter = 'todos';
-let _foroLoaded = false;
-
-async function loadForum() {
-  const container = document.getElementById('foro-content');
-  if (!container) return;
-
-  if (!supabaseClient) {
-    container.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Conectando...</p></div>';
-    setTimeout(() => { if (!supabaseClient) return; loadForum(); }, 1500);
-    return;
-  }
-
-  container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando foro...</p></div>`;
-
-  try {
-    let query = supabaseClient.from('forum_threads').select('*').order('last_reply_at', { ascending: false }).limit(50);
-    if (_foroFilter !== 'todos') query = query.eq('category', _foroFilter);
-    const { data, error } = await query;
-    if (error) throw error;
-    renderForumThreads(data || []);
-    _foroLoaded = true;
-  } catch (e) {
-    console.error('Forum error:', e);
-    container.innerHTML = '<div class="loading">Error al cargar el foro. Intentá de nuevo.</div>';
-  }
-}
-
-function renderForumThreads(threads) {
-  const container = document.getElementById('foro-content');
-  const isLoggedIn = !!currentUser;
-
-  const filterBtns = ['todos', ...FORO_CATEGORIES.map(c => c.id)].map(id => {
-    const label = id === 'todos' ? 'Todos' : FORO_CATEGORIES.find(c => c.id === id)?.label || id;
-    const active = _foroFilter === id ? ' active' : '';
-    return `<button class="foro-filter-btn${active}" data-filter="${id}">${label}</button>`;
-  }).join('');
-
-  const newBtn = isLoggedIn
-    ? `<button class="foro-new-btn" id="foro-new-thread">+ Nuevo Thread</button>`
-    : `<button class="foro-new-btn foro-login-hint" id="foro-login-btn">Iniciá sesión para postear</button>`;
-
-  const threadList = threads.length === 0
-    ? `<div class="foro-empty">
-        <div style="font-size:2.5rem;margin-bottom:12px">💬</div>
-        <p>No hay threads todavía. Se el primero en abrir uno!</p>
-      </div>`
-    : threads.map(t => `
-      <div class="foro-thread-card" data-thread-id="${t.id}">
-        <div class="foro-thread-left">
-          <img class="foro-avatar" src="${t.user_avatar || ''}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">
-          <div class="foro-thread-info">
-            <div class="foro-thread-title">${escapeHtml(t.title)}</div>
-            <div class="foro-thread-meta">
-              ${foroCategoryBadge(t.category)}
-              <span>${escapeHtml(t.user_name)}</span>
-              <span>${foroTimeAgo(t.created_at)}</span>
-            </div>
-          </div>
-        </div>
-        <div class="foro-thread-right">
-          <div class="foro-replies-count">${t.replies_count}</div>
-          <div class="foro-replies-label">respuestas</div>
-        </div>
-      </div>`).join('');
-
-  container.innerHTML = `
-    <section class="section">
-      <div class="foro-header">
-        <div class="foro-filters">${filterBtns}</div>
-        ${newBtn}
-      </div>
-      <div class="foro-thread-list">${threadList}</div>
-    </section>`;
-
-  // Filter buttons
-  container.querySelectorAll('.foro-filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      _foroFilter = btn.dataset.filter;
-      loadForum();
-    });
-  });
-
-  // New thread button
-  const newThreadBtn = document.getElementById('foro-new-thread');
-  if (newThreadBtn) newThreadBtn.addEventListener('click', openNewThreadModal);
-
-  const loginBtn = document.getElementById('foro-login-btn');
-  if (loginBtn) loginBtn.addEventListener('click', () => loginWithGoogle());
-
-  // Thread cards
-  container.querySelectorAll('.foro-thread-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const id = card.dataset.threadId;
-      location.hash = 'foro/' + id;
-    });
-  });
-}
-
-function escapeHtml(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-async function openThread(threadId) {
-  const container = document.getElementById('foro-content');
-  container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando thread...</p></div>`;
-
-  try {
-    const [threadRes, repliesRes] = await Promise.all([
-      supabaseClient.from('forum_threads').select('*').eq('id', threadId).single(),
-      supabaseClient.from('forum_replies').select('*').eq('thread_id', threadId).order('created_at', { ascending: true })
-    ]);
-    if (threadRes.error) throw threadRes.error;
-    renderThread(threadRes.data, repliesRes.data || []);
-  } catch (e) {
-    console.error('Thread error:', e);
-    container.innerHTML = '<div class="loading">No se pudo cargar el thread.</div>';
-  }
-}
-
-function renderThread(thread, replies) {
-  const container = document.getElementById('foro-content');
-  const isLoggedIn = !!currentUser;
-  const isAuthor = currentUser && currentUser.id === thread.user_id;
-
-  const repliesHtml = replies.map(r => {
-    const isReplyAuthor = currentUser && currentUser.id === r.user_id;
-    return `<div class="foro-reply">
-      <div class="foro-reply-header">
-        <img class="foro-avatar-sm" src="${r.user_avatar || ''}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">
-        <strong>${escapeHtml(r.user_name)}</strong>
-        <span class="foro-reply-time">${foroTimeAgo(r.created_at)}</span>
-        ${isReplyAuthor ? `<button class="foro-delete-btn" data-reply-id="${r.id}" title="Eliminar">🗑️</button>` : ''}
-      </div>
-      <div class="foro-reply-content">${escapeHtml(r.content).replace(/\n/g, '<br>')}</div>
-    </div>`;
-  }).join('');
-
-  const replyForm = isLoggedIn
-    ? `<div class="foro-reply-form">
-        <textarea id="foro-reply-text" class="foro-textarea" placeholder="Escribí tu respuesta..." rows="3"></textarea>
-        <button class="foro-submit-btn" id="foro-reply-submit">Responder</button>
-      </div>`
-    : `<div class="foro-reply-form">
-        <p style="color:var(--text-secondary);text-align:center">
-          <button class="foro-new-btn foro-login-hint" id="foro-thread-login">Iniciá sesión para responder</button>
-        </p>
-      </div>`;
-
-  container.innerHTML = `
-    <section class="section">
-      <button class="foro-back-btn" id="foro-back">&larr; Volver al foro</button>
-      <div class="foro-thread-detail">
-        <div class="foro-thread-detail-header">
-          <div style="display:flex;align-items:center;gap:10px">
-            <img class="foro-avatar" src="${thread.user_avatar || ''}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none'">
-            <div>
-              <h2 class="foro-thread-detail-title">${escapeHtml(thread.title)}</h2>
-              <div class="foro-thread-meta">
-                ${foroCategoryBadge(thread.category)}
-                <span>${escapeHtml(thread.user_name)}</span>
-                <span>${foroTimeAgo(thread.created_at)}</span>
-              </div>
-            </div>
-          </div>
-          ${isAuthor ? `<button class="foro-delete-btn" id="foro-delete-thread" title="Eliminar thread">🗑️</button>` : ''}
-        </div>
-        <div class="foro-thread-body">${escapeHtml(thread.content).replace(/\n/g, '<br>')}</div>
-      </div>
-      <div class="foro-replies-section">
-        <h3>${replies.length} respuesta${replies.length !== 1 ? 's' : ''}</h3>
-        ${repliesHtml}
-      </div>
-      ${replyForm}
-    </section>`;
-
-  // Back button
-  document.getElementById('foro-back').addEventListener('click', () => { location.hash = 'foro'; });
-
-  // Reply submit
-  const submitBtn = document.getElementById('foro-reply-submit');
-  if (submitBtn) {
-    submitBtn.addEventListener('click', async () => {
-      const text = document.getElementById('foro-reply-text').value.trim();
-      if (!text) return;
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Enviando...';
-      try {
-        const { error } = await supabaseClient.from('forum_replies').insert({
-          thread_id: thread.id,
-          user_id: currentUser.id,
-          user_name: currentUser.user_metadata?.full_name || currentUser.email,
-          user_avatar: currentUser.user_metadata?.avatar_url || '',
-          content: text
-        });
-        if (error) throw error;
-        openThread(thread.id); // reload
-      } catch (e) {
-        console.error('Reply error:', e);
-        alert('Error al enviar respuesta');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Responder';
-      }
-    });
-  }
-
-  // Delete thread
-  const deleteBtn = document.getElementById('foro-delete-thread');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', async () => {
-      if (!confirm('Eliminar este thread?')) return;
-      try {
-        await supabaseClient.from('forum_replies').delete().eq('thread_id', thread.id);
-        await supabaseClient.from('forum_threads').delete().eq('id', thread.id);
-        location.hash = 'foro';
-      } catch (e) {
-        console.error('Delete error:', e);
-        alert('Error al eliminar');
-      }
-    });
-  }
-
-  // Delete reply buttons
-  container.querySelectorAll('.foro-delete-btn[data-reply-id]').forEach(btn => {
-    btn.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      if (!confirm('Eliminar esta respuesta?')) return;
-      try {
-        await supabaseClient.from('forum_replies').delete().eq('id', btn.dataset.replyId);
-        openThread(thread.id);
-      } catch (e) {
-        console.error('Delete reply error:', e);
-      }
-    });
-  });
-
-  // Login button
-  const loginBtn = document.getElementById('foro-thread-login');
-  if (loginBtn) loginBtn.addEventListener('click', () => loginWithGoogle());
-}
-
-function openNewThreadModal() {
-  document.querySelector('.mundo-modal-overlay')?.remove();
-  const overlay = document.createElement('div');
-  overlay.className = 'mundo-modal-overlay';
-  const catOptions = FORO_CATEGORIES.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
-  overlay.innerHTML = `
-    <div class="mundo-modal" style="max-width:560px">
-      <div class="mundo-modal-header">
-        <h3 style="margin:0">Nuevo Thread</h3>
-        <button class="mundo-modal-close">&times;</button>
-      </div>
-      <div class="mundo-modal-body" style="padding:16px">
-        <div style="margin-bottom:12px">
-          <label style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:4px">Categoría</label>
-          <select id="foro-new-cat" class="foro-input" style="width:100%">${catOptions}</select>
-        </div>
-        <div style="margin-bottom:12px">
-          <label style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:4px">Título</label>
-          <input type="text" id="foro-new-title" class="foro-input" placeholder="De qué querés hablar?" style="width:100%">
-        </div>
-        <div style="margin-bottom:16px">
-          <label style="font-size:0.8rem;color:var(--text-secondary);display:block;margin-bottom:4px">Contenido</label>
-          <textarea id="foro-new-content" class="foro-textarea" rows="5" placeholder="Contá más..." style="width:100%"></textarea>
-        </div>
-        <button class="foro-submit-btn" id="foro-new-submit" style="width:100%">Publicar</button>
-      </div>
-    </div>`;
-  document.body.appendChild(overlay);
-  overlay.querySelector('.mundo-modal-close').addEventListener('click', () => overlay.remove());
-  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
-
-  document.getElementById('foro-new-submit').addEventListener('click', async () => {
-    const cat = document.getElementById('foro-new-cat').value;
-    const title = document.getElementById('foro-new-title').value.trim();
-    const content = document.getElementById('foro-new-content').value.trim();
-    if (!title || !content) { alert('Completá título y contenido'); return; }
-    const btn = document.getElementById('foro-new-submit');
-    btn.disabled = true;
-    btn.textContent = 'Publicando...';
-    try {
-      const { data, error } = await supabaseClient.from('forum_threads').insert({
-        user_id: currentUser.id,
-        user_name: currentUser.user_metadata?.full_name || currentUser.email,
-        user_avatar: currentUser.user_metadata?.avatar_url || '',
-        category: cat,
-        title,
-        content
-      }).select().single();
-      if (error) throw error;
-      overlay.remove();
-      location.hash = 'foro/' + data.id;
-    } catch (e) {
-      console.error('New thread error:', e);
-      alert('Error al publicar');
-      btn.disabled = false;
-      btn.textContent = 'Publicar';
     }
   });
 }

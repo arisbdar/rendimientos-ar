@@ -16,7 +16,7 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 
 ## Estructura clave
 
-- `public/index.html` - SPA con 7 secciones: Mundo, ARS, Bonos, ONs, Hipotecarios, Portfolio, Foro
+- `public/index.html` - SPA con 6 secciones: Mundo, ARS, Bonos, ONs, Hipotecarios, Portfolio
 - `public/app.js` - Toda la logica del frontend (~2900 lineas)
 - `public/config.json` - Config estatica (billeteras, LECAPs, flujos bonos)
 - `public/styles.css` - Estilos + dark mode con CSS variables
@@ -168,7 +168,7 @@ Luego agregar el mapping en HIPOTECARIO_LOGOS en public/app.js.
 
 ```
 Navega https://rendimientos.co/ como un usuario real.
-Revisa cada seccion: Mundo, ARS (Billeteras, Plazo Fijo, LECAPs, CER), Bonos, ONs, Hipotecarios, Portfolio, Foro.
+Revisa cada seccion: Mundo, ARS (Billeteras, Plazo Fijo, LECAPs, CER), Bonos, ONs, Hipotecarios, Portfolio.
 Busca:
 - Links rotos o que no funcionan
 - Datos desactualizados o inconsistentes
