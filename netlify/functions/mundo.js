@@ -28,6 +28,17 @@ const SYMBOLS = [
   { id: 'eth', symbol: 'ETH-USD', name: 'Ethereum', icon: 'Ξ', group: 'Crypto' },
   { id: 'avax', symbol: 'AVAX-USD', name: 'Avalanche', icon: '🔺', group: 'Crypto' },
   // Monedas
+  // BTC Treasury — Top 10 public companies by BTC holdings
+  { id: 'mstr', symbol: 'MSTR', name: 'Strategy', icon: '₿', group: 'BTC Treasury' },
+  { id: 'xxi', symbol: 'XXI', name: 'Twenty One', icon: '₿', group: 'BTC Treasury' },
+  { id: 'metaplanet', symbol: '3350.T', name: 'Metaplanet', icon: '₿', group: 'BTC Treasury' },
+  { id: 'mara', symbol: 'MARA', name: 'MARA Holdings', icon: '₿', group: 'BTC Treasury' },
+  { id: 'riot', symbol: 'RIOT', name: 'Riot Platforms', icon: '₿', group: 'BTC Treasury' },
+  { id: 'coin', symbol: 'COIN', name: 'Coinbase', icon: '₿', group: 'BTC Treasury' },
+  { id: 'clsk', symbol: 'CLSK', name: 'CleanSpark', icon: '₿', group: 'BTC Treasury' },
+  { id: 'tsla', symbol: 'TSLA', name: 'Tesla', icon: '₿', group: 'BTC Treasury' },
+  { id: 'hut', symbol: 'HUT', name: 'Hut 8', icon: '₿', group: 'BTC Treasury' },
+  { id: 'glxy', symbol: 'GLXY.TO', name: 'Galaxy Digital', icon: '₿', group: 'BTC Treasury' },
   { id: 'eurusd', symbol: 'EURUSD%3DX', name: 'EUR/USD', icon: '🇪🇺', group: 'Monedas' },
   { id: 'usdmxn', symbol: 'MXN%3DX', name: 'USD/MXN', icon: '🇲🇽', group: 'Monedas' },
   { id: 'usdbrl', symbol: 'BRL%3DX', name: 'USD/BRL', icon: '🇧🇷', group: 'Monedas' },
