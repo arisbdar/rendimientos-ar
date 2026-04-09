@@ -18,7 +18,7 @@ Live en [rendimientos.co](https://rendimientos.co) — PWA instalable.
 
 | Sección (header) | Contenido |
 |-------------------|-----------|
-| 🌍 Mundo | Monitor global con 8 indicadores + sparklines intradiarias + gráficos ampliados |
+| 🌍 Mundo | Monitor global con indicadores + sparklines intradiarias + gráficos ampliados + BTC Treasury top 10 |
 | 🇦🇷 ARS | Billeteras, FCIs, Plazo Fijo, LECAPs/BONCAPs, Bonos CER |
 | 🏛️ Bonos | Soberanos USD (ley local + ley NY) con yield curve |
 | 🏢 ONs | Obligaciones Negociables corporativas USD con calculadora interactiva |
@@ -28,6 +28,7 @@ Live en [rendimientos.co](https://rendimientos.co) — PWA instalable.
 | Sección | Fuente | Actualización |
 |---------|--------|---------------|
 | Monitor Global | [Yahoo Finance](https://query1.finance.yahoo.com) v8/chart (intraday 5min) | En vivo |
+| BTC Treasury | [CoinGecko](https://api.coingecko.com/api/v3/companies/public_treasury/bitcoin) (ranking) + Yahoo Finance (precios) | En vivo (cache 1h) |
 | Noticias | [Google News RSS](https://news.google.com) (últimas 3h, finanzas AR) | En vivo (cache 2min) |
 | Billeteras | Manual en `config.json` | Manual |
 | FCIs | [ArgentinaDatos](https://api.argentinadatos.com) via CAFCI | En vivo |
@@ -59,6 +60,7 @@ netlify/functions/
   cer-precios.js     Proxy data912 → precios de bonos CER
   cer-ultimo.js      BCRA API → último CER publicado (para UI)
   mundo.js           Proxy Yahoo Finance → futuros, commodities, crypto (con sparklines)
+  btc-treasury.js    Top 10 BTC treasury companies (CoinGecko + Yahoo Finance)
   news.js            Proxy Google News RSS → noticias financieras en tiempo real
   visits.js          Contador de visitas público
 netlify.toml         Deploy config y redirects API
@@ -80,6 +82,7 @@ Las Netlify functions (mundo, soberanos, ons, cer, etc.) solo funcionan en produ
 |------|-------------|
 | `GET /api/mundo` | Monitor global: precios + sparklines intradiarias (Yahoo Finance) |
 | `GET /api/mundo?symbol=X&range=Y` | Gráfico ampliado de un indicador (1d, 5d, 1m, 3m) |
+| `GET /api/btc-treasury` | Top 10 BTC treasury companies con precios y sparklines (CoinGecko + Yahoo Finance, cache 1h) |
 | `GET /api/news` | Noticias financieras últimas 3h (Google News RSS) |
 | `GET /api/config` | Config estática (billeteras, FCIs, LECAPs, soberanos, CER, ONs) |
 | `GET /api/fci` | FCIs con TNA calculada (proxy ArgentinaDatos) |
@@ -95,6 +98,9 @@ Las Netlify functions (mundo, soberanos, ons, cer, etc.) solo funcionan en produ
 
 ### Monitor Global
 8 indicadores en tiempo real con sparklines intradiarias: S&P 500, Nasdaq 100, WTI, Tasa 10Y USA, Oro, Bitcoin, Ethereum, EUR/USD. Click en cualquier tarjeta para gráfico ampliado con rangos 1D/5D/1M/3M. Punto parpadeante indica datos en vivo.
+
+### BTC Treasury
+Top 10 empresas públicas con más Bitcoin en tesorería, obtenidas dinámicamente de CoinGecko. Muestra cotización bursátil (Yahoo Finance), sparkline intradiario y cantidad de BTC en tesorería. El ranking se actualiza automáticamente cada 1 hora.
 
 ### Noticias (marquesina)
 Cinta horizontal con las últimas noticias financieras. Se actualiza cada 2 minutos. Botón para ocultar.
