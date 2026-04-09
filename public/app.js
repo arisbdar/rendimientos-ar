@@ -750,6 +750,7 @@ function setupTabs() {
     updatePageTitle('mundo');
     if (!document.getElementById('mundo-grid').hasChildNodes()) {
       loadMundo();
+      loadBtcTreasury();
       loadHotMovers();
     }
     setTimeout(readCurrentSection, 1500);
@@ -2458,6 +2459,67 @@ async function loadMundo() {
   } catch (e) {
     grid.innerHTML = '<div class="loading">Error al cargar datos globales.</div>';
     console.error('Mundo error:', e);
+  }
+}
+
+// ─── BTC Treasury Companies ───
+
+async function loadBtcTreasury() {
+  const grid = document.getElementById('btc-treasury-grid');
+  if (!grid) return;
+  grid.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando BTC treasury...</p></div>`;
+
+  try {
+    const res = await fetch('/api/btc-treasury');
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const { data } = await res.json();
+
+    grid.innerHTML = '';
+
+    data.forEach(item => {
+      if (item.price === null) return;
+      const isUp = item.change >= 0;
+      const changeColor = isUp ? 'var(--green)' : 'var(--red)';
+      const arrow = isUp ? '▲' : '▼';
+
+      let priceStr;
+      if (item.price >= 10000) {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+      } else if (item.price >= 100) {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 2 });
+      } else {
+        priceStr = item.price.toLocaleString('es-AR', { maximumFractionDigits: 4 });
+      }
+
+      const holdingsStr = item.holdings >= 1000
+        ? (item.holdings / 1000).toLocaleString('es-AR', { maximumFractionDigits: 1 }) + 'K'
+        : item.holdings.toLocaleString('es-AR', { maximumFractionDigits: 0 });
+
+      const canvasId = `spark-btctreas-${item.id}`;
+      const card = document.createElement('div');
+      card.className = 'mundo-card';
+      card.addEventListener('click', () => openMundoDetail(item.id, item.name, item.icon, item.ticker));
+      card.innerHTML = `
+        <div class="mundo-icon">${item.icon}</div>
+        <div class="mundo-info">
+          <div class="mundo-name">${item.name} <span class="btc-holdings">${holdingsStr} ₿</span></div>
+          <div class="mundo-price">${priceStr}</div>
+        </div>
+        <div class="mundo-spark"><canvas id="${canvasId}" width="60" height="24"></canvas></div>
+        <div class="mundo-change" style="color:${changeColor}">
+          <span class="mundo-arrow">${arrow}</span>
+          <span>${Math.abs(item.change).toFixed(2)}%</span>
+        </div>
+      `;
+      grid.appendChild(card);
+
+      if (item.sparkline && item.sparkline.length > 1) {
+        drawSparkline(canvasId, item.sparkline, isUp);
+      }
+    });
+  } catch (e) {
+    grid.innerHTML = '<div class="loading">Error al cargar BTC treasury.</div>';
+    console.error('BTC Treasury error:', e);
   }
 }
 

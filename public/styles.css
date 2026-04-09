@@ -1661,6 +1661,14 @@ body {
   }
 }
 
+/* BTC Treasury */
+.btc-holdings {
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-left: 2px;
+}
+
 /* Hot US Movers */
 .hot-title {
   font-size: 1.1rem;
