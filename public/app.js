@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupKeyboardNav();
   loadMundo();
   loadHotMovers();
+  loadEarnings();
   loadCotizaciones();
   loadNewsTicker();
   initSupabase();
@@ -2488,7 +2489,7 @@ async function loadHotMovers() {
       card.className = 'hot-card';
       card.style.cursor = 'pointer';
       card.addEventListener('click', () => openMundoDetail(item.symbol.toLowerCase(), item.name, '', item.symbol));
-      const logoUrl = `https://img.logo.dev/ticker/${item.symbol}?token=pk_SHVx2TGVT6Ksh0M-WPaRvw&size=64&format=png`;
+      const logoUrl = `https://static.svvytrdr.com/logos/${item.symbol}.webp`;
       card.innerHTML = `
         <img class="hot-logo" src="${logoUrl}" alt="${item.symbol}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="hot-logo-fallback" style="display:none">${item.symbol.slice(0,2)}</div>
@@ -2506,6 +2507,95 @@ async function loadHotMovers() {
   } catch (e) {
     grid.innerHTML = '<div class="loading">Error al cargar movers.</div>';
     console.error('Hot movers error:', e);
+  }
+}
+
+// ─── Earnings Calendar ───
+
+function formatMcap(val) {
+  if (val >= 1e12) return `$${(val / 1e12).toFixed(1)}T`;
+  if (val >= 1e9) return `$${(val / 1e9).toFixed(0)}B`;
+  if (val >= 1e6) return `$${(val / 1e6).toFixed(0)}M`;
+  return `$${val.toLocaleString()}`;
+}
+
+function earningsTimeLabel(time) {
+  if (!time) return '';
+  const h = parseInt(time.split(':')[0], 10);
+  if (h < 9) return 'Pre-market';
+  if (h >= 16) return 'Post-market';
+  return 'During';
+}
+
+function earningsLogoHtml(symbol, size, cls, fallbackCls) {
+  const url = `https://static.svvytrdr.com/logos/${symbol}.webp`;
+  return `<img class="${cls}" src="${url}" alt="${symbol}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="${fallbackCls}" style="display:none">${symbol.slice(0, 2)}</div>`;
+}
+
+const _EARN_DAYS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+const _EARN_MONTHS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+function formatEarningsDate(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00');
+  return `${_EARN_DAYS[d.getDay()]} ${d.getDate()} ${_EARN_MONTHS[d.getMonth()]}`;
+}
+
+async function loadEarnings() {
+  const today = new Date();
+  const end = new Date(today);
+  end.setDate(end.getDate() + 14);
+  const fmt = d => d.toISOString().split('T')[0];
+  const startStr = fmt(today);
+  const endStr = fmt(end);
+
+  const grid = document.getElementById('earnings-timeline');
+  if (grid) grid.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando earnings...</p></div>`;
+
+  try {
+    const res = await fetch(`/api/earnings?start=${startStr}&end=${endStr}`);
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+
+    const days = Object.keys(data).filter(d => d >= startStr).sort();
+    const TOP_PER_DAY = 5;
+    const parsed = {};
+    for (const day of days) {
+      const items = (data[day] || [])
+        .filter(e => e.isDateConfirmed && e.marketCap > 0)
+        .sort((a, b) => b.marketCap - a.marketCap)
+        .slice(0, TOP_PER_DAY);
+      if (items.length) parsed[day] = items;
+    }
+    const activeDays = Object.keys(parsed).sort().slice(0, 7);
+
+    renderEarningsTimeline(activeDays, parsed);
+  } catch (e) {
+    console.error('Earnings error:', e);
+    if (grid) grid.innerHTML = '<div class="loading">Error al cargar earnings.</div>';
+  }
+}
+
+function renderEarningsTimeline(days, data) {
+  const grid = document.getElementById('earnings-timeline');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  for (const day of days) {
+    const items = data[day];
+    const card = document.createElement('div');
+    card.className = 'earnings-day-card';
+    const itemsHtml = items.map(e => `
+      <div class="earnings-day-item">
+        ${earningsLogoHtml(e.symbol, 24, 'earnings-day-logo', 'earnings-day-item-fallback')}
+        <span class="earnings-day-ticker">${e.symbol}</span>
+        <span class="earnings-day-time">${earningsTimeLabel(e.earningsTime)}</span>
+      </div>
+    `).join('');
+    card.innerHTML = `
+      <div class="earnings-day-header">${formatEarningsDate(day)}</div>
+      <div class="earnings-day-items">${itemsHtml}</div>
+    `;
+    grid.appendChild(card);
   }
 }
 

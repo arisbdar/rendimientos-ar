@@ -1753,6 +1753,77 @@ body {
   font-weight: 600;
 }
 
+/* ─── Earnings Proposals ─── */
+
+/* Proposal 1: Timeline horizontal */
+.earnings-timeline {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.earnings-day-card {
+  min-width: 200px;
+  max-width: 240px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.earnings-day-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+.earnings-day-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+.earnings-day-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.earnings-day-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.earnings-day-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: var(--border-light);
+}
+.earnings-day-item-fallback {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.earnings-day-ticker {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.earnings-day-time {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
 /* Soon badge */
 .soon-badge {
   font-size: 0.55rem;
