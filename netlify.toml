@@ -104,6 +104,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/market-status"
+  to = "/.netlify/functions/market-status"
+  status = 200
+
+[[redirects]]
   from = "/api/config"
   to = "/config.json"
   status = 200

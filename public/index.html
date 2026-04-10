@@ -107,6 +107,15 @@
     </div>
   </div>
 
+  <!-- Global Clocks Ticker -->
+  <div class="clocks-ticker" id="clocks-ticker" tabindex="0" role="button" aria-label="Relojes Mundiales">
+    <div class="clocks-ticker-track" id="clocks-ticker-track"></div>
+    <div class="clocks-sponsor" title="Espacio disponible para publicidad / sponsor oficial">
+      <span class="clocks-sponsor-text">Presentado por</span>
+      <div class="clocks-sponsor-placeholder"></div>
+    </div>
+  </div>
+
   <!-- News Ticker -->
   <div class="news-ticker" id="news-ticker">
     <div class="news-ticker-track" id="news-ticker-track"></div>
@@ -375,8 +384,28 @@
       </section>
     </div>
 
-
   </main>
+
+  <!-- World Clock Modal -->
+  <div class="mundo-modal-overlay" id="world-clock-modal-overlay" style="display:none">
+    <div class="mundo-modal">
+      <div class="mundo-modal-header">
+        <div class="mundo-modal-header-left">
+          <div class="mundo-modal-title">Relojes Mundiales</div>
+          <div class="mundo-modal-date" style="margin-top:4px">Buscá y seleccioná (📌) qué zonas horarias ver en la marquesina principal.</div>
+        </div>
+        <div class="mundo-modal-header-right">
+          <button class="mundo-modal-close" id="world-clock-close" aria-label="Cerrar modal">&times;</button>
+        </div>
+      </div>
+      <div class="mundo-modal-body" style="padding: 16px;">
+        <input type="text" id="world-clock-search" class="chat-home-input" style="width:100%; margin-bottom: 16px; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg); color: var(--text);" placeholder="Buscar país o ciudad...">
+        <div id="world-clock-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 50vh; overflow-y: auto; padding-right: 8px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="footer">
     <p>Fuentes: CAFCI, ArgentinaDatos, BCRA, data912</p>

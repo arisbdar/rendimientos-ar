@@ -531,6 +531,88 @@ app.get('/api/earnings', async (req, res) => {
   }
 });
 
+// --- News Ticker (Google News RSS proxy) ---
+
+app.get('/api/news', async (req, res) => {
+  const FEED = 'https://news.google.com/rss/search?q=when:3h+mercados+OR+dolar+OR+bolsa+OR+wall+street+OR+bitcoin+OR+acciones+OR+bonos&hl=es-419&gl=AR&ceid=AR:es-419';
+  
+  try {
+    const r = await fetch(FEED, { headers: { 'User-Agent': 'Mozilla/5.0' } });
+    const xml = await r.text();
+    if (!xml) throw new Error('Empty response');
+
+    // Simple RSS parser (regex) to match serverless function logic
+    const items = [];
+    const regex = /<item>([\s\S]*?)<\/item>/g;
+    let match;
+    while ((match = regex.exec(xml)) !== null) {
+      const block = match[1];
+      const title = (block.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || '';
+      const link = (block.match(/<link>([\s\S]*?)<\/link>/) || [])[1] || '';
+      const pubDate = (block.match(/<pubDate>([\s\S]*?)<\/pubDate>/) || [])[1] || '';
+      const source = (block.match(/<source[^>]*>([\s\S]*?)<\/source>/) || [])[1] || '';
+      const cleanTitle = title
+        .replace(/<!\[CDATA\[|\]\]>/g, '')
+        .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+        .replace(/ - [^-]+$/, '');
+      if (cleanTitle) {
+        items.push({
+          title: cleanTitle.trim(),
+          source: source.replace(/<!\[CDATA\[|\]\]>/g, '').trim(),
+          link: link.trim(), date: pubDate.trim(),
+        });
+      }
+    }
+    
+    res.json({ data: items.slice(0, 20), updated: new Date().toISOString() });
+  } catch (err) {
+    console.error('News proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch news data' });
+  }
+});
+
+// --- Market Status Proxy (Yahoo Finance) ---
+
+app.get('/api/market-status', async (req, res) => {
+  const SYMBOLS = {
+    '1': '^GSPC', '2': '^FTSE', '3': '^GDAXI', '4': '^N225', '5': '^HSI',
+    '6': '^MERV', '7': '^AXJO', '8': '^FCHI', '9': '^IBEX', '10': '^GSPTSE',
+    '11': '^BVSP', '12': '^SSMI', '13': '000001.SS', '14': '^KS11', '15': '^STI',
+    '16': '^BSESN', '17': 'DFMGI.AE', '18': '^J203.JO', '19': '^MXX', '20': 'IMOEX.ME',
+  };
+
+  async function fetchMarketStatus(id, symbolEncoded) {
+    try {
+      const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbolEncoded}?interval=1d&range=1d`;
+      const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(5000) });
+      const json = await r.json();
+      const meta = json.chart.result[0].meta;
+      const now = Math.floor(Date.now() / 1000);
+      const regular = meta.currentTradingPeriod?.regular;
+      let isOpen = false;
+      if (regular && regular.start && regular.end) {
+        isOpen = (now >= regular.start && now <= regular.end);
+      }
+      return { id, isOpen };
+    } catch (e) {
+      return { id, isOpen: false, error: true };
+    }
+  }
+
+  try {
+    const entries = Object.entries(SYMBOLS);
+    const results = await Promise.allSettled(entries.map(([id, sym]) => fetchMarketStatus(id, sym)));
+    const statusMap = {};
+    results.forEach(r => {
+      if (r.status === 'fulfilled') statusMap[r.value.id] = r.value.isOpen;
+    });
+    res.json({ data: statusMap, updated: new Date().toISOString() });
+  } catch (err) {
+    res.status(502).json({ error: 'Failed to fetch market status' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

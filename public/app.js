@@ -97,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadEarnings();
   loadCotizaciones();
   loadNewsTicker();
+  loadGlobalClocks();
   initSupabase();
 
   // Auth event listeners
@@ -5221,4 +5222,245 @@ function updateMundialBracket(matches, nameMap) {
       break;
     }
   }
+}
+
+// ─── Global Watch (Marquesina de Relojes Mundiales) ───
+
+const ALL_WORLD_CLOCKS = [
+  { id: '1', name: 'Nueva York', tz: 'America/New_York', flag: '🇺🇸', default: true },
+  { id: '2', name: 'Londres', tz: 'Europe/London', flag: '🇬🇧', default: true },
+  { id: '3', name: 'Frankfurt', tz: 'Europe/Berlin', flag: '🇩🇪', default: true },
+  { id: '4', name: 'Tokio', tz: 'Asia/Tokyo', flag: '🇯🇵', default: true },
+  { id: '5', name: 'Hong Kong', tz: 'Asia/Hong_Kong', flag: '🇭🇰', default: true },
+  { id: '6', name: 'Buenos Aires', tz: 'America/Argentina/Buenos_Aires', flag: '🇦🇷', default: true },
+  { id: '7', name: 'Sídney', tz: 'Australia/Sydney', flag: '🇦🇺', default: true },
+  { id: '8', name: 'París', tz: 'Europe/Paris', flag: '🇫🇷' },
+  { id: '9', name: 'Madrid', tz: 'Europe/Madrid', flag: '🇪🇸' },
+  { id: '10', name: 'Toronto', tz: 'America/Toronto', flag: '🇨🇦' },
+  { id: '11', name: 'São Paulo', tz: 'America/Sao_Paulo', flag: '🇧🇷' },
+  { id: '12', name: 'Zúrich', tz: 'Europe/Zurich', flag: '🇨🇭' },
+  { id: '13', name: 'Shanghái', tz: 'Asia/Shanghai', flag: '🇨🇳' },
+  { id: '14', name: 'Seúl', tz: 'Asia/Seoul', flag: '🇰🇷' },
+  { id: '15', name: 'Singapur', tz: 'Asia/Singapore', flag: '🇸🇬' },
+  { id: '16', name: 'Mumbai', tz: 'Asia/Kolkata', flag: '🇮🇳' },
+  { id: '17', name: 'Dubái', tz: 'Asia/Dubai', flag: '🇦🇪' },
+  { id: '18', name: 'Johannesburgo', tz: 'Africa/Johannesburg', flag: '🇿🇦' },
+  { id: '19', name: 'Ciudad de México', tz: 'America/Mexico_City', flag: '🇲🇽' },
+  { id: '20', name: 'Moscú', tz: 'Europe/Moscow', flag: '🇷🇺' }
+];
+
+window._marketStatusCache = {};
+
+async function updateMarketStatuses() {
+  try {
+    const r = await fetch('/api/market-status');
+    if (!r.ok) return;
+    const json = await r.json();
+    if (json.data) {
+      window._marketStatusCache = json.data;
+      // Actualizar solo los LEDs si ya existe el HTML renderizado, o re-renderizar
+      renderGlobalClocksTicker();
+    }
+  } catch(e) {}
+}
+
+function getPinnedClocks() {
+  const saved = localStorage.getItem('pinned-clocks');
+  if (saved) {
+    try {
+      const ids = JSON.parse(saved);
+      const validIds = ids.filter(id => ALL_WORLD_CLOCKS.find(c => c.id === String(id)));
+      if (validIds.length > 0) return validIds.map(String);
+    } catch(e) {}
+  }
+  return ALL_WORLD_CLOCKS.filter(c => c.default).map(c => c.id);
+}
+
+function savePinnedClocks(ids) {
+  localStorage.setItem('pinned-clocks', JSON.stringify(ids));
+  renderGlobalClocksTicker();
+}
+
+function togglePinClock(id) {
+  let pinned = getPinnedClocks();
+  if (pinned.includes(id)) {
+    pinned = pinned.filter(p => p !== id);
+  } else {
+    pinned.push(id);
+  }
+  savePinnedClocks(pinned);
+  renderModalClockList(document.getElementById('world-clock-search').value);
+}
+
+function renderGlobalClocksTicker() {
+  const track = document.getElementById('clocks-ticker-track');
+  if (!track) return;
+  
+  const pinnedIds = getPinnedClocks();
+  const clocksToRender = pinnedIds.map(id => ALL_WORLD_CLOCKS.find(c => c.id === id)).filter(Boolean);
+  
+  if (clocksToRender.length === 0) {
+    track.innerHTML = '<span class="clock-item">No hay relojes seleccionados</span>';
+    return;
+  }
+
+  const html = clocksToRender.map(clock => {
+    let timeStr = '--:--';
+    try {
+      timeStr = new Intl.DateTimeFormat('es-AR', { timeZone: clock.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    } catch(e) {}
+    
+    const isOpen = window._marketStatusCache[clock.id] === true;
+    const statusClass = isOpen ? 'open' : 'closed';
+    const statusTitle = isOpen ? 'Mercado Abierto' : 'Mercado Cerrado';
+
+    return `
+      <div class="clock-item" title="${statusTitle}">
+        <span class="clock-status ${statusClass}"></span>
+        <span class="clock-flag">${clock.flag}</span>
+        ${clock.name}
+        <span class="clock-time" data-tz="${clock.tz}">${timeStr}</span>
+      </div>
+    `;
+  }).join('');
+
+  // Asegura siempre tener el doble de contenido necesario para la animación de loop contínuo al 50%.
+  // Calculamos repeticiones para lograr ~25-30 items mínimos globales en el loop.
+  const minItemsRequired = 26; 
+  let reps = Math.ceil(minItemsRequired / clocksToRender.length);
+  if (reps < 2) reps = 2; // Como mínimo se necesita 2 para que el truco visual del transform: translateX(-50%) no se rompa o corte.
+
+  track.innerHTML = html.repeat(reps);
+}
+
+function updateClockTimesUI() {
+  const timeEls = document.querySelectorAll('.clock-time');
+  timeEls.forEach(el => {
+    const tz = el.getAttribute('data-tz');
+    if (tz) {
+      try {
+        const timeStr = new Intl.DateTimeFormat('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+        if (el.textContent !== timeStr) el.textContent = timeStr;
+      } catch(e) {}
+    }
+  });
+
+  const modalTimeEls = document.querySelectorAll('.world-clock-curr-time');
+  modalTimeEls.forEach(el => {
+    const tz = el.getAttribute('data-tz');
+    if (tz) {
+      try {
+        const timeStr = new Intl.DateTimeFormat('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+        if (el.textContent !== timeStr) el.textContent = timeStr;
+      } catch(e) {}
+    }
+  });
+
+  const nowMinute = new Date().getMinutes();
+  if (window._lastClockFullRenderMinute !== nowMinute && nowMinute % 15 === 0) {
+    window._lastClockFullRenderMinute = nowMinute;
+    renderGlobalClocksTicker();
+  }
+}
+
+function renderModalClockList(filterText = '') {
+  const listContainer = document.getElementById('world-clock-list');
+  if (!listContainer) return;
+  
+  const pinnedIds = getPinnedClocks();
+  const filterLower = filterText.toLowerCase();
+
+  const filtered = ALL_WORLD_CLOCKS.filter(c => {
+    return c.name.toLowerCase().includes(filterLower) || c.tz.toLowerCase().includes(filterLower);
+  });
+
+  if (filtered.length === 0) {
+    listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-tertiary);">No se encontraron resultados</div>';
+    return;
+  }
+
+  filtered.sort((a, b) => {
+    const aPin = pinnedIds.includes(a.id) ? 1 : 0;
+    const bPin = pinnedIds.includes(b.id) ? 1 : 0;
+    if (bPin - aPin !== 0) return bPin - aPin;
+    return a.name.localeCompare(b.name);
+  });
+
+  const html = filtered.map(clock => {
+    let timeStr = '--:--';
+    try {
+      timeStr = new Intl.DateTimeFormat('es-AR', { timeZone: clock.tz, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date());
+    } catch(e) {}
+    
+    const isPinned = pinnedIds.includes(clock.id);
+
+    return `
+      <div class="world-clock-list-item">
+        <div class="world-clock-info">
+          <span class="clock-flag">${clock.flag}</span>
+          <span class="world-clock-name">${clock.name}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap: 12px;">
+          <span class="world-clock-curr-time" data-tz="${clock.tz}">${timeStr}</span>
+          <button class="world-clock-pin ${isPinned ? 'pinned' : ''}" data-id="${clock.id}" aria-label="Fijar">📌</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  listContainer.innerHTML = html;
+
+  const btns = listContainer.querySelectorAll('.world-clock-pin');
+  btns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute('data-id');
+      togglePinClock(id);
+    });
+  });
+}
+
+function loadGlobalClocks() {
+  const ticker = document.getElementById('clocks-ticker');
+  const modalOverlay = document.getElementById('world-clock-modal-overlay');
+  const closeBtn = document.getElementById('world-clock-close');
+  const searchInput = document.getElementById('world-clock-search');
+
+  if (!ticker || !modalOverlay) return;
+
+  renderGlobalClocksTicker();
+  
+  // Real-time market status via Yahoo Finance
+  updateMarketStatuses();
+  setInterval(updateMarketStatuses, 5 * 60 * 1000); // Check every 5 mins
+
+  // Time UI update
+  setInterval(updateClockTimesUI, 20000);
+
+  ticker.addEventListener('click', () => {
+    modalOverlay.style.display = 'flex';
+    searchInput.value = '';
+    renderModalClockList();
+    setTimeout(() => searchInput.focus(), 100);
+  });
+  
+  ticker.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      ticker.click();
+    }
+  });
+
+  const closeModal = () => { modalOverlay.style.display = 'none'; };
+  closeBtn.addEventListener('click', closeModal);
+  modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalOverlay.style.display === 'flex') closeModal();
+  });
+
+  searchInput.addEventListener('input', (e) => {
+    renderModalClockList(e.target.value);
+  });
 }
