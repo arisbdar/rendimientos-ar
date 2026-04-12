@@ -16,8 +16,8 @@
       "nombre": "Carrefour Banco",
       "tipo": "Billetera",
       "limite": "$4 M",
-      "tna": 26,
-      "vigente_desde": "28/03/2026",
+      "tna": 25,
+      "vigente_desde": "12/04/2026",
       "logo": "CB",
       "logo_bg": "#004a9f",
       "activo": true
@@ -31,17 +31,6 @@
       "vigente_desde": "19/03/2026",
       "logo": "NX",
       "logo_bg": "#ff6600",
-      "activo": true
-    },
-    {
-      "id": "fiwind",
-      "nombre": "Fiwind",
-      "tipo": "Billetera",
-      "limite": "$750 K",
-      "tna": 23,
-      "vigente_desde": "19/03/2026",
-      "logo": "FW",
-      "logo_bg": "#1a1a2e",
       "activo": true
     },
     {
