@@ -2705,7 +2705,7 @@ async function loadInflacion() {
       if (tna <= 0) continue;
       const plazo = tramo.plazoMinDias ? `${tramo.plazoMinDias}d` : '';
       products.push({
-        id: 'pfp-' + (tramo.plazoMinDias || 0), name: `BNA UVA ${plazo}`, tna, monthly: tnaToMonthly(tna),
+        id: 'pfp-' + (tramo.plazoMinDias || 0), name: `BNA UVA ${plazo}`, tna, monthly: inflMensual + tnaToMonthly(tna),
         category: 'pfperiodico', logo: 'BN', logoBg: stringToColor('Banco Nación UVA'),
         logoSrc: PLAZO_FIJO_LOGOS['Banco Nación'] || null
       });
@@ -2780,7 +2780,7 @@ async function loadInflacion() {
         if (!ytm || ytm <= 0) continue;
         products.push({
           id: 'cer-' + bp.symbol, name: bp.symbol + ' (CER)',
-          tna: ytm, monthly: tirToMonthly(ytm),
+          tna: ytm, monthly: inflMensual + tirToMonthly(ytm),
           category: 'cerBonds', logo: bp.symbol.slice(0, 2), logoBg: '#1a5276', logoSrc: AR_FLAG
         });
       }
