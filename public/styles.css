@@ -565,6 +565,50 @@ body {
   .vchart .chart-logo { width: 24px; height: 24px; }
 }
 
+/* Inflación Toggles */
+.inflacion-toggles {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.inflacion-toggle {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.inflacion-toggle.active {
+  background: var(--accent-green, #22c55e);
+  color: #fff;
+  border-color: var(--accent-green, #22c55e);
+}
+.inflacion-toggle:hover {
+  border-color: var(--accent-green, #22c55e);
+}
+.inflacion-row {
+  margin-bottom: 2px;
+}
+.inflacion-baseline {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border);
+}
+.inflacion-label {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  flex-shrink: 0;
+}
+
 /* LECAP Table */
 .lecap-table-wrap {
   overflow-x: auto;

@@ -572,6 +572,7 @@ function setupTabs() {
       document.getElementById('tab-plazofijoperiodico').style.display = target === 'plazofijoperiodico' ? '' : 'none';
       document.getElementById('tab-lecaps').style.display = target === 'lecaps' ? '' : 'none';
       document.getElementById('tab-cer').style.display = target === 'cer' ? '' : 'none';
+      document.getElementById('tab-inflacion').style.display = target === 'inflacion' ? '' : 'none';
       document.getElementById('tab-soberanos').style.display = 'none';
 
       const hero = document.getElementById('hero');
@@ -598,6 +599,12 @@ function setupTabs() {
         hero.querySelector('p').textContent = 'Rendimiento real de bonos ajustados por CER en pesos argentinos.';
         if (!document.getElementById('cer-list').hasChildNodes()) {
           loadCER();
+        }
+      } else if (target === 'inflacion') {
+        hero.querySelector('h1').textContent = 'vs Inflación';
+        hero.querySelector('p').textContent = 'Compará el rendimiento mensual de tus inversiones contra la inflación.';
+        if (!document.getElementById('inflacion-chart').hasChildNodes()) {
+          loadInflacion();
         }
       } else {
         hero.querySelector('h1').textContent = '';
@@ -710,12 +717,14 @@ function setupTabs() {
       document.getElementById('tab-plazofijoperiodico').style.display = target === 'plazofijoperiodico' ? '' : 'none';
       document.getElementById('tab-lecaps').style.display = target === 'lecaps' ? '' : 'none';
       document.getElementById('tab-cer').style.display = target === 'cer' ? '' : 'none';
+      document.getElementById('tab-inflacion').style.display = target === 'inflacion' ? '' : 'none';
     } else {
       document.getElementById('tab-billeteras').style.display = '';
       document.getElementById('tab-plazofijo').style.display = 'none';
       document.getElementById('tab-plazofijoperiodico').style.display = 'none';
       document.getElementById('tab-lecaps').style.display = 'none';
       document.getElementById('tab-cer').style.display = 'none';
+      document.getElementById('tab-inflacion').style.display = 'none';
     }
     // Restore hero
     const activeSubtab = document.querySelector('.subnav-tab.active');
@@ -731,6 +740,9 @@ function setupTabs() {
     } else if (activeSubtab && activeSubtab.dataset.tab === 'cer') {
       hero.querySelector('h1').textContent = 'Bonos CER';
       hero.querySelector('p').textContent = 'Rendimiento real de bonos ajustados por CER en pesos argentinos.';
+    } else if (activeSubtab && activeSubtab.dataset.tab === 'inflacion') {
+      hero.querySelector('h1').textContent = 'vs Inflación';
+      hero.querySelector('p').textContent = 'Compará el rendimiento mensual de tus inversiones contra la inflación.';
     } else {
       hero.querySelector('h1').textContent = '';
       hero.querySelector('p').textContent = '';
@@ -873,6 +885,7 @@ function setupTabs() {
   else if (initialHash === 'plazofijoperiodico') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijoperiodico"]')?.click(); }
   else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
   else if (initialHash === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
+  else if (initialHash === 'inflacion') { switchToArs(); document.querySelector('.subnav-tab[data-tab="inflacion"]')?.click(); }
   else if (initialHash === 'hipotecarios') switchToHipotecarios();
   else if (initialHash === 'dolar') switchToDolar();
   else if (initialHash === 'pix') switchToPix();
@@ -894,6 +907,7 @@ function setupTabs() {
     else if (h === 'plazofijoperiodico') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijoperiodico"]')?.click(); }
     else if (h === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
     else if (h === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
+    else if (h === 'inflacion') { switchToArs(); document.querySelector('.subnav-tab[data-tab="inflacion"]')?.click(); }
     else if (h === 'hipotecarios') switchToHipotecarios();
     else if (h === 'dolar') switchToDolar();
     else if (h === 'pix') switchToPix();
@@ -2613,6 +2627,147 @@ async function loadHotMovers() {
     grid.innerHTML = '<div class="loading">Error al cargar movers.</div>';
     console.error('Hot movers error:', e);
   }
+}
+
+// ─── vs Inflación ───
+
+let _inflacionData = null; // cached inflation + products data
+let _inflacionToggles = {}; // { category: bool }
+
+function tnaToMonthly(tna) {
+  return (Math.pow(1 + tna / 100, 30 / 365) - 1) * 100;
+}
+
+async function loadInflacion() {
+  const chart = document.getElementById('inflacion-chart');
+  const togglesEl = document.getElementById('inflacion-toggles');
+  if (!chart) return;
+  chart.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Cargando datos...</p></div>';
+
+  try {
+    // Fetch inflation + products in parallel
+    const [inflRes, pfRes, fciRes, configRes] = await Promise.all([
+      fetch('https://api.argentinadatos.com/v1/finanzas/indices/inflacion'),
+      fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo'),
+      fetch('/api/fci'),
+      fetch('/api/config'),
+    ]);
+
+    const inflData = await inflRes.json();
+    const pfData = await pfRes.json();
+    const fciData = await fciRes.json();
+    const config = await configRes.json();
+
+    // Last month inflation
+    const lastInflacion = inflData[inflData.length - 1];
+    const inflMensual = lastInflacion.valor;
+    const inflFecha = lastInflacion.fecha;
+
+    // Build product list
+    const products = [];
+
+    // Billeteras from config
+    const billeteras = (config.garantizados || []).filter(g => g.activo);
+    for (const b of billeteras) {
+      products.push({ name: b.nombre, tna: b.tna, monthly: tnaToMonthly(b.tna), category: 'billeteras', logo: b.logo, logoBg: b.logo_bg });
+    }
+
+    // Plazo fijo - top 5 by TNA clientes
+    const pfSorted = [...pfData].sort((a, b) => (b.tnaClientes || 0) - (a.tnaClientes || 0)).slice(0, 5);
+    for (const pf of pfSorted) {
+      const tna = (pf.tnaClientes || 0) * 100;
+      products.push({ name: pf.entidad, tna, monthly: tnaToMonthly(tna), category: 'plazofijo', logo: 'PF', logoBg: '#2563eb' });
+    }
+
+    // FCIs - only Money Market ARS from config
+    const configFcis = (config.fcis || []).filter(f => f.activo && f.categoria === 'Money Market');
+    const fciList = (fciData.data || fciData || []);
+    const fciMap = {};
+    for (const f of fciList) fciMap[f.nombre] = f;
+    const matchedFcis = configFcis
+      .map(cf => fciMap[cf.nombre])
+      .filter(f => f && f.tna > 0)
+      .sort((a, b) => b.tna - a.tna)
+      .slice(0, 5);
+    for (const f of matchedFcis) {
+      products.push({ name: f.entidad || f.nombre, tna: f.tna, monthly: tnaToMonthly(f.tna), category: 'fcis', logo: 'FCI', logoBg: '#7c3aed' });
+    }
+
+    _inflacionData = { inflMensual: inflMensual, inflFecha, products };
+    _inflacionToggles = { billeteras: true, plazofijo: true, fcis: true };
+
+    // Render toggles
+    renderInflacionToggles(togglesEl);
+    renderInflacionChart();
+
+    // Source
+    const srcEl = document.getElementById('inflacion-source');
+    const mesLabel = new Date(inflFecha + 'T12:00:00').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+    if (srcEl) srcEl.textContent = `Inflación de ${mesLabel}: ${inflMensual}% mensual — Fuente: ArgentinaDatos / INDEC`;
+  } catch (e) {
+    console.error('Inflación error:', e);
+    chart.innerHTML = '<div class="loading">Error al cargar datos de inflación.</div>';
+  }
+}
+
+function renderInflacionToggles(container) {
+  if (!container) return;
+  const cats = [
+    { key: 'billeteras', label: 'Billeteras' },
+    { key: 'plazofijo', label: 'Plazo Fijo' },
+    { key: 'fcis', label: 'FCIs' },
+  ];
+  container.innerHTML = cats.map(c =>
+    `<button class="inflacion-toggle${_inflacionToggles[c.key] ? ' active' : ''}" data-cat="${c.key}">${c.label}</button>`
+  ).join('');
+  container.querySelectorAll('.inflacion-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      _inflacionToggles[cat] = !_inflacionToggles[cat];
+      btn.classList.toggle('active');
+      renderInflacionChart();
+    });
+  });
+}
+
+function renderInflacionChart() {
+  const container = document.getElementById('inflacion-chart');
+  if (!container || !_inflacionData) return;
+
+  const { inflMensual, products } = _inflacionData;
+  const visible = products.filter(p => _inflacionToggles[p.category]);
+
+  // Sort descending by monthly return
+  const sorted = [...visible].sort((a, b) => b.monthly - a.monthly);
+  const allItems = [{ name: 'Inflación (IPC)', monthly: inflMensual, isInflation: true }, ...sorted];
+  const maxVal = Math.max(...allItems.map(i => i.monthly));
+
+  const rows = allItems.map(item => {
+    const pct = Math.max(5, (item.monthly / maxVal) * 100);
+    const beatsInflation = item.monthly >= inflMensual;
+    let color;
+    if (item.isInflation) {
+      color = 'var(--accent-orange, #f59e0b)';
+    } else {
+      color = beatsInflation ? 'var(--accent-green, #22c55e)' : 'var(--accent-red, #ef4444)';
+    }
+    const logo = item.isInflation
+      ? `<div class="chart-logo" style="background:#f59e0b;font-size:0.7rem">IPC</div>`
+      : `<div class="chart-logo" style="background:${item.logoBg || '#555'}">${item.logo || item.name.slice(0, 2)}</div>`;
+
+    return `
+      <div class="chart-row inflacion-row${item.isInflation ? ' inflacion-baseline' : ''}">
+        ${logo}
+        <div class="chart-bar-wrap">
+          <div class="chart-bar" style="width:${pct}%;background:${color}">
+            <span class="chart-value">${item.monthly.toFixed(2)}%</span>
+          </div>
+        </div>
+        <span class="inflacion-label">${item.name}</span>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = rows;
 }
 
 // ─── Earnings Calendar ───
