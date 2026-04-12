@@ -2631,8 +2631,8 @@ async function loadHotMovers() {
 
 // ─── vs Inflación ───
 
-let _inflacionData = null; // cached inflation + products data
-let _inflacionToggles = {}; // { category: bool }
+let _inflacionData = null;
+let _inflacionSelected = {}; // { productId: bool }
 
 function tnaToMonthly(tna) {
   return (Math.pow(1 + tna / 100, 30 / 365) - 1) * 100;
@@ -2645,7 +2645,6 @@ async function loadInflacion() {
   chart.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Cargando datos...</p></div>';
 
   try {
-    // Fetch inflation + products in parallel
     const [inflRes, pfRes, fciRes, configRes] = await Promise.all([
       fetch('https://api.argentinadatos.com/v1/finanzas/indices/inflacion'),
       fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo'),
@@ -2658,49 +2657,72 @@ async function loadInflacion() {
     const fciData = await fciRes.json();
     const config = await configRes.json();
 
-    // Last month inflation
     const lastInflacion = inflData[inflData.length - 1];
     const inflMensual = lastInflacion.valor;
     const inflFecha = lastInflacion.fecha;
 
-    // Build product list
     const products = [];
 
-    // Billeteras from config
+    // Billeteras
     const billeteras = (config.garantizados || []).filter(g => g.activo);
     for (const b of billeteras) {
-      products.push({ name: b.nombre, tna: b.tna, monthly: tnaToMonthly(b.tna), category: 'billeteras', logo: b.logo, logoBg: b.logo_bg });
+      const logoSrc = getLogoForItem(b);
+      products.push({
+        id: 'bil-' + b.id, name: b.nombre, tna: b.tna, monthly: tnaToMonthly(b.tna),
+        category: 'billeteras', logo: b.logo, logoBg: b.logo_bg, logoSrc
+      });
+    }
+    // Especiales
+    const especiales = (config.especiales || []).filter(g => g.activo);
+    for (const b of especiales) {
+      const logoSrc = getLogoForItem(b);
+      products.push({
+        id: 'esp-' + b.id, name: b.nombre, tna: b.tna, monthly: tnaToMonthly(b.tna),
+        category: 'billeteras', logo: b.logo, logoBg: b.logo_bg, logoSrc
+      });
     }
 
-    // Plazo fijo - top 5 by TNA clientes
-    const pfSorted = [...pfData].sort((a, b) => (b.tnaClientes || 0) - (a.tnaClientes || 0)).slice(0, 5);
-    for (const pf of pfSorted) {
+    // Plazo Fijo - all banks
+    const pfAll = [...pfData].sort((a, b) => (b.tnaClientes || 0) - (a.tnaClientes || 0));
+    for (const pf of pfAll) {
       const tna = (pf.tnaClientes || 0) * 100;
-      products.push({ name: pf.entidad, tna, monthly: tnaToMonthly(tna), category: 'plazofijo', logo: 'PF', logoBg: '#2563eb' });
+      if (tna <= 0) continue;
+      const displayName = formatBankName(pf.entidad);
+      const initials = displayName.replace(/^Banco\s*/i, '').substring(0, 2).toUpperCase();
+      products.push({
+        id: 'pf-' + pf.entidad, name: displayName, tna, monthly: tnaToMonthly(tna),
+        category: 'plazofijo', logo: initials, logoBg: stringToColor(pf.entidad),
+        logoSrc: PLAZO_FIJO_LOGOS[displayName] || pf.logo || null
+      });
     }
 
-    // FCIs - only Money Market ARS from config
+    // FCIs - all Money Market from config with live TNA
     const configFcis = (config.fcis || []).filter(f => f.activo && f.categoria === 'Money Market');
     const fciList = (fciData.data || fciData || []);
     const fciMap = {};
     for (const f of fciList) fciMap[f.nombre] = f;
-    const matchedFcis = configFcis
-      .map(cf => fciMap[cf.nombre])
-      .filter(f => f && f.tna > 0)
-      .sort((a, b) => b.tna - a.tna)
-      .slice(0, 5);
-    for (const f of matchedFcis) {
-      products.push({ name: f.entidad || f.nombre, tna: f.tna, monthly: tnaToMonthly(f.tna), category: 'fcis', logo: 'FCI', logoBg: '#7c3aed' });
+    for (const cf of configFcis) {
+      const live = fciMap[cf.nombre];
+      if (!live || live.tna <= 0) continue;
+      const entidad = live.entidad || cf.entidad || cf.nombre;
+      products.push({
+        id: 'fci-' + cf.id, name: cf.nombre, tna: live.tna, monthly: tnaToMonthly(live.tna),
+        category: 'fcis', logo: entidad.substring(0, 2).toUpperCase(),
+        logoBg: stringToColor(entidad), logoSrc: getLogoForEntity(entidad)
+      });
     }
 
-    _inflacionData = { inflMensual: inflMensual, inflFecha, products };
-    _inflacionToggles = { billeteras: true, plazofijo: true, fcis: true };
+    _inflacionData = { inflMensual, inflFecha, products };
 
-    // Render toggles
+    // Default: all billeteras selected
+    _inflacionSelected = {};
+    for (const p of products) {
+      _inflacionSelected[p.id] = p.category === 'billeteras';
+    }
+
     renderInflacionToggles(togglesEl);
     renderInflacionChart();
 
-    // Source
     const srcEl = document.getElementById('inflacion-source');
     const mesLabel = new Date(inflFecha + 'T12:00:00').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
     if (srcEl) srcEl.textContent = `Inflación de ${mesLabel}: ${inflMensual}% mensual — Fuente: ArgentinaDatos / INDEC`;
@@ -2711,20 +2733,64 @@ async function loadInflacion() {
 }
 
 function renderInflacionToggles(container) {
-  if (!container) return;
-  const cats = [
-    { key: 'billeteras', label: 'Billeteras' },
+  if (!container || !_inflacionData) return;
+  const { products } = _inflacionData;
+
+  const categories = [
+    { key: 'billeteras', label: 'Billeteras y Cuentas' },
     { key: 'plazofijo', label: 'Plazo Fijo' },
-    { key: 'fcis', label: 'FCIs' },
+    { key: 'fcis', label: 'Fondos (Money Market)' },
   ];
-  container.innerHTML = cats.map(c =>
-    `<button class="inflacion-toggle${_inflacionToggles[c.key] ? ' active' : ''}" data-cat="${c.key}">${c.label}</button>`
-  ).join('');
-  container.querySelectorAll('.inflacion-toggle').forEach(btn => {
+
+  let html = '';
+  for (const cat of categories) {
+    const catProducts = products.filter(p => p.category === cat.key);
+    const anySelected = catProducts.some(p => _inflacionSelected[p.id]);
+
+    html += `<div class="infl-cat">`;
+    html += `<button class="infl-cat-header${anySelected ? ' active' : ''}" data-cat="${cat.key}">${cat.label}</button>`;
+    html += `<div class="infl-chips">`;
+    for (const p of catProducts) {
+      const sel = _inflacionSelected[p.id];
+      const safeLogoSrc = p.logoSrc?.replace(/^http:\/\//, 'https://');
+      const logoInner = safeLogoSrc
+        ? `<img src="${safeLogoSrc}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="infl-chip-fallback" style="display:none;background:${p.logoBg}">${p.logo}</span>`
+        : `<span class="infl-chip-fallback" style="background:${p.logoBg}">${p.logo}</span>`;
+      html += `<button class="infl-chip${sel ? ' active' : ''}" data-id="${p.id}">
+        <span class="infl-chip-logo">${logoInner}</span>
+        <span class="infl-chip-name">${p.name.replace(/^Banco\s*/i, '')}</span>
+      </button>`;
+    }
+    html += `</div></div>`;
+  }
+
+  container.innerHTML = html;
+
+  // Category header: toggle all in category
+  container.querySelectorAll('.infl-cat-header').forEach(btn => {
     btn.addEventListener('click', () => {
       const cat = btn.dataset.cat;
-      _inflacionToggles[cat] = !_inflacionToggles[cat];
+      const catProducts = products.filter(p => p.category === cat);
+      const allOn = catProducts.every(p => _inflacionSelected[p.id]);
+      for (const p of catProducts) _inflacionSelected[p.id] = !allOn;
+      renderInflacionToggles(container);
+      renderInflacionChart();
+    });
+  });
+
+  // Individual chip toggle
+  container.querySelectorAll('.infl-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      _inflacionSelected[id] = !_inflacionSelected[id];
       btn.classList.toggle('active');
+      // Update cat header state
+      const product = products.find(p => p.id === id);
+      if (product) {
+        const catProducts = products.filter(p => p.category === product.category);
+        const header = container.querySelector(`.infl-cat-header[data-cat="${product.category}"]`);
+        if (header) header.classList.toggle('active', catProducts.some(p => _inflacionSelected[p.id]));
+      }
       renderInflacionChart();
     });
   });
@@ -2735,29 +2801,42 @@ function renderInflacionChart() {
   if (!container || !_inflacionData) return;
 
   const { inflMensual, products } = _inflacionData;
-  const visible = products.filter(p => _inflacionToggles[p.category]);
+  const visible = products.filter(p => _inflacionSelected[p.id]);
 
-  // Sort descending by monthly return
+  if (visible.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-tertiary);font-size:0.85rem;padding:16px 0">Seleccioná productos para comparar contra la inflación.</p>';
+    return;
+  }
+
   const sorted = [...visible].sort((a, b) => b.monthly - a.monthly);
   const allItems = [{ name: 'Inflación (IPC)', monthly: inflMensual, isInflation: true }, ...sorted];
   const maxVal = Math.max(...allItems.map(i => i.monthly));
+  const minVal = Math.min(...allItems.map(i => i.monthly));
+
+  function getBarColor(val) {
+    const ratio = (val - minVal) / (maxVal - minVal || 1);
+    return `hsl(160, ${45 + ratio * 30}%, ${55 - ratio * 15}%)`;
+  }
 
   const rows = allItems.map(item => {
     const pct = Math.max(5, (item.monthly / maxVal) * 100);
-    const beatsInflation = item.monthly >= inflMensual;
-    let color;
+    const color = item.isInflation ? 'var(--yellow, #f9ab00)' : getBarColor(item.monthly);
+
+    let logoHtml;
     if (item.isInflation) {
-      color = 'var(--accent-orange, #f59e0b)';
+      logoHtml = `<div class="chart-logo" style="background:var(--yellow, #f9ab00);font-size:0.6rem">IPC</div>`;
     } else {
-      color = beatsInflation ? 'var(--accent-green, #22c55e)' : 'var(--accent-red, #ef4444)';
+      const safeLogoSrc = item.logoSrc?.replace(/^http:\/\//, 'https://');
+      const logoInner = safeLogoSrc
+        ? `<img src="${safeLogoSrc}" alt="${item.name}" onerror="this.parentElement.textContent='${item.logo}'">`
+        : item.logo;
+      const logoBg = safeLogoSrc ? 'transparent' : (item.logoBg || '#555');
+      logoHtml = `<div class="chart-logo" style="background:${logoBg}">${logoInner}</div>`;
     }
-    const logo = item.isInflation
-      ? `<div class="chart-logo" style="background:#f59e0b;font-size:0.7rem">IPC</div>`
-      : `<div class="chart-logo" style="background:${item.logoBg || '#555'}">${item.logo || item.name.slice(0, 2)}</div>`;
 
     return `
       <div class="chart-row inflacion-row${item.isInflation ? ' inflacion-baseline' : ''}">
-        ${logo}
+        ${logoHtml}
         <div class="chart-bar-wrap">
           <div class="chart-bar" style="width:${pct}%;background:${color}">
             <span class="chart-value">${item.monthly.toFixed(2)}%</span>
