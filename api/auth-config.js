@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   const allowedOrigins = [
     'https://rendimientos.co',
-    'https://rendimientos-ar.netlify.app',
+    'https://comparatasas.vercel.app',
   ];
   const origin = (req.headers || {}).origin || '';
   const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];

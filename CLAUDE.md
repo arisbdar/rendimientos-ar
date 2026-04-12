@@ -63,7 +63,7 @@ Nota: Las funciones serverless (mundo, soberanos, news, etc) solo funcionan en p
 - Respetar el sistema de temas dark/light con CSS variables
 - Los logos de bancos se guardan en `public/logos/` (SVGs de icons.com.ar + PNGs de logo_cache). Mapeos en `PLAZO_FIJO_LOGOS` y `HIPOTECARIO_LOGOS` en app.js. Fallback: BCRA API (http -> upgradar a https) o iniciales con color.
 - Los datos de billeteras/cuentas remuneradas son manuales en config.json
-- El SEO usa el dominio `rendimientos.co`, no el legacy de Netlify
+- El SEO usa el dominio `rendimientos.co` (canonical), deploy en Vercel
 - Las calculadoras de bonos incluyen campos de Arancel e Impuestos (editables por el usuario)
 - El portfolio usa Supabase con RLS — cada usuario solo ve sus holdings
 - El tipo de cambio implicito (CCL) se calcula desde AL30/AL30D de data912
@@ -85,7 +85,7 @@ El feature de portfolio soporta estos tipos de activos:
 Sección de ranking de créditos hipotecarios UVA. Los datos se consumen de un Google Sheet publicado (ID: `1h191b61YRkAI9Xv3_dDuNf7ejst_ziw9kacfJsnvLoM`, GID: `1120229027`) que exporta como CSV con columnas: Banco, TNA, Plazo Máximo, Relación Cuota/Ingreso, % Financiamiento.
 
 - **Fuente**: [@SalinasAndres](https://x.com/SalinasAndres) (atribuido en la UI)
-- **Endpoint**: `/api/hipotecarios` (Netlify function `hipotecarios.js`)
+- **Endpoint**: `/api/hipotecarios` (Vercel serverless function `hipotecarios.js`)
 - **Logos**: `HIPOTECARIO_LOGOS` en app.js, archivos en `public/logos/`
 - **Ordenamiento**: TNA ascendente (menor tasa = mejor para el tomador)
 - **Renderizado**: Cards con tags (plazo, financiamiento, cuota/ingreso) + gráfico de barras horizontal

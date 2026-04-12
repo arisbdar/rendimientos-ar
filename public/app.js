@@ -5135,7 +5135,7 @@ function renderMundial() {
     });
   });
 
-  // Fetch live data from football-data.org via Netlify function
+  // Fetch live data from football-data.org via serverless function
   fetchMundialLiveData(MUNDIAL_GROUPS);
 }
 

@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node --check server.js && node --check netlify/functions/cafci.js && node --test test/"
+    "test": "node --check server.js && node --check api/cafci.js && node --test test/"
   },
   "keywords": [],
   "author": "",
