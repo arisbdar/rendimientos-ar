@@ -600,8 +600,8 @@ function setupTabs() {
           loadCER();
         }
       } else {
-        hero.querySelector('h1').textContent = 'Rendimientos de Fondos y Billeteras';
-        hero.querySelector('p').textContent = 'Compará rendimientos actualizados de billeteras y fondos de liquidez en Argentina.';
+        hero.querySelector('h1').textContent = '';
+        hero.querySelector('p').textContent = '';
       }
       // Update hash for sub-tabs
       location.hash = target === 'billeteras' ? 'ars' : target;
@@ -732,8 +732,8 @@ function setupTabs() {
       hero.querySelector('h1').textContent = 'Bonos CER';
       hero.querySelector('p').textContent = 'Rendimiento real de bonos ajustados por CER en pesos argentinos.';
     } else {
-      hero.querySelector('h1').textContent = 'Rendimientos de Fondos y Billeteras';
-      hero.querySelector('p').textContent = 'Compará rendimientos actualizados de billeteras y fondos de liquidez en Argentina.';
+      hero.querySelector('h1').textContent = '';
+      hero.querySelector('p').textContent = '';
     }
     const sub = document.querySelector('.subnav-tab.active')?.dataset.tab || 'ars';
     updatePageTitle(sub === 'billeteras' ? 'ars' : sub);
