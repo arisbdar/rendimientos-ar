@@ -2635,7 +2635,8 @@ let _inflacionData = null;
 let _inflacionSelected = {}; // { productId: bool }
 
 function tnaToMonthly(tna) {
-  return (Math.pow(1 + tna / 100, 30 / 365) - 1) * 100;
+  // TNA with daily compounding: (1 + TNA/365)^30 - 1
+  return (Math.pow(1 + tna / 100 / 365, 30) - 1) * 100;
 }
 
 function tirToMonthly(tir) {
