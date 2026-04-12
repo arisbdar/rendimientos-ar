@@ -2776,8 +2776,8 @@ async function loadInflacion() {
         }).filter(Boolean);
         if (!flujosAjustados.length) continue;
 
-        const ytm = typeof calcYTM === 'function' ? calcYTM(precioARS / 100, flujosAjustados, today) : 0;
-        if (!ytm || ytm <= 0) continue;
+        const ytm = typeof calcYTM === 'function' ? calcYTM(precioARS / 100, flujosAjustados, today) : null;
+        if (ytm === null || isNaN(ytm)) continue;
         products.push({
           id: 'cer-' + bp.symbol, name: bp.symbol + ' (CER)',
           tna: ytm, monthly: inflMensual + tirToMonthly(ytm),
