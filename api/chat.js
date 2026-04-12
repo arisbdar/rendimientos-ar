@@ -18,6 +18,30 @@ function getClientIP(req) {
   return req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.headers['client-ip'] || req.headers['x-real-ip'] || 'unknown';
 }
 
+// Per-minute rate limiting
+const chatRateLimit = new Map();
+const CHAT_RATE_LIMIT = 10;       // max requests
+const CHAT_RATE_WINDOW = 60000;   // per 60 seconds
+
+function checkChatRateLimit(ip) {
+  const now = Date.now();
+  const entry = chatRateLimit.get(ip);
+  if (!entry || now - entry.start > CHAT_RATE_WINDOW) {
+    chatRateLimit.set(ip, { start: now, count: 1 });
+    return true;
+  }
+  if (entry.count >= CHAT_RATE_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, entry] of chatRateLimit) {
+    if (now - entry.start > CHAT_RATE_WINDOW * 2) chatRateLimit.delete(ip);
+  }
+}, 300000);
+
 async function fetchJSON(url) {
   const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, redirect: 'follow', signal: AbortSignal.timeout(10000) });
   return r.json();
@@ -119,6 +143,11 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.headers['x-real-ip'] || req.ip || 'unknown';
+  if (!checkChatRateLimit(clientIp)) {
+    return res.status(429).json({ error: 'Demasiadas consultas. Esperá un minuto.' });
+  }
 
   const clientIP = getClientIP(req);
   const { allowed, remaining } = checkRateLimit(clientIP);
