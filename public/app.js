@@ -2649,16 +2649,13 @@ async function loadInflacion() {
   chart.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>Cargando datos...</p></div>';
 
   try {
-    const [inflRes, pfRes, pfPeriodicoRes, fciRes, configRes, lecapsRes, cerRes, cerUltimoRes, cerPreciosRes] = await Promise.all([
+    const [inflRes, pfRes, pfPeriodicoRes, fciRes, configRes, lecapsRes] = await Promise.all([
       fetch('https://api.argentinadatos.com/v1/finanzas/indices/inflacion'),
       fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo'),
       fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijoUvaPagoPeriodico').catch(() => null),
       fetch('/api/fci'),
       fetch('/api/config'),
       fetch('/api/lecaps').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
-      fetch('/api/cer?v=2').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
     ]);
 
     const inflData = await inflRes.json();
@@ -2750,42 +2747,6 @@ async function loadInflacion() {
       }
     }
 
-    // Bonos CER
-    const cerActual = cerRes?.cer || 0;
-    const bondPrices = (cerPreciosRes.data || []);
-    const bonosCER = config.bonos_cer || {};
-    if (cerActual && bondPrices.length) {
-      const today = new Date();
-      for (const bp of bondPrices) {
-        const bondConfig = bonosCER[bp.symbol];
-        if (!bondConfig || !bondConfig.flujos) continue;
-        const precioARS = bp.c || bp.price;
-        if (!precioARS || precioARS <= 0) continue;
-
-        const cerEmision = bondConfig.cer_emision || 1;
-        let coefCER = cerActual / cerEmision;
-        if (bp.symbol === 'DICP') coefCER *= 1.27;
-
-        let amortAcum = 0;
-        const todosLosFlujos = bondConfig.flujos.map(f => { const vr = 1 - amortAcum; amortAcum += f.amortizacion; return { ...f, vr_antes: vr }; });
-        const flujosAjustados = todosLosFlujos.map(f => {
-          const fecha = parseLocalDate(f.fecha);
-          if (fecha <= today) return null;
-          const flujoNominal = (f.vr_antes * f.tasa_interes * f.base) + f.amortizacion;
-          return { fecha, monto: flujoNominal * coefCER };
-        }).filter(Boolean);
-        if (!flujosAjustados.length) continue;
-
-        const ytm = typeof calcYTM === 'function' ? calcYTM(precioARS / 100, flujosAjustados, today) : null;
-        if (ytm === null || isNaN(ytm)) continue;
-        products.push({
-          id: 'cer-' + bp.symbol, name: bp.symbol + ' (CER)',
-          tna: ytm, monthly: inflMensual + tirToMonthly(ytm),
-          category: 'cerBonds', logo: bp.symbol.slice(0, 2), logoBg: '#1a5276', logoSrc: AR_FLAG
-        });
-      }
-    }
-
     _inflacionData = { inflMensual, inflFecha, products };
 
     // Default: all billeteras selected
@@ -2816,7 +2777,6 @@ function renderInflacionToggles(container) {
     { key: 'pfperiodico', label: 'Plazo Fijo Periódico' },
     { key: 'fcis', label: 'Fondos' },
     { key: 'lecaps', label: 'LECAPs / BONCAPs' },
-    { key: 'cerBonds', label: 'Bonos CER' },
   ];
 
   let html = '';
