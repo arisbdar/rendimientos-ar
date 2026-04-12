@@ -569,6 +569,7 @@ function setupTabs() {
 
       document.getElementById('tab-billeteras').style.display = target === 'billeteras' ? '' : 'none';
       document.getElementById('tab-plazofijo').style.display = target === 'plazofijo' ? '' : 'none';
+      document.getElementById('tab-plazofijoperiodico').style.display = target === 'plazofijoperiodico' ? '' : 'none';
       document.getElementById('tab-lecaps').style.display = target === 'lecaps' ? '' : 'none';
       document.getElementById('tab-cer').style.display = target === 'cer' ? '' : 'none';
       document.getElementById('tab-soberanos').style.display = 'none';
@@ -579,6 +580,12 @@ function setupTabs() {
         hero.querySelector('p').textContent = 'Compará tasas de plazo fijo de bancos argentinos. Datos provistos por el BCRA.';
         if (!document.getElementById('plazofijo-list').hasChildNodes()) {
           loadPlazoFijo();
+        }
+      } else if (target === 'plazofijoperiodico') {
+        hero.querySelector('h1').textContent = 'Plazo Fijo Periódico';
+        hero.querySelector('p').textContent = 'Compará los tramos de plazo fijo UVA con pago periódico de Banco Nación.';
+        if (!document.getElementById('plazofijo-uva-periodico-list').hasChildNodes()) {
+          loadPlazoFijoUvaPeriodico();
         }
       } else if (target === 'lecaps') {
         hero.querySelector('h1').textContent = 'LECAPs y BONCAPs';
@@ -623,6 +630,7 @@ function setupTabs() {
   function hideAllTabs() {
     document.getElementById('tab-billeteras').style.display = 'none';
     document.getElementById('tab-plazofijo').style.display = 'none';
+    document.getElementById('tab-plazofijoperiodico').style.display = 'none';
     document.getElementById('tab-lecaps').style.display = 'none';
     document.getElementById('tab-cer').style.display = 'none';
     document.getElementById('tab-hipotecarios').style.display = 'none';
@@ -658,6 +666,7 @@ function setupTabs() {
       ars: 'Billeteras y Fondos',
       bonos: 'Bonos Soberanos USD',
       plazofijo: 'Tasas Plazo Fijo',
+      plazofijoperiodico: 'Plazo Fijo Periódico',
       lecaps: 'LECAPs y BONCAPs',
       hipotecarios: 'Hipotecarios UVA',
       bcra: 'Indicadores BCRA',
@@ -698,11 +707,13 @@ function setupTabs() {
       const target = activeTab.dataset.tab;
       document.getElementById('tab-billeteras').style.display = target === 'billeteras' ? '' : 'none';
       document.getElementById('tab-plazofijo').style.display = target === 'plazofijo' ? '' : 'none';
+      document.getElementById('tab-plazofijoperiodico').style.display = target === 'plazofijoperiodico' ? '' : 'none';
       document.getElementById('tab-lecaps').style.display = target === 'lecaps' ? '' : 'none';
       document.getElementById('tab-cer').style.display = target === 'cer' ? '' : 'none';
     } else {
       document.getElementById('tab-billeteras').style.display = '';
       document.getElementById('tab-plazofijo').style.display = 'none';
+      document.getElementById('tab-plazofijoperiodico').style.display = 'none';
       document.getElementById('tab-lecaps').style.display = 'none';
       document.getElementById('tab-cer').style.display = 'none';
     }
@@ -711,6 +722,9 @@ function setupTabs() {
     if (activeSubtab && activeSubtab.dataset.tab === 'plazofijo') {
       hero.querySelector('h1').textContent = 'Tasas de Plazo Fijo';
       hero.querySelector('p').textContent = 'Compará tasas de plazo fijo de bancos argentinos. Datos provistos por el BCRA.';
+    } else if (activeSubtab && activeSubtab.dataset.tab === 'plazofijoperiodico') {
+      hero.querySelector('h1').textContent = 'Plazo Fijo Periódico';
+      hero.querySelector('p').textContent = 'Compará los tramos de plazo fijo UVA con pago periódico de Banco Nación.';
     } else if (activeSubtab && activeSubtab.dataset.tab === 'lecaps') {
       hero.querySelector('h1').textContent = 'LECAPs y BONCAPs';
       hero.querySelector('p').textContent = 'Rendimiento implícito de letras y bonos capitalizables del Tesoro según precio de mercado.';
@@ -856,6 +870,7 @@ function setupTabs() {
   else if (initialHash === 'ars') switchToArs();
   else if (initialHash === 'bonos') switchToSoberanos();
   else if (initialHash === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
+  else if (initialHash === 'plazofijoperiodico') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijoperiodico"]')?.click(); }
   else if (initialHash === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
   else if (initialHash === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
   else if (initialHash === 'hipotecarios') switchToHipotecarios();
@@ -876,6 +891,7 @@ function setupTabs() {
     if (h === 'ars') switchToArs();
     else if (h === 'bonos') switchToSoberanos();
     else if (h === 'plazofijo') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijo"]')?.click(); }
+    else if (h === 'plazofijoperiodico') { switchToArs(); document.querySelector('.subnav-tab[data-tab="plazofijoperiodico"]')?.click(); }
     else if (h === 'lecaps') { switchToArs(); document.querySelector('.subnav-tab[data-tab="lecaps"]')?.click(); }
     else if (h === 'cer') { switchToArs(); document.querySelector('.subnav-tab[data-tab="cer"]')?.click(); }
     else if (h === 'hipotecarios') switchToHipotecarios();
@@ -1027,7 +1043,6 @@ async function loadPlazoFijoUvaPeriodico() {
 async function loadPlazoFijo() {
   const container = document.getElementById('plazofijo-list');
   container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando tasas...</p></div>`;
-  loadPlazoFijoUvaPeriodico();
 
   try {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');

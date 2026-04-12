@@ -117,6 +117,7 @@
     <div class="subnav-inner" role="tablist" aria-label="Tipo de inversión">
       <a href="#" class="subnav-tab active" data-tab="billeteras" role="tab" id="tab-billeteras-tab" aria-selected="true" aria-controls="tab-billeteras">Cuentas y Billeteras</a>
       <a href="#" class="subnav-tab" data-tab="plazofijo" role="tab" id="tab-plazofijo-tab" aria-selected="false" aria-controls="tab-plazofijo">Plazo Fijo</a>
+      <a href="#" class="subnav-tab" data-tab="plazofijoperiodico" role="tab" id="tab-plazofijoperiodico-tab" aria-selected="false" aria-controls="tab-plazofijoperiodico">Plazo Fijo Periódico</a>
       <a href="#" class="subnav-tab" data-tab="lecaps" role="tab" id="tab-lecaps-tab" aria-selected="false" aria-controls="tab-lecaps">LECAPs</a>
       <a href="#" class="subnav-tab" data-tab="cer" role="tab" id="tab-cer-tab" aria-selected="false" aria-controls="tab-cer">Bonos CER</a>
     </div>
@@ -204,16 +205,17 @@
         <div class="card-list" id="plazofijo-list"></div>
         <p class="section-source"></p>
       </section>
-      <section class="section" id="plazofijo-uva-periodico-section">
-        <h2>Plazo Fijo Periódico UVA</h2>
-        <p class="section-desc">Opciones de Banco Nación con pago de interés en subperíodos de 30 días, ordenadas por plazo</p>
-        <div class="card-list" id="plazofijo-uva-periodico-list"></div>
-        <p class="section-source" id="plazofijo-uva-periodico-source"></p>
-      </section>
       <section class="section" id="pf-chart-section">
         <h2>Comparación de tasas</h2>
         <p class="section-desc">TNA de plazos fijos ordenados por rendimiento</p>
         <div class="chart-wrapper" id="plazofijo-chart"></div>
+      </section>
+    </div>
+
+    <div id="tab-plazofijoperiodico" role="tabpanel" aria-labelledby="tab-plazofijoperiodico-tab" style="display:none">
+      <section class="section" id="plazofijo-uva-periodico-section">
+        <div class="card-list" id="plazofijo-uva-periodico-list"></div>
+        <p class="section-source" id="plazofijo-uva-periodico-source"></p>
       </section>
     </div>
 
