@@ -3003,3 +3003,188 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── Explicame (Section-Level Contextual AI) ─── */
+
+/* Heading with inline button */
+.explicame-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Standalone wrapper for sections without h2 (e.g. Plazo Fijo) */
+.explicame-heading-standalone {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.explicame-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.72rem;
+  font-family: var(--font);
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.explicame-btn svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.explicame-btn:hover,
+.explicame-btn:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+.explicame-btn:hover svg,
+.explicame-btn:focus-visible svg {
+  opacity: 1;
+}
+.explicame-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.explicame-btn.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* Panel */
+.explicame-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.explicame-panel.open {
+  max-height: 300px;
+  opacity: 1;
+  margin-bottom: 12px;
+}
+
+.explicame-panel-inner {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-light);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.explicame-content {
+  max-height: 160px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+.explicame-content strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.explicame-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+.explicame-disclaimer {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+.explicame-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+.explicame-close:hover {
+  color: var(--text);
+  background: var(--border-light);
+}
+
+/* Loading skeleton */
+.explicame-loading {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.explicame-skeleton {
+  height: 14px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--border-light) 25%, var(--bg) 50%, var(--border-light) 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: explicame-shimmer 1.5s ease-in-out infinite;
+}
+.explicame-skeleton.short {
+  width: 65%;
+}
+@keyframes explicame-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Error state */
+.explicame-error {
+  margin-bottom: 10px;
+}
+.explicame-error p {
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+.explicame-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 0.75rem;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.explicame-retry:hover {
+  background: var(--accent);
+  color: var(--card-bg);
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .explicame-btn {
+    padding: 3px 8px;
+    font-size: 0.62rem;
+  }
+  .explicame-panel-inner {
+    padding: 10px 12px;
+    font-size: 0.78rem;
+  }
+  .explicame-content {
+    max-height: 140px;
+  }
+}

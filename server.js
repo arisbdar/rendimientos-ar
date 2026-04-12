@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -528,6 +529,49 @@ app.get('/api/earnings', async (req, res) => {
   } catch (err) {
     console.error('Earnings proxy error:', err.message);
     res.status(502).json({ error: 'Failed to fetch earnings data' });
+  }
+});
+
+// --- AI Chat (proxy to Anthropic API) ---
+
+app.post('/api/chat', async (req, res) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
+
+  const { message, history } = req.body;
+  if (!message || typeof message !== 'string' || message.trim().length === 0) return res.status(400).json({ error: 'Message required' });
+  if (message.length > 500) return res.status(400).json({ error: 'Mensaje muy largo (máx 500 caracteres)' });
+
+  try {
+    const systemPrompt = `Sos el asistente financiero de Rendimientos.co, el comparador de inversiones de Argentina.
+Respondés en español argentino, de forma concisa y clara. Sé breve: respuestas de 2-4 oraciones salvo que el usuario pida más detalle.
+IMPORTANTE: No inventes datos. Si no tenés el dato, decilo.`;
+
+    const messages = [];
+    if (Array.isArray(history)) {
+      for (const h of history.slice(-6)) {
+        if (h.role === 'user' || h.role === 'assistant') messages.push({ role: h.role, content: h.content });
+      }
+    }
+    messages.push({ role: 'user', content: message });
+
+    const anthropicRes = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 800, system: systemPrompt, messages }),
+      signal: AbortSignal.timeout(25000),
+    });
+
+    if (!anthropicRes.ok) {
+      console.error('Anthropic API error:', anthropicRes.status);
+      throw new Error('API error ' + anthropicRes.status);
+    }
+
+    const json = await anthropicRes.json();
+    res.json({ response: json.content[0].text });
+  } catch (e) {
+    console.error('Chat error:', e);
+    res.status(500).json({ error: 'Error interno del asistente' });
   }
 });
 

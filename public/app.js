@@ -98,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadCotizaciones();
   loadNewsTicker();
   initSupabase();
+  initExplicame();
 
   // Auth event listeners
   document.getElementById('auth-logout-btn')?.addEventListener('click', logout);
@@ -5601,5 +5602,205 @@ function updateMundialBracket(matches, nameMap) {
       }
       break;
     }
+  }
+}
+
+// ─── Explicame (Section-Level Contextual AI Education) ───
+
+const _explicameCache = {};
+let _explicameOpenPanel = null;
+const _explicameIconSvg = _icon('<circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>');
+
+const EXPLICAME_SECTIONS = {
+  'billeteras-fondos': {
+    listId: 'main-list',
+    buildPrompt(stats) {
+      return `El usuario ve billeteras y fondos de liquidez. Hay ${stats.count} productos con TNAs entre ${stats.min}% y ${stats.max}%. Explicale en 4-5 oraciones: qué son, cómo funcionan, diferencia entre billetera y FCI money market, y qué mirar para elegir. Español argentino, simple.`;
+    }
+  },
+  'especiales': {
+    listId: 'especiales-list',
+    buildPrompt(stats) {
+      return `El usuario ve productos con rendimientos especiales que tienen condiciones particulares. Explicale en 3-4 oraciones: por qué ofrecen tasas diferentes, qué condiciones suelen tener, y si vale la pena. Español argentino, lenguaje simple.`;
+    }
+  },
+  'plazofijo-section': {
+    listId: 'plazofijo-list',
+    buildPrompt(stats) {
+      return `El usuario ve tasas de plazo fijo de bancos argentinos, con TNAs entre ${stats.min}% y ${stats.max}%. Explicale en 4-5 oraciones: cómo funciona un plazo fijo, por qué varían las tasas, cuánto ganaría con $500k a 30 días al mejor rate, y el riesgo. Español argentino, simple.`;
+    }
+  }
+};
+
+function getSectionStats(listId) {
+  const container = document.getElementById(listId);
+  if (!container) return { count: 0, min: 0, max: 0 };
+  const rateEls = container.querySelectorAll('.rate-value');
+  const rates = [];
+  rateEls.forEach(el => {
+    const num = parseFloat(el.textContent);
+    if (!isNaN(num)) rates.push(num);
+  });
+  if (rates.length === 0) return { count: 0, min: 0, max: 0 };
+  return {
+    count: rates.length,
+    min: Math.min(...rates).toFixed(1),
+    max: Math.max(...rates).toFixed(1)
+  };
+}
+
+function initExplicame() {
+  for (const [sectionId, config] of Object.entries(EXPLICAME_SECTIONS)) {
+    const section = document.getElementById(sectionId);
+    if (!section) continue;
+
+    // Find the h2 heading, or create an anchor point before the card list
+    const heading = section.querySelector('h2');
+    const desc = section.querySelector('.section-desc');
+
+    const btn = document.createElement('button');
+    btn.className = 'explicame-btn';
+    btn.innerHTML = `${_explicameIconSvg}<span>Explicame</span>`;
+    btn.setAttribute('aria-label', 'Explicar esta sección');
+
+    const panel = document.createElement('div');
+    panel.className = 'explicame-panel';
+    panel.innerHTML = '<div class="explicame-panel-inner"></div>';
+
+    if (heading) {
+      // Wrap heading text + button together
+      heading.classList.add('explicame-heading');
+      heading.appendChild(btn);
+      // Insert panel after desc if exists, else after heading
+      const insertAfter = desc || heading;
+      insertAfter.after(panel);
+    } else {
+      // No heading (e.g. plazofijo) — insert at top of section
+      const wrapper = document.createElement('div');
+      wrapper.className = 'explicame-heading-standalone';
+      wrapper.appendChild(btn);
+      section.prepend(panel);
+      section.prepend(wrapper);
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      handleSectionExplicame(btn, panel, sectionId, config);
+    });
+  }
+}
+
+async function handleSectionExplicame(btnEl, panel, sectionId, config) {
+  const cacheKey = `section:${sectionId}`;
+
+  // Toggle: if this panel is open, close it
+  if (panel.classList.contains('open')) {
+    closeExplicamePanel(panel);
+    btnEl.classList.remove('active');
+    return;
+  }
+
+  // Close any other open panel first
+  if (_explicameOpenPanel && _explicameOpenPanel !== panel) {
+    closeExplicamePanel(_explicameOpenPanel);
+    const otherBtn = _explicameOpenPanel.parentElement?.querySelector('.explicame-btn.active')
+      || _explicameOpenPanel.previousElementSibling?.querySelector('.explicame-btn.active');
+    if (otherBtn) otherBtn.classList.remove('active');
+  }
+
+  btnEl.classList.add('active');
+  const inner = panel.querySelector('.explicame-panel-inner');
+
+  // Check cache
+  if (_explicameCache[cacheKey]) {
+    inner.innerHTML = renderExplicameResponse(_explicameCache[cacheKey]);
+    attachExplicamePanelListeners(panel, btnEl, sectionId, config);
+    requestAnimationFrame(() => { panel.classList.add('open'); });
+    _explicameOpenPanel = panel;
+    return;
+  }
+
+  // Show loading skeleton
+  inner.innerHTML = `
+    <div class="explicame-loading">
+      <div class="explicame-skeleton"></div>
+      <div class="explicame-skeleton short"></div>
+      <div class="explicame-skeleton"></div>
+    </div>`;
+  requestAnimationFrame(() => { panel.classList.add('open'); });
+  _explicameOpenPanel = panel;
+
+  // Build prompt with live stats from the DOM
+  const stats = getSectionStats(config.listId);
+  const prompt = config.buildPrompt(stats);
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: prompt, history: [] }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      inner.innerHTML = renderExplicameError(err.error);
+      attachExplicamePanelListeners(panel, btnEl, sectionId, config);
+      return;
+    }
+
+    const json = await res.json();
+    _explicameCache[cacheKey] = json.response;
+    inner.innerHTML = renderExplicameResponse(json.response);
+    attachExplicamePanelListeners(panel, btnEl, sectionId, config);
+  } catch (e) {
+    inner.innerHTML = renderExplicameError();
+    attachExplicamePanelListeners(panel, btnEl, sectionId, config);
+  }
+}
+
+function closeExplicamePanel(panel) {
+  panel.classList.remove('open');
+  if (_explicameOpenPanel === panel) _explicameOpenPanel = null;
+}
+
+function renderExplicameResponse(text) {
+  let html = text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+  return `
+    <div class="explicame-content">${html}</div>
+    <div class="explicame-footer">
+      <span class="explicame-disclaimer">Generado por IA — puede contener errores</span>
+      <button class="explicame-close" aria-label="Cerrar explicación">${_icon('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', 14)}</button>
+    </div>`;
+}
+
+function renderExplicameError(message) {
+  return `
+    <div class="explicame-error">
+      <p>${message || 'No pude obtener la explicación. Podés probar de nuevo o usar el chat para preguntar.'}</p>
+      <button class="explicame-retry">Reintentar</button>
+    </div>
+    <div class="explicame-footer">
+      <span class="explicame-disclaimer">Generado por IA — puede contener errores</span>
+      <button class="explicame-close" aria-label="Cerrar explicación">${_icon('<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', 14)}</button>
+    </div>`;
+}
+
+function attachExplicamePanelListeners(panel, btnEl, sectionId, config) {
+  const closeBtn = panel.querySelector('.explicame-close');
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      closeExplicamePanel(panel);
+      btnEl.classList.remove('active');
+    };
+  }
+  const retryBtn = panel.querySelector('.explicame-retry');
+  if (retryBtn) {
+    retryBtn.onclick = () => {
+      delete _explicameCache[`section:${sectionId}`];
+      handleSectionExplicame(btnEl, panel, sectionId, config);
+    };
   }
 }
