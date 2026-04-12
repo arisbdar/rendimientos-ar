@@ -601,7 +601,7 @@ function setupTabs() {
           loadCER();
         }
       } else if (target === 'inflacion') {
-        hero.querySelector('h1').textContent = 'Comparación';
+        hero.querySelector('h1').textContent = 'Comparador';
         hero.querySelector('p').textContent = 'Compará el rendimiento mensual de tus inversiones contra la inflación.';
         if (!document.getElementById('inflacion-chart').hasChildNodes()) {
           loadInflacion();
@@ -741,7 +741,7 @@ function setupTabs() {
       hero.querySelector('h1').textContent = 'Bonos CER';
       hero.querySelector('p').textContent = 'Rendimiento real de bonos ajustados por CER en pesos argentinos.';
     } else if (activeSubtab && activeSubtab.dataset.tab === 'inflacion') {
-      hero.querySelector('h1').textContent = 'Comparación';
+      hero.querySelector('h1').textContent = 'Comparador';
       hero.querySelector('p').textContent = 'Compará el rendimiento mensual de tus inversiones contra la inflación.';
     } else {
       hero.querySelector('h1').textContent = '';
@@ -2629,7 +2629,7 @@ async function loadHotMovers() {
   }
 }
 
-// ─── Comparación ───
+// ─── Comparador ───
 
 let _inflacionData = null;
 let _inflacionSelected = {}; // { productId: bool }
@@ -2801,7 +2801,7 @@ async function loadInflacion() {
     const mesLabel = new Date(inflFecha + 'T12:00:00').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
     if (srcEl) srcEl.textContent = `Inflación de ${mesLabel}: ${inflMensual}% mensual — Fuente: ArgentinaDatos / INDEC`;
   } catch (e) {
-    console.error('Comparación error:', e);
+    console.error('Comparador error:', e);
     chart.innerHTML = '<div class="loading">Error al cargar datos.</div>';
   }
 }

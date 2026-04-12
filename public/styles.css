@@ -565,7 +565,7 @@ body {
   .vchart .chart-logo { width: 24px; height: 24px; }
 }
 
-/* Inflación / Comparación */
+/* Inflación / Comparador */
 .inflacion-layout {
   display: flex;
   gap: 24px;
