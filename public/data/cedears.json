@@ -1,0 +1,3282 @@
+[
+  {
+    "ticker": "AAL",
+    "name": "American Airlines Group Inc",
+    "ratio": "2",
+    "ticker_d": "AALD",
+    "ticker_c": "AALC",
+    "ticker_usa": "AAL"
+  },
+  {
+    "ticker": "AAP",
+    "name": "Advanced Auto Parts Inc",
+    "ratio": "14",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "AAP"
+  },
+  {
+    "ticker": "AAPL",
+    "name": "Apple Inc.",
+    "ratio": "20",
+    "ticker_d": "AAPLD",
+    "ticker_c": "AAPLC",
+    "ticker_usa": "AAPL"
+  },
+  {
+    "ticker": "AABA",
+    "name": "Altaba Inc.",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ABBV",
+    "name": "AbbVie Inc.",
+    "ratio": "10",
+    "ticker_d": "ABBVD",
+    "ticker_c": "ABBVC",
+    "ticker_usa": "ABBV"
+  },
+  {
+    "ticker": "ABEV",
+    "name": "Ambev S.A.",
+    "ratio": "1:3",
+    "ticker_d": "ABEVD",
+    "ticker_c": "ABEVC",
+    "ticker_usa": "ABEV"
+  },
+  {
+    "ticker": "ABEV3",
+    "name": "Ambev S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ABNB",
+    "name": "Airbnb Inc",
+    "ratio": "15",
+    "ticker_d": "ABNBD",
+    "ticker_c": "ABNBC",
+    "ticker_usa": "ABNB"
+  },
+  {
+    "ticker": "ABT",
+    "name": "Abbott Labs",
+    "ratio": "4",
+    "ticker_d": "ABTD",
+    "ticker_c": null,
+    "ticker_usa": "ABT"
+  },
+  {
+    "ticker": "ACN",
+    "name": "Accenture",
+    "ratio": "75",
+    "ticker_d": "ACND",
+    "ticker_c": null,
+    "ticker_usa": "ACN"
+  },
+  {
+    "ticker": "ACWI",
+    "name": "iShares MSCI ACWI ETF",
+    "ratio": "26",
+    "ticker_d": "ACWID",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ADBE",
+    "name": "Adobe Systems Incorporated",
+    "ratio": "44",
+    "ticker_d": "ADBED",
+    "ticker_c": "ADBEC",
+    "ticker_usa": "ADBE"
+  },
+  {
+    "ticker": "ADGO",
+    "name": "Adecoagro S.A.",
+    "ratio": "1",
+    "ticker_d": "ADGOD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ADI",
+    "name": "Analog Devices",
+    "ratio": "15",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ADI"
+  },
+  {
+    "ticker": "ADP",
+    "name": "Automatic Data Processing Inc.",
+    "ratio": "6",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ADP"
+  },
+  {
+    "ticker": "ADS",
+    "name": "Adidas AG",
+    "ratio": "22",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "AEG",
+    "name": "Aegon N.V.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "AEG"
+  },
+  {
+    "ticker": "AEM",
+    "name": "Agnico Eagle Mines Limited",
+    "ratio": "6",
+    "ticker_d": "AEMD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "AI",
+    "name": "C3.AI INC",
+    "ratio": "5",
+    "ticker_d": "AID",
+    "ticker_c": "AIC",
+    "ticker_usa": "AI"
+  },
+  {
+    "ticker": "AIG",
+    "name": "American International Group (AIG)",
+    "ratio": "5",
+    "ticker_d": "AIGD",
+    "ticker_c": null,
+    "ticker_usa": "AIG"
+  },
+  {
+    "ticker": "AKO.B",
+    "name": "Embotelladora Andina S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ALAB",
+    "name": "Astera Labs Inc",
+    "ratio": "44",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ALAB"
+  },
+  {
+    "ticker": "AMAT",
+    "name": "Applied Materials Inc.",
+    "ratio": "5",
+    "ticker_d": "AMATD",
+    "ticker_c": null,
+    "ticker_usa": "AMAT"
+  },
+  {
+    "ticker": "AMD",
+    "name": "Advanced Micro Devices, Inc.",
+    "ratio": "10",
+    "ticker_d": "AMDD",
+    "ticker_c": "AMDC",
+    "ticker_usa": "AMD"
+  },
+  {
+    "ticker": "AMGN",
+    "name": "Amgen Inc.",
+    "ratio": "30",
+    "ticker_d": "AMGND",
+    "ticker_c": null,
+    "ticker_usa": "AMGN"
+  },
+  {
+    "ticker": "AMX",
+    "name": "America Movil",
+    "ratio": "1",
+    "ticker_d": "AMXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "AMZN",
+    "name": "Amazon.Com, Inc.",
+    "ratio": "144",
+    "ticker_d": "AMZND",
+    "ticker_c": "AMZNC",
+    "ticker_usa": "AMZN"
+  },
+  {
+    "ticker": "ANF",
+    "name": "Abercrombie & Fitch Co",
+    "ratio": "1",
+    "ticker_d": "ANFD",
+    "ticker_c": null,
+    "ticker_usa": "ANF"
+  },
+  {
+    "ticker": "AOCA",
+    "name": "Aluminum Corp Of China",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ARCO",
+    "name": "Arcos Dorados Holdings Inc.",
+    "ratio": "1:2",
+    "ticker_d": "ARCOD",
+    "ticker_c": "ARCOC",
+    "ticker_usa": "ARCO"
+  },
+  {
+    "ticker": "ARKK",
+    "name": "ARK INNOVATION",
+    "ratio": "10",
+    "ticker_d": "ARKKD",
+    "ticker_c": "ARKKC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ARM",
+    "name": "ARM Holdings Plc",
+    "ratio": "27",
+    "ticker_d": "ARMD",
+    "ticker_c": null,
+    "ticker_usa": "ARM"
+  },
+  {
+    "ticker": "ASML",
+    "name": "ASML HOLDING NV",
+    "ratio": "146",
+    "ticker_d": "ASMLD",
+    "ticker_c": "ASMLC",
+    "ticker_usa": "ASML"
+  },
+  {
+    "ticker": "ASR",
+    "name": "Grupo Aeroportuario Del Sureste, S.A.B. de C.V.",
+    "ratio": "20",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ASTS",
+    "name": "AST SpaceMobile Inc",
+    "ratio": "15",
+    "ticker_d": "ASTSD",
+    "ticker_c": null,
+    "ticker_usa": "ASTS"
+  },
+  {
+    "ticker": "ATAD",
+    "name": "Pjsc Tatneft",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "AUY",
+    "name": "Yamana Gold Inc.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "AVGO",
+    "name": "Broadcom Inc.",
+    "ratio": "39",
+    "ticker_d": "AVGOD",
+    "ticker_c": "AVGOC",
+    "ticker_usa": "AVGO"
+  },
+  {
+    "ticker": "AVY",
+    "name": "Avery Dennison Corp.",
+    "ratio": "18",
+    "ticker_d": "AVYD",
+    "ticker_c": null,
+    "ticker_usa": "AVY"
+  },
+  {
+    "ticker": "AXP",
+    "name": "American Express Co",
+    "ratio": "15",
+    "ticker_d": "AXPD",
+    "ticker_c": "AXPC",
+    "ticker_usa": "AXP"
+  },
+  {
+    "ticker": "AZN",
+    "name": "Astrazeneca Plc",
+    "ratio": "2",
+    "ticker_d": "AZND",
+    "ticker_c": "AZNC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "B",
+    "name": "Barrick Gold Corp",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "B"
+  },
+  {
+    "ticker": "BA",
+    "name": "The Boeing Company",
+    "ratio": "24",
+    "ticker_d": "BAD",
+    "ticker_c": "BAC",
+    "ticker_usa": "BA"
+  },
+  {
+    "ticker": "BA.C",
+    "name": "Bank Of America Corporation",
+    "ratio": "4",
+    "ticker_d": "BA.CD",
+    "ticker_c": "BA.CC",
+    "ticker_usa": "BAC"
+  },
+  {
+    "ticker": "BABA",
+    "name": "Alibaba Group Holding Limited",
+    "ratio": "9",
+    "ticker_d": "BABAD",
+    "ticker_c": "BABAC",
+    "ticker_usa": "BABA"
+  },
+  {
+    "ticker": "BAK",
+    "name": "Braskem SA",
+    "ratio": "2",
+    "ticker_d": "BAKD",
+    "ticker_c": null,
+    "ticker_usa": "BAK"
+  },
+  {
+    "ticker": "BAS",
+    "name": "Basf SE",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BAYN",
+    "name": "Bayer AG",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BB",
+    "name": "Blackberry Limited",
+    "ratio": "3",
+    "ticker_d": "BBD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BBAS3",
+    "name": "Banco do Brasil S.A.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BBD",
+    "name": "Banco Bradesco S.A.",
+    "ratio": "1",
+    "ticker_d": "BBDD",
+    "ticker_c": "BBDC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BBDC3",
+    "name": "Banco Bradesco S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BBV",
+    "name": "Bilbao Vizcaya Argentaria S.A.",
+    "ratio": "1",
+    "ticker_d": "BBVD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BCS",
+    "name": "Barclays Bank Plc",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BHP",
+    "name": "Bhp Group Ltd",
+    "ratio": "2",
+    "ticker_d": "BHPD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BIDU",
+    "name": "Baidu, Inc.",
+    "ratio": "11",
+    "ticker_d": "BIDUD",
+    "ticker_c": "BIDUC",
+    "ticker_usa": "BIDU"
+  },
+  {
+    "ticker": "BIIB",
+    "name": "Biogen Inc.",
+    "ratio": "13",
+    "ticker_d": "BIIBD",
+    "ticker_c": null,
+    "ticker_usa": "BIIB"
+  },
+  {
+    "ticker": "BIOX",
+    "name": "Bioceres Crop Solutions Corp.",
+    "ratio": "1",
+    "ticker_d": "BIOXD",
+    "ticker_c": "BIOXC",
+    "ticker_usa": "BIOX"
+  },
+  {
+    "ticker": "BITF",
+    "name": "Bitfarms Ltd.",
+    "ratio": "1:5",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BK",
+    "name": "The Bank Of New York Mellon Corp.",
+    "ratio": "2",
+    "ticker_d": "BKD",
+    "ticker_c": null,
+    "ticker_usa": "BK"
+  },
+  {
+    "ticker": "BKNG",
+    "name": "Booking",
+    "ratio": "700",
+    "ticker_d": "BKNGD",
+    "ticker_c": null,
+    "ticker_usa": "BKNG"
+  },
+  {
+    "ticker": "BKR",
+    "name": "Baker Hughes Co",
+    "ratio": "7",
+    "ticker_d": "BKRD",
+    "ticker_c": null,
+    "ticker_usa": "BKR"
+  },
+  {
+    "ticker": "BMNR",
+    "name": "Bitmine Inmersion Technologies, Inc.",
+    "ratio": "8",
+    "ticker_d": "BMNRD",
+    "ticker_c": null,
+    "ticker_usa": "BMNR"
+  },
+  {
+    "ticker": "BMY",
+    "name": "Bristol-Myers Squibb Company",
+    "ratio": "3",
+    "ticker_d": "BMYD",
+    "ticker_c": null,
+    "ticker_usa": "BMY"
+  },
+  {
+    "ticker": "BNG",
+    "name": "Bunge Limited",
+    "ratio": "5",
+    "ticker_d": "BNGD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BP",
+    "name": "BP PCL",
+    "ratio": "5",
+    "ticker_d": "BPD",
+    "ticker_c": "BPC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BPA11",
+    "name": "Banco BTG Pactual S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BRFS",
+    "name": "BRF S.A.",
+    "ratio": "1:3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BRKB",
+    "name": "Berkshire Hathaway Inc.",
+    "ratio": "22",
+    "ticker_d": "BRKBD",
+    "ticker_c": "BRKBC",
+    "ticker_usa": "BRK.B"
+  },
+  {
+    "ticker": "BSN",
+    "name": "Danone",
+    "ratio": "20",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "BSBR",
+    "name": "Banco Santander (Brasil) S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "BSBR"
+  },
+  {
+    "ticker": "BX",
+    "name": "Blackstone Inc.",
+    "ratio": "30",
+    "ticker_d": "BXD",
+    "ticker_c": null,
+    "ticker_usa": "BX"
+  },
+  {
+    "ticker": "C",
+    "name": "Citigroup Inc",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": "CC",
+    "ticker_usa": "C"
+  },
+  {
+    "ticker": "CAAP",
+    "name": "Corporación America Airports S.A.",
+    "ratio": "1:4",
+    "ticker_d": "CAAPD",
+    "ticker_c": null,
+    "ticker_usa": "CAAP"
+  },
+  {
+    "ticker": "CAH",
+    "name": "Cardinal Health Inc",
+    "ratio": "3",
+    "ticker_d": "CAHD",
+    "ticker_c": null,
+    "ticker_usa": "CAH"
+  },
+  {
+    "ticker": "CAJ",
+    "name": "Canon Inc",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "CAR",
+    "name": "Avis Budget Group Inc.",
+    "ratio": "26",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "CAR"
+  },
+  {
+    "ticker": "CAT",
+    "name": "Caterpillar Inc",
+    "ratio": "20",
+    "ticker_d": "CATD",
+    "ticker_c": "CATC",
+    "ticker_usa": "CAT"
+  },
+  {
+    "ticker": "CBRD",
+    "name": "Companhia Brasileira De Dis NPV ADR",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "CCL",
+    "name": "Carnival",
+    "ratio": "3",
+    "ticker_d": "CCLD",
+    "ticker_c": "CCLC",
+    "ticker_usa": "CCL"
+  },
+  {
+    "ticker": "CDE",
+    "name": "Coeur Mining Inc.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "CDE"
+  },
+  {
+    "ticker": "CEG",
+    "name": "CONSTELLATION ENERGY CORPORATION",
+    "ratio": "45",
+    "ticker_d": "CEGD",
+    "ticker_c": null,
+    "ticker_usa": "CEG"
+  },
+  {
+    "ticker": "CIBR",
+    "name": "First Trust NASDAQ Cybersecurity",
+    "ratio": "10",
+    "ticker_d": "CIBRD",
+    "ticker_c": null,
+    "ticker_usa": "CIBR"
+  },
+  {
+    "ticker": "CL",
+    "name": "Colgate Palmolive Co",
+    "ratio": "3",
+    "ticker_d": "CLD",
+    "ticker_c": null,
+    "ticker_usa": "CL"
+  },
+  {
+    "ticker": "CLS",
+    "name": "CELESTICA INC",
+    "ratio": "20",
+    "ticker_d": "CLSD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "COIN",
+    "name": "Coinbase Global Inc",
+    "ratio": "27",
+    "ticker_d": "COIND",
+    "ticker_c": "COINC",
+    "ticker_usa": "COIN"
+  },
+  {
+    "ticker": "COPX",
+    "name": "Global X Copper Miners ETF",
+    "ratio": "14",
+    "ticker_d": "COPXD",
+    "ticker_c": "COPXC",
+    "ticker_usa": "COPX"
+  },
+  {
+    "ticker": "COST",
+    "name": "Costco Wholesale Corp",
+    "ratio": "48",
+    "ticker_d": "COSTD",
+    "ticker_c": "COSTC",
+    "ticker_usa": "COST"
+  },
+  {
+    "ticker": "CRM",
+    "name": "Salesforce Inc.",
+    "ratio": "18",
+    "ticker_d": "CRMD",
+    "ticker_c": "CRMC",
+    "ticker_usa": "CRM"
+  },
+  {
+    "ticker": "CRWV",
+    "name": "CoreWeave Inc",
+    "ratio": "27",
+    "ticker_d": "CRWVD",
+    "ticker_c": null,
+    "ticker_usa": "CRWV"
+  },
+  {
+    "ticker": "CS",
+    "name": "Credit Suisse Group",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "CSCO",
+    "name": "Cisco Systems Inc",
+    "ratio": "5",
+    "ticker_d": "CSCOD",
+    "ticker_c": null,
+    "ticker_usa": "CSCO"
+  },
+  {
+    "ticker": "CSNA3",
+    "name": "Companhia Siderúrgica Nacional S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "CVS",
+    "name": "CVS Health",
+    "ratio": "15",
+    "ticker_d": "CVSD",
+    "ticker_c": null,
+    "ticker_usa": "CVS"
+  },
+  {
+    "ticker": "CVX",
+    "name": "Chevron Corp.",
+    "ratio": "16",
+    "ticker_d": "CVXD",
+    "ticker_c": "CVXC",
+    "ticker_usa": "CVX"
+  },
+  {
+    "ticker": "CX",
+    "name": "Cemex S.A.B. de CV",
+    "ratio": "1",
+    "ticker_d": "CXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "DAL",
+    "name": "Delta Air Lines",
+    "ratio": "8",
+    "ticker_d": "DALD",
+    "ticker_c": null,
+    "ticker_usa": "DAL"
+  },
+  {
+    "ticker": "DD",
+    "name": "Dupont de Nemours Inc.",
+    "ratio": "5",
+    "ticker_d": "DDD",
+    "ticker_c": null,
+    "ticker_usa": "DD"
+  },
+  {
+    "ticker": "DE",
+    "name": "Deere & Co.",
+    "ratio": "40",
+    "ticker_d": "DED",
+    "ticker_c": "DEC",
+    "ticker_usa": "DE"
+  },
+  {
+    "ticker": "DECK",
+    "name": "DECKERS OUTDOOR CORPORATION",
+    "ratio": "25",
+    "ticker_d": "DECKD",
+    "ticker_c": null,
+    "ticker_usa": "DECK"
+  },
+  {
+    "ticker": "DEO",
+    "name": "Diageo PLC",
+    "ratio": "6",
+    "ticker_d": "DEOD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "DHR",
+    "name": "Danaher Corp",
+    "ratio": "54",
+    "ticker_d": "DHRD",
+    "ticker_c": "DHRC",
+    "ticker_usa": "DHR"
+  },
+  {
+    "ticker": "DIA",
+    "name": "SPDR DOW JONES INDUSTRIAL",
+    "ratio": "20",
+    "ticker_d": "DIAD",
+    "ticker_c": "DIAC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "DISN",
+    "name": "The Walt Disney Co.",
+    "ratio": "12",
+    "ticker_d": "DISND",
+    "ticker_c": "DISNC",
+    "ticker_usa": "DIS"
+  },
+  {
+    "ticker": "DOCU",
+    "name": "DocuSign Inc.",
+    "ratio": "22",
+    "ticker_d": "DOCUD",
+    "ticker_c": "DOCUC",
+    "ticker_usa": "DOCU"
+  },
+  {
+    "ticker": "DOW",
+    "name": "DOW Inc",
+    "ratio": "6",
+    "ticker_d": "DOWD",
+    "ticker_c": "DOWC",
+    "ticker_usa": "DOW"
+  },
+  {
+    "ticker": "DTEA",
+    "name": "Deutsche Telekom Ag",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "E",
+    "name": "Eni Spa",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EA",
+    "name": "Electronic Arts Inc",
+    "ratio": "14",
+    "ticker_d": "EAD",
+    "ticker_c": null,
+    "ticker_usa": "EA"
+  },
+  {
+    "ticker": "EBAY",
+    "name": "Ebay Inc.",
+    "ratio": "2",
+    "ticker_d": "EBAYD",
+    "ticker_c": "EBAYC",
+    "ticker_usa": "EBAY"
+  },
+  {
+    "ticker": "EBR",
+    "name": "Centrais Eléctricas Brasileiras S.A. - Eletrobras",
+    "ratio": "1:4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ECL",
+    "name": "Ecolab Inc",
+    "ratio": "56",
+    "ticker_d": "ECLD",
+    "ticker_c": null,
+    "ticker_usa": "ECL"
+  },
+  {
+    "ticker": "EEM",
+    "name": "ISHARES MSCI EMERGING MARKET",
+    "ratio": "5",
+    "ticker_d": "EEMD",
+    "ticker_c": "EEMC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EFA",
+    "name": "iShares MSCI EAFE ETF",
+    "ratio": "18",
+    "ticker_d": "EFAD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EFX",
+    "name": "Equifax Inc.",
+    "ratio": "16",
+    "ticker_d": "EFXD",
+    "ticker_c": null,
+    "ticker_usa": "EFX"
+  },
+  {
+    "ticker": "ELP",
+    "name": "Companhia Paranaense de Energía - COPEL",
+    "ratio": "1:3",
+    "ticker_d": null,
+    "ticker_c": "ELPC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EOAN",
+    "name": "E.On Se",
+    "ratio": "6",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EQNR",
+    "name": "Equinor Asa",
+    "ratio": "6",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "EQNR"
+  },
+  {
+    "ticker": "ERIC",
+    "name": "Lm Ericsson Telephone Co.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ERIC"
+  },
+  {
+    "ticker": "ERJ",
+    "name": "Embraer-Empresa Brasileira de Aeronáutica S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ESGU",
+    "name": "IShares ESG Aware MSCI USA ETF",
+    "ratio": "30",
+    "ticker_d": "ESGUD",
+    "ticker_c": null,
+    "ticker_usa": "ESGU"
+  },
+  {
+    "ticker": "ETHA",
+    "name": "ISHARES ETHEREUM TR ETF",
+    "ratio": "5",
+    "ticker_d": "ETHAD",
+    "ticker_c": "ETHAC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ETSY",
+    "name": "Etsy Inc.",
+    "ratio": "16",
+    "ticker_d": "ETSYD",
+    "ticker_c": "ETSYC",
+    "ticker_usa": "ETSY"
+  },
+  {
+    "ticker": "EWJ",
+    "name": "iShares MSCI JAPAN ETF",
+    "ratio": "14",
+    "ticker_d": "EWJD",
+    "ticker_c": "EWJC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "EWZ",
+    "name": "ISHARES MSCI BRAZIL CAP",
+    "ratio": "2",
+    "ticker_d": "EWZD",
+    "ticker_c": "EWZC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "F",
+    "name": "Ford Motor Company",
+    "ratio": "1",
+    "ticker_d": "FD",
+    "ticker_c": "FC",
+    "ticker_usa": "F"
+  },
+  {
+    "ticker": "FCX",
+    "name": "Freeport Mcmoran Copper & Gold Inc.",
+    "ratio": "3",
+    "ticker_d": "FCXD",
+    "ticker_c": null,
+    "ticker_usa": "FCX"
+  },
+  {
+    "ticker": "FDX",
+    "name": "Fedex Corp",
+    "ratio": "10",
+    "ticker_d": "FDXD",
+    "ticker_c": "FDXC",
+    "ticker_usa": "FDX"
+  },
+  {
+    "ticker": "FMCC",
+    "name": "Freddie Mac (Federal Home Loan)",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "FMX",
+    "name": "Fomento Economico Mexicano - Femsa",
+    "ratio": "6",
+    "ticker_d": "FMXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "FNMA",
+    "name": "Fed. Natl, Mortgage - Fannie Mae",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "FSLR",
+    "name": "First Solar Inc.",
+    "ratio": "18",
+    "ticker_d": "FSLRD",
+    "ticker_c": null,
+    "ticker_usa": "FSLR"
+  },
+  {
+    "ticker": "FXI",
+    "name": "ISHARES CHINA LARGE-CAP ETF",
+    "ratio": "5",
+    "ticker_d": "FXID",
+    "ticker_c": "FXIC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GDX",
+    "name": "Van Eck Gold Miners ETF/USA",
+    "ratio": "10",
+    "ticker_d": "GDXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GE",
+    "name": "General Electric Co.",
+    "ratio": "8",
+    "ticker_d": "GED",
+    "ticker_c": "GEC",
+    "ticker_usa": "GE"
+  },
+  {
+    "ticker": "GFI",
+    "name": "Gold Fields Ltd.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GGB",
+    "name": "Gerdau S.A.",
+    "ratio": "1:4",
+    "ticker_d": "GGBD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GILD",
+    "name": "Gilead Sciences, Inc.",
+    "ratio": "4",
+    "ticker_d": "GILDD",
+    "ticker_c": "GILDC",
+    "ticker_usa": "GILD"
+  },
+  {
+    "ticker": "GLD",
+    "name": "ETF SPDR GOLD TRUST",
+    "ratio": "50",
+    "ticker_d": "GLDD",
+    "ticker_c": "GLDC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GLOB",
+    "name": "Globant S.A.",
+    "ratio": "18",
+    "ticker_d": "GLOBD",
+    "ticker_c": "GLOBC",
+    "ticker_usa": "GLOB"
+  },
+  {
+    "ticker": "GLW",
+    "name": "Corning Inc.",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "GLW"
+  },
+  {
+    "ticker": "GM",
+    "name": "General Motors Co",
+    "ratio": "6",
+    "ticker_d": "GMD",
+    "ticker_c": null,
+    "ticker_usa": "GM"
+  },
+  {
+    "ticker": "GOOGL",
+    "name": "Alphabet Inc.",
+    "ratio": "58",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "GOOGL"
+  },
+  {
+    "ticker": "GPRK",
+    "name": "Geopark Ltd.",
+    "ratio": "1",
+    "ticker_d": "GPRKD",
+    "ticker_c": "GPRKC",
+    "ticker_usa": "GPRK"
+  },
+  {
+    "ticker": "GRMN",
+    "name": "Garmin Ltd.",
+    "ratio": "3",
+    "ticker_d": "GRMND",
+    "ticker_c": null,
+    "ticker_usa": "GRMN"
+  },
+  {
+    "ticker": "GS",
+    "name": "The Goldman Sachs Group, Inc",
+    "ratio": "13",
+    "ticker_d": "GSD",
+    "ticker_c": "GSC",
+    "ticker_usa": "GS"
+  },
+  {
+    "ticker": "GSK",
+    "name": "GSK Plc.",
+    "ratio": "4",
+    "ticker_d": "GSKD",
+    "ticker_c": "GSKC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "GT",
+    "name": "Goodyear Tire & Rubber co./the",
+    "ratio": "2",
+    "ticker_d": "GTD",
+    "ticker_c": "GTC",
+    "ticker_usa": "GT"
+  },
+  {
+    "ticker": "HAL",
+    "name": "Halliburton Co.",
+    "ratio": "2",
+    "ticker_d": "HALD",
+    "ticker_c": "HALC",
+    "ticker_usa": "HAL"
+  },
+  {
+    "ticker": "HAPV3",
+    "name": "Hapvida Participacoes E Investimentos S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HD",
+    "name": "The Home Depot Inc.",
+    "ratio": "32",
+    "ticker_d": "HDD",
+    "ticker_c": null,
+    "ticker_usa": "HD"
+  },
+  {
+    "ticker": "HDB",
+    "name": "Hdfc Bank Limited.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "HDB"
+  },
+  {
+    "ticker": "HHPD",
+    "name": "Hon Hai Precision Industry Co. Ltd.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HL",
+    "name": "Hecla Mining Co.",
+    "ratio": "1",
+    "ticker_d": "HLD",
+    "ticker_c": null,
+    "ticker_usa": "HL"
+  },
+  {
+    "ticker": "HMC",
+    "name": "Honda Motor Co. Ltd",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HMY",
+    "name": "Harmony Gold Mining Company Ltd.",
+    "ratio": "1",
+    "ticker_d": "HMYD",
+    "ticker_c": "HMYC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HNPIY",
+    "name": "Huaneng Power Intl",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HOG",
+    "name": "Harley-Davidson Inc.",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "HOG"
+  },
+  {
+    "ticker": "HON",
+    "name": "Honeywell International Inc.",
+    "ratio": "8",
+    "ticker_d": "HOND",
+    "ticker_c": null,
+    "ticker_usa": "HON"
+  },
+  {
+    "ticker": "HOOD",
+    "name": "Robinhood Markets Inc",
+    "ratio": "29",
+    "ticker_d": "HOODD",
+    "ticker_c": null,
+    "ticker_usa": "HOOD"
+  },
+  {
+    "ticker": "HPQ",
+    "name": "Hp Inc",
+    "ratio": "1",
+    "ticker_d": "HPQD",
+    "ticker_c": null,
+    "ticker_usa": "HPQ"
+  },
+  {
+    "ticker": "HSBC",
+    "name": "Hsbc Holdings Plc",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "HSY",
+    "name": "The Hershey Company",
+    "ratio": "21",
+    "ticker_d": "HSYD",
+    "ticker_c": "HSYC",
+    "ticker_usa": "HSY"
+  },
+  {
+    "ticker": "HUT",
+    "name": "Hut 8 Mining Corp.",
+    "ratio": "1:5",
+    "ticker_d": "HUTD",
+    "ticker_c": "HUTC",
+    "ticker_usa": "HUT"
+  },
+  {
+    "ticker": "HWM",
+    "name": "Howmet Aerospace Inc.",
+    "ratio": "1",
+    "ticker_d": "HWMD",
+    "ticker_c": null,
+    "ticker_usa": "HWM"
+  },
+  {
+    "ticker": "IBB",
+    "name": "iShares Nasdaq Biotechnology ETF",
+    "ratio": "27",
+    "ticker_d": "IBBD",
+    "ticker_c": "IBBC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IBIT",
+    "name": "ISHARES BITCOIN TRUST",
+    "ratio": "10",
+    "ticker_d": "IBITD",
+    "ticker_c": "IBITC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IBM",
+    "name": "International Business Machines",
+    "ratio": "15",
+    "ticker_d": "IBMD",
+    "ticker_c": "IBMC",
+    "ticker_usa": "IBM"
+  },
+  {
+    "ticker": "IBN",
+    "name": "Icici Bank Ltd.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "IBN"
+  },
+  {
+    "ticker": "IEMG",
+    "name": "iShares Core MSCI Emerging Markets ETF",
+    "ratio": "12",
+    "ticker_d": "IEMGD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IEUR",
+    "name": "iShares Core MSCI Europe ETF",
+    "ratio": "11",
+    "ticker_d": "IEURD",
+    "ticker_c": "IEURC",
+    "ticker_usa": "IEUR"
+  },
+  {
+    "ticker": "IFF",
+    "name": "International Flavors & Fragrances Inc.",
+    "ratio": "12",
+    "ticker_d": "IFFD",
+    "ticker_c": null,
+    "ticker_usa": "IFF"
+  },
+  {
+    "ticker": "IJH",
+    "name": "iShares CORE S&P MID-CAP ETF",
+    "ratio": "12",
+    "ticker_d": "IJHD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ILF",
+    "name": "IShares Latin America 40 ETF",
+    "ratio": "6",
+    "ticker_d": "ILFD",
+    "ticker_c": "ILFC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "INFY",
+    "name": "Infosys Limited",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "INFY"
+  },
+  {
+    "ticker": "ING",
+    "name": "Ing Groep Nv",
+    "ratio": "3",
+    "ticker_d": "INGD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "INTC",
+    "name": "Intel Corporation",
+    "ratio": "5",
+    "ticker_d": "INTCD",
+    "ticker_c": "INTCC",
+    "ticker_usa": "INTC"
+  },
+  {
+    "ticker": "IP",
+    "name": "International Paper Co.",
+    "ratio": "4",
+    "ticker_d": "IPD",
+    "ticker_c": null,
+    "ticker_usa": "IP"
+  },
+  {
+    "ticker": "IREN",
+    "name": "Iren Ltd",
+    "ratio": "12",
+    "ticker_d": "IREND",
+    "ticker_c": "IRENC",
+    "ticker_usa": "IREN"
+  },
+  {
+    "ticker": "ISRG",
+    "name": "Intuitive Surgical inc",
+    "ratio": "90",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ISRG"
+  },
+  {
+    "ticker": "ITA",
+    "name": "iShares U.S. Aerospace & Defense",
+    "ratio": "50",
+    "ticker_d": "ITAD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ITUB",
+    "name": "Itaú Unibanco Holding S.A.",
+    "ratio": "1",
+    "ticker_d": "ITUBD",
+    "ticker_c": "ITUBC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ITUB3",
+    "name": "Banco Itaú Unibanco S.A",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IVE",
+    "name": "iShares S&P 500 Value ETF",
+    "ratio": "40",
+    "ticker_d": "IVED",
+    "ticker_c": "IVEC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IVV",
+    "name": "IShares Core S&P 500 ETF",
+    "ratio": "692",
+    "ticker_d": "IVVD",
+    "ticker_c": "IVVC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IVW",
+    "name": "iShares S&P 500 Growth ETF",
+    "ratio": "20",
+    "ticker_d": "IVWD",
+    "ticker_c": "IVWC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IWDA",
+    "name": "iSHARES Core MSCI World UCITS",
+    "ratio": "24",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "IWM",
+    "name": "ISHARES TRUST RUSSELL 2000",
+    "ratio": "10",
+    "ticker_d": "IWMD",
+    "ticker_c": "IWMC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "JCI",
+    "name": "Johnson Controls International",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "JCI"
+  },
+  {
+    "ticker": "JD",
+    "name": "Jd.Com, Inc.",
+    "ratio": "4",
+    "ticker_d": "JDD",
+    "ticker_c": "JDC",
+    "ticker_usa": "JD"
+  },
+  {
+    "ticker": "JMIA",
+    "name": "Adr Jumia Technologies Ag",
+    "ratio": "1",
+    "ticker_d": "JMIAD",
+    "ticker_c": "JMIAC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "JNJ",
+    "name": "Johnson & Johnson",
+    "ratio": "15",
+    "ticker_d": "JNJD",
+    "ticker_c": "JNJC",
+    "ticker_usa": "JNJ"
+  },
+  {
+    "ticker": "JOYY",
+    "name": "JOYY Inc.",
+    "ratio": "5",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "JPM",
+    "name": "J.P. Morgan & Chase Co.",
+    "ratio": "15",
+    "ticker_d": "JPMD",
+    "ticker_c": "JPMC",
+    "ticker_usa": "JPM"
+  },
+  {
+    "ticker": "KB",
+    "name": "Kb Financial Group Inc.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "KEP",
+    "name": "Korea Electric Power Corp.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "KGC",
+    "name": "Kinross Gold Corp",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "KMB",
+    "name": "Kimberly-Clark Corp.",
+    "ratio": "6",
+    "ticker_d": "KMBD",
+    "ticker_c": null,
+    "ticker_usa": "KMB"
+  },
+  {
+    "ticker": "KO",
+    "name": "The Coca Cola Company",
+    "ratio": "5",
+    "ticker_d": "KOD",
+    "ticker_c": "KOC",
+    "ticker_usa": "KO"
+  },
+  {
+    "ticker": "KOFM",
+    "name": "Coca-Cola Femsa, S.A.B. De C.V.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "LAC",
+    "name": "Lithium Americas Corp",
+    "ratio": "1",
+    "ticker_d": "LACD",
+    "ticker_c": null,
+    "ticker_usa": "LAC"
+  },
+  {
+    "ticker": "LAR",
+    "name": "Lithium Americas (Argentina) Corp",
+    "ratio": "1",
+    "ticker_d": "LARD",
+    "ticker_c": null,
+    "ticker_usa": "LAR"
+  },
+  {
+    "ticker": "LFC",
+    "name": "China Life Insurance",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "LKOD",
+    "name": "Pjsc Lukoil",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "LLY",
+    "name": "Eli Lilly and Company",
+    "ratio": "56",
+    "ticker_d": "LLYD",
+    "ticker_c": "LLYC",
+    "ticker_usa": "LLY"
+  },
+  {
+    "ticker": "LMT",
+    "name": "Lockheed Martin Corporation",
+    "ratio": "20",
+    "ticker_d": "LMTD",
+    "ticker_c": "LMTC",
+    "ticker_usa": "LMT"
+  },
+  {
+    "ticker": "LND",
+    "name": "Brasilagro - Co Brasileira de Propriedades Agrícolas",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "LND"
+  },
+  {
+    "ticker": "LRCX",
+    "name": "Lam Research Corp",
+    "ratio": "56",
+    "ticker_d": "LRCXD",
+    "ticker_c": "LRCXC",
+    "ticker_usa": "LRCX"
+  },
+  {
+    "ticker": "LREN3",
+    "name": "Lojas Renner S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "LVS",
+    "name": "Las Vegas Sands Corp",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "LVS"
+  },
+  {
+    "ticker": "LYG",
+    "name": "Lloyds Banking Group Plc",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MA",
+    "name": "Mastercard Inc.",
+    "ratio": "33",
+    "ticker_d": "MAD",
+    "ticker_c": "MAC",
+    "ticker_usa": "MA"
+  },
+  {
+    "ticker": "MBG",
+    "name": "Mercedes-Benz Group AG",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MBT",
+    "name": "Mobile Telesystems",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MCD",
+    "name": "Mcdonald'S Corp.",
+    "ratio": "24",
+    "ticker_d": "MCDD",
+    "ticker_c": "MCDC",
+    "ticker_usa": "MCD"
+  },
+  {
+    "ticker": "MDLZ",
+    "name": "Mondelez",
+    "ratio": "15",
+    "ticker_d": "MDLZD",
+    "ticker_c": null,
+    "ticker_usa": "MDLZ"
+  },
+  {
+    "ticker": "MDT",
+    "name": "Medtronic Public Limited Company",
+    "ratio": "4",
+    "ticker_d": "MDTD",
+    "ticker_c": null,
+    "ticker_usa": "MDT"
+  },
+  {
+    "ticker": "MELI",
+    "name": "Mercadolibre Inc.",
+    "ratio": "120",
+    "ticker_d": "MELID",
+    "ticker_c": "MELIC",
+    "ticker_usa": "MELI"
+  },
+  {
+    "ticker": "META",
+    "name": "Meta Platforms Inc",
+    "ratio": "24",
+    "ticker_d": "METAD",
+    "ticker_c": "METAC",
+    "ticker_usa": "META"
+  },
+  {
+    "ticker": "MFG",
+    "name": "Mizuho Financial Group",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MGLU3",
+    "name": "Magazine Luiza S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MMC",
+    "name": "Marsh & Mclennan Companies Inc.",
+    "ratio": "16",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "MMM",
+    "name": "3M Company",
+    "ratio": "10",
+    "ticker_d": "MMMD",
+    "ticker_c": "MMMC",
+    "ticker_usa": "MMM"
+  },
+  {
+    "ticker": "MO",
+    "name": "Altria Group Inc.",
+    "ratio": "4",
+    "ticker_d": "MOD",
+    "ticker_c": "MOC",
+    "ticker_usa": "MO"
+  },
+  {
+    "ticker": "MOS",
+    "name": "The Mosaic Co",
+    "ratio": "5",
+    "ticker_d": "MOSD",
+    "ticker_c": null,
+    "ticker_usa": "MOS"
+  },
+  {
+    "ticker": "MRK",
+    "name": "Merck & Co. Inc.",
+    "ratio": "5",
+    "ticker_d": "MRKD",
+    "ticker_c": "MRKC",
+    "ticker_usa": "MRK"
+  },
+  {
+    "ticker": "MRNA",
+    "name": "Moderna Inc",
+    "ratio": "19",
+    "ticker_d": "MRNAD",
+    "ticker_c": "MRNAC",
+    "ticker_usa": "MRNA"
+  },
+  {
+    "ticker": "MRVL",
+    "name": "Marvell Technology Inc",
+    "ratio": "14",
+    "ticker_d": "MRVLD",
+    "ticker_c": null,
+    "ticker_usa": "MRVL"
+  },
+  {
+    "ticker": "MSFT",
+    "name": "Microsoft Corp.",
+    "ratio": "30",
+    "ticker_d": "MSFTD",
+    "ticker_c": "MSFTC",
+    "ticker_usa": "MSFT"
+  },
+  {
+    "ticker": "MSI",
+    "name": "Motorola Solutions, Inc.",
+    "ratio": "20",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "MSI"
+  },
+  {
+    "ticker": "MSTR",
+    "name": "Microstrategy Inc Cl A New",
+    "ratio": "20",
+    "ticker_d": "MSTRD",
+    "ticker_c": "MSTRC",
+    "ticker_usa": "MSTR"
+  },
+  {
+    "ticker": "MU",
+    "name": "Micron Technology Inc",
+    "ratio": "5",
+    "ticker_d": "MUD",
+    "ticker_c": "MUC",
+    "ticker_usa": "MU"
+  },
+  {
+    "ticker": "MUFG",
+    "name": "Mitsubishi Ufj Financial Group",
+    "ratio": "1",
+    "ticker_d": "MUFGD",
+    "ticker_c": null,
+    "ticker_usa": "MUFG"
+  },
+  {
+    "ticker": "MUX",
+    "name": "McEwen Mining Inc",
+    "ratio": "2",
+    "ticker_d": "MUXD",
+    "ticker_c": null,
+    "ticker_usa": "MUX"
+  },
+  {
+    "ticker": "NEC1",
+    "name": "Nec Corporation",
+    "ratio": "1:3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NEM",
+    "name": "Newmont Corporation",
+    "ratio": "3",
+    "ticker_d": "NEMD",
+    "ticker_c": null,
+    "ticker_usa": "NEM"
+  },
+  {
+    "ticker": "NFLX",
+    "name": "Netflix, Inc.",
+    "ratio": "48",
+    "ticker_d": "NFLXD",
+    "ticker_c": "NFLXC",
+    "ticker_usa": "NFLX"
+  },
+  {
+    "ticker": "NG",
+    "name": "Novagold Resources INC.",
+    "ratio": "1:4",
+    "ticker_d": "NGD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NGG",
+    "name": "National Grid Plc",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NIO",
+    "name": "NIO Inc.",
+    "ratio": "4",
+    "ticker_d": "NIOD",
+    "ticker_c": "NIOC",
+    "ticker_usa": "NIO"
+  },
+  {
+    "ticker": "NKE",
+    "name": "Nike Inc.",
+    "ratio": "12",
+    "ticker_d": "NKED",
+    "ticker_c": "NKEC",
+    "ticker_usa": "NKE"
+  },
+  {
+    "ticker": "NLM",
+    "name": "Novolipetsk Steel PJSC",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NMR",
+    "name": "Nomura Holdings, Inc",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NOKA",
+    "name": "Nokia Corporation",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NOW",
+    "name": "SERVICENOW INC",
+    "ratio": "172",
+    "ticker_d": "NOWD",
+    "ticker_c": null,
+    "ticker_usa": "NOW"
+  },
+  {
+    "ticker": "NSAN",
+    "name": "Nissan Motor Co., Ltd",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NTES",
+    "name": "Netease, Inc",
+    "ratio": "14",
+    "ticker_d": "NTESD",
+    "ticker_c": null,
+    "ticker_usa": "NTES"
+  },
+  {
+    "ticker": "NTCO",
+    "name": "Natura & Co Holding S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NTCO3",
+    "name": "Natura & Co Holding S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NUE",
+    "name": "Nucor Corp",
+    "ratio": "16",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "NUE"
+  },
+  {
+    "ticker": "NVDA",
+    "name": "Nvidia Corporation",
+    "ratio": "24",
+    "ticker_d": "NVDAD",
+    "ticker_c": "NVDAC",
+    "ticker_usa": "NVDA"
+  },
+  {
+    "ticker": "NVS",
+    "name": "Novartis Ag",
+    "ratio": "4",
+    "ticker_d": "NVSD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "NXE",
+    "name": "Nexgen Energy LTD",
+    "ratio": "1",
+    "ticker_d": "NXED",
+    "ticker_c": null,
+    "ticker_usa": "NXE"
+  },
+  {
+    "ticker": "OGZD",
+    "name": "Pjsc Gazprom",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "OKLO",
+    "name": "Oklo Inc",
+    "ratio": "28",
+    "ticker_d": "OKLOD",
+    "ticker_c": null,
+    "ticker_usa": "OKLO"
+  },
+  {
+    "ticker": "ORAN",
+    "name": "Orange S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ORCL",
+    "name": "Oracle Corporation",
+    "ratio": "3",
+    "ticker_d": "ORCLD",
+    "ticker_c": "ORCLC",
+    "ticker_usa": "ORCL"
+  },
+  {
+    "ticker": "ORLY",
+    "name": "O'reilly Automotive Inc",
+    "ratio": "222",
+    "ticker_d": "ORLYD",
+    "ticker_c": null,
+    "ticker_usa": "ORLY"
+  },
+  {
+    "ticker": "OXY",
+    "name": "Occidental Petroleum Corp.",
+    "ratio": "5",
+    "ticker_d": "OXYD",
+    "ticker_c": "OXYC",
+    "ticker_usa": "OXY"
+  },
+  {
+    "ticker": "PAAS",
+    "name": "Pan American Silver Corp.",
+    "ratio": "3",
+    "ticker_d": "PAASD",
+    "ticker_c": "PAASC",
+    "ticker_usa": "PAAS"
+  },
+  {
+    "ticker": "PAC",
+    "name": "Grupo Aeroportuario del Pacifico, S.A.B. de C.V.",
+    "ratio": "16",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PAGS",
+    "name": "Pagseguro Digital Ltd",
+    "ratio": "3",
+    "ticker_d": "PAGSD",
+    "ticker_c": null,
+    "ticker_usa": "PAGS"
+  },
+  {
+    "ticker": "PANW",
+    "name": "Palo Alto Networks Inc",
+    "ratio": "50",
+    "ticker_d": "PANWD",
+    "ticker_c": "PANWC",
+    "ticker_usa": "PANW"
+  },
+  {
+    "ticker": "PATH",
+    "name": "UIPATH INC",
+    "ratio": "2",
+    "ticker_d": "PATHD",
+    "ticker_c": null,
+    "ticker_usa": "PATH"
+  },
+  {
+    "ticker": "PBI",
+    "name": "Pitney Bowes Inc",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "PBI"
+  },
+  {
+    "ticker": "PBR",
+    "name": "Petrobras (ADR)",
+    "ratio": "1",
+    "ticker_d": "PBRD",
+    "ticker_c": "PBRC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PCAR",
+    "name": "Paccar Inc.",
+    "ratio": "3",
+    "ticker_d": "PCARD",
+    "ticker_c": null,
+    "ticker_usa": "PCAR"
+  },
+  {
+    "ticker": "PCRF",
+    "name": "Panasonic Corporation",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PDD",
+    "name": "PDD HOLDINGS INC",
+    "ratio": "25",
+    "ticker_d": "PDDD",
+    "ticker_c": "PDDC",
+    "ticker_usa": "PDD"
+  },
+  {
+    "ticker": "PEP",
+    "name": "Pepsico Inc",
+    "ratio": "18",
+    "ticker_d": "PEPD",
+    "ticker_c": "PEPC",
+    "ticker_usa": "PEP"
+  },
+  {
+    "ticker": "PETR3",
+    "name": "Petrobras - Petróleo Brasileiro S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PFE",
+    "name": "Pfizer Inc.",
+    "ratio": "4",
+    "ticker_d": "PFED",
+    "ticker_c": "PFEC",
+    "ticker_usa": "PFE"
+  },
+  {
+    "ticker": "PG",
+    "name": "Procter & Gamble",
+    "ratio": "15",
+    "ticker_d": "PGD",
+    "ticker_c": "PGC",
+    "ticker_usa": "PG"
+  },
+  {
+    "ticker": "PHG",
+    "name": "Koninklijke Philips N.V.",
+    "ratio": "5",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PINS",
+    "name": "Pinterest",
+    "ratio": "7",
+    "ticker_d": "PINSD",
+    "ticker_c": null,
+    "ticker_usa": "PINS"
+  },
+  {
+    "ticker": "PKS",
+    "name": "Posco Holdings Inc.",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PLTR",
+    "name": "Palantir Technologies Inc",
+    "ratio": "3",
+    "ticker_d": "PLTRD",
+    "ticker_c": "PLTRC",
+    "ticker_usa": "PLTR"
+  },
+  {
+    "ticker": "PM",
+    "name": "Philip Morris International",
+    "ratio": "18",
+    "ticker_d": "PMD",
+    "ticker_c": null,
+    "ticker_usa": "PM"
+  },
+  {
+    "ticker": "PRIO3",
+    "name": "Petro Rio S.A.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PSO",
+    "name": "Pearson Plc",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PSQ",
+    "name": "PROSHARES SHORT QQQ",
+    "ratio": "8",
+    "ticker_d": "PSQD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PSX",
+    "name": "Phillips 66",
+    "ratio": "6",
+    "ticker_d": "PSXD",
+    "ticker_c": null,
+    "ticker_usa": "PSX"
+  },
+  {
+    "ticker": "PTR",
+    "name": "Petrochina Co Ltd",
+    "ratio": "4",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "PYPL",
+    "name": "Paypal Holdings, Inc.",
+    "ratio": "8",
+    "ticker_d": "PYPLD",
+    "ticker_c": "PYPLC",
+    "ticker_usa": "PYPL"
+  },
+  {
+    "ticker": "QCOM",
+    "name": "Qualcomm Inc.",
+    "ratio": "11",
+    "ticker_d": "QCOMD",
+    "ticker_c": "QCOMC",
+    "ticker_usa": "QCOM"
+  },
+  {
+    "ticker": "QQQ",
+    "name": "INVESCO QQQ TRUST",
+    "ratio": "20",
+    "ticker_d": "QQQD",
+    "ticker_c": "QQQC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "RACE",
+    "name": "Ferrari",
+    "ratio": "83",
+    "ticker_d": "RACED",
+    "ticker_c": "RACEC",
+    "ticker_usa": "RACE"
+  },
+  {
+    "ticker": "RBLX",
+    "name": "Roblox Corp.",
+    "ratio": "2",
+    "ticker_d": "RBLXD",
+    "ticker_c": null,
+    "ticker_usa": "RBLX"
+  },
+  {
+    "ticker": "RCTB4",
+    "name": "Telebras PN",
+    "ratio": "1:1000",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "RENT3",
+    "name": "Localiza Rent A Car S.A.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "RGTI",
+    "name": "RIGETTI COMPUTING INC",
+    "ratio": "2",
+    "ticker_d": "RGTID",
+    "ticker_c": "RGTIC",
+    "ticker_usa": "RGTI"
+  },
+  {
+    "ticker": "RIO",
+    "name": "Rio Tinto Plc",
+    "ratio": "8",
+    "ticker_d": "RIOD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "RIOT",
+    "name": "Riot Platforms",
+    "ratio": "3",
+    "ticker_d": "RIOTD",
+    "ticker_c": "RIOTC",
+    "ticker_usa": "RIOT"
+  },
+  {
+    "ticker": "RKLB",
+    "name": "Rocket Lab Corp",
+    "ratio": "12",
+    "ticker_d": "RKLBD",
+    "ticker_c": null,
+    "ticker_usa": "RKLB"
+  },
+  {
+    "ticker": "ROKU",
+    "name": "Roku",
+    "ratio": "13",
+    "ticker_d": "ROKUD",
+    "ticker_c": null,
+    "ticker_usa": "ROKU"
+  },
+  {
+    "ticker": "ROST",
+    "name": "Ross Stores, Inc.",
+    "ratio": "4",
+    "ticker_d": "ROSTD",
+    "ticker_c": null,
+    "ticker_usa": "ROST"
+  },
+  {
+    "ticker": "RTX",
+    "name": "Raytheon Technologies Corp",
+    "ratio": "5",
+    "ticker_d": "RTXD",
+    "ticker_c": null,
+    "ticker_usa": "RTX"
+  },
+  {
+    "ticker": "SAN",
+    "name": "Banco Santander S.A",
+    "ratio": "1:4",
+    "ticker_d": "SAND",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SAP",
+    "name": "Sap Se",
+    "ratio": "6",
+    "ticker_d": "SAPD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SATL",
+    "name": "Satellogic Inc.",
+    "ratio": "1",
+    "ticker_d": "SATLD",
+    "ticker_c": null,
+    "ticker_usa": "SATL"
+  },
+  {
+    "ticker": "SBS",
+    "name": "Companhia de Saneamento Básico do Estado de São Paulo–Sabesp",
+    "ratio": "1:2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SBSP3",
+    "name": "Cia Saneamento Básico de SP",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SBUX",
+    "name": "Starbucks Corporation",
+    "ratio": "12",
+    "ticker_d": "SBUXD",
+    "ticker_c": "SBUXC",
+    "ticker_usa": "SBUX"
+  },
+  {
+    "ticker": "SCCO",
+    "name": "Southern Copper Corp",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "SCCO"
+  },
+  {
+    "ticker": "SCHW",
+    "name": "Charles Schwab",
+    "ratio": "13",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "SCHW"
+  },
+  {
+    "ticker": "SDA",
+    "name": "SunCar Technology Group Inc",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SE",
+    "name": "Sea Ltd.",
+    "ratio": "32",
+    "ticker_d": "SED",
+    "ticker_c": "SEC",
+    "ticker_usa": "SE"
+  },
+  {
+    "ticker": "SH",
+    "name": "PROSHARES SHORT S&P500",
+    "ratio": "8",
+    "ticker_d": "SHD",
+    "ticker_c": "SHC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SHEL",
+    "name": "Royal Dutch Shell Plc",
+    "ratio": "2",
+    "ticker_d": "SHELD",
+    "ticker_c": "SHELC",
+    "ticker_usa": "SHEL"
+  },
+  {
+    "ticker": "SHOP",
+    "name": "Shopify Inc.",
+    "ratio": "107",
+    "ticker_d": "SHOPD",
+    "ticker_c": "SHOPC",
+    "ticker_usa": "SHOP"
+  },
+  {
+    "ticker": "SHPW",
+    "name": "Shapeways Holdings Inc",
+    "ratio": "1:2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SI",
+    "name": "Silvergate Bancorp",
+    "ratio": "10",
+    "ticker_d": "SID",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SID",
+    "name": "Companhia Siderúrgica Nacional",
+    "ratio": "1:8",
+    "ticker_d": "SIDD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SIEGY",
+    "name": "Siemens Ag Adr",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SLB",
+    "name": "Schlumberger Ltd",
+    "ratio": "3",
+    "ticker_d": "SLBD",
+    "ticker_c": "SLBC",
+    "ticker_usa": "SLB"
+  },
+  {
+    "ticker": "SLV",
+    "name": "iShares SILVER TRUST",
+    "ratio": "6",
+    "ticker_d": "SLVD",
+    "ticker_c": "SLVC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SMH",
+    "name": "VAN ECK SEMICONDUCTOR ETF",
+    "ratio": "50",
+    "ticker_d": "SMHD",
+    "ticker_c": "SMHC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SMSN",
+    "name": "Samsung Electronics Co. Ltd.",
+    "ratio": "14",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SNA",
+    "name": "Snap-On Inc",
+    "ratio": "6",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "SNA"
+  },
+  {
+    "ticker": "SNAP",
+    "name": "Snap Inc.",
+    "ratio": "1",
+    "ticker_d": "SNAPD",
+    "ticker_c": null,
+    "ticker_usa": "SNAP"
+  },
+  {
+    "ticker": "SNP",
+    "name": "China Petroleum & Chem",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SNOW",
+    "name": "Snowflake Inc.",
+    "ratio": "30",
+    "ticker_d": "SNOWD",
+    "ticker_c": "SNOWC",
+    "ticker_usa": "SNOW"
+  },
+  {
+    "ticker": "SONY",
+    "name": "Sony Group Corporation",
+    "ratio": "8",
+    "ticker_d": "SONYD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SPCE",
+    "name": "Virgin Galactic",
+    "ratio": "1:2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "SPCE"
+  },
+  {
+    "ticker": "SPGI",
+    "name": "S&P Global Inc",
+    "ratio": "45",
+    "ticker_d": "SPGID",
+    "ticker_c": null,
+    "ticker_usa": "SPGI"
+  },
+  {
+    "ticker": "SPOT",
+    "name": "Spotify Technology S.A.",
+    "ratio": "28",
+    "ticker_d": "SPOTD",
+    "ticker_c": "SPOTC",
+    "ticker_usa": "SPOT"
+  },
+  {
+    "ticker": "SPXL",
+    "name": "DIREXION DAILY S&P 500 BULL 3X",
+    "ratio": "25",
+    "ticker_d": "SPXLD",
+    "ticker_c": "SPXLC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SPY",
+    "name": "SPDR S&P 500",
+    "ratio": "20",
+    "ticker_d": "SPYD",
+    "ticker_c": "SPYC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "STLA",
+    "name": "Stellantis",
+    "ratio": "5",
+    "ticker_d": "STLAD",
+    "ticker_c": "STLAC",
+    "ticker_usa": "STLA"
+  },
+  {
+    "ticker": "STNE",
+    "name": "StoneCo Ltd",
+    "ratio": "3",
+    "ticker_d": "STNED",
+    "ticker_c": null,
+    "ticker_usa": "STNE"
+  },
+  {
+    "ticker": "SUZ",
+    "name": "Suzano Papel E Celulose S.A.",
+    "ratio": "1",
+    "ticker_d": "SUZD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SUZB3",
+    "name": "Suzano S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "SWKS",
+    "name": "Skyworks Solutions",
+    "ratio": "21",
+    "ticker_d": "SWKSD",
+    "ticker_c": null,
+    "ticker_usa": "SWKS"
+  },
+  {
+    "ticker": "SYY",
+    "name": "Sysco Corp.",
+    "ratio": "8",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "SYY"
+  },
+  {
+    "ticker": "T",
+    "name": "At &T Inc.",
+    "ratio": "3",
+    "ticker_d": "TD",
+    "ticker_c": "TC",
+    "ticker_usa": "T"
+  },
+  {
+    "ticker": "TCOM",
+    "name": "TRIP.COM Group Ltd.",
+    "ratio": "2",
+    "ticker_d": "TCOMD",
+    "ticker_c": null,
+    "ticker_usa": "TCOM"
+  },
+  {
+    "ticker": "TEAM",
+    "name": "ATLASSIAN CORPORATION",
+    "ratio": "47",
+    "ticker_d": "TEAMD",
+    "ticker_c": null,
+    "ticker_usa": "TEAM"
+  },
+  {
+    "ticker": "TEFO",
+    "name": "Telefonica S.A.",
+    "ratio": "8",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TEM",
+    "name": "TEMPUS AI INC",
+    "ratio": "12",
+    "ticker_d": "TEMD",
+    "ticker_c": null,
+    "ticker_usa": "TEM"
+  },
+  {
+    "ticker": "TEN",
+    "name": "Tenaris",
+    "ratio": "1",
+    "ticker_d": "TEND",
+    "ticker_c": "TENC",
+    "ticker_usa": "TEN"
+  },
+  {
+    "ticker": "TGT",
+    "name": "Target Corporation",
+    "ratio": "24",
+    "ticker_d": "TGTD",
+    "ticker_c": "TGTC",
+    "ticker_usa": "TGT"
+  },
+  {
+    "ticker": "TIIAY",
+    "name": "Telecom Italia S.P.A. Ordinary Shares",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TIMB",
+    "name": "Tim Participações S.A.",
+    "ratio": "1",
+    "ticker_d": "TIMBD",
+    "ticker_c": null,
+    "ticker_usa": "TIMB"
+  },
+  {
+    "ticker": "TIMS3",
+    "name": "TIM S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TJX",
+    "name": "TJX Companies Inc/The",
+    "ratio": "22",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "TJX"
+  },
+  {
+    "ticker": "TM",
+    "name": "Toyota Motor Corporation",
+    "ratio": "15",
+    "ticker_d": "TMD",
+    "ticker_c": "TMC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TMO",
+    "name": "Thermo Fisher Scientific Inc.",
+    "ratio": "22",
+    "ticker_d": "TMOD",
+    "ticker_c": null,
+    "ticker_usa": "TMO"
+  },
+  {
+    "ticker": "TMUS",
+    "name": "T-mobile",
+    "ratio": "33",
+    "ticker_d": "TMUSD",
+    "ticker_c": null,
+    "ticker_usa": "TMUS"
+  },
+  {
+    "ticker": "TQQQ",
+    "name": "ProShares UltraPro QQQ",
+    "ratio": "25",
+    "ticker_d": "TQQQD",
+    "ticker_c": "TQQQC",
+    "ticker_usa": "TQQQ"
+  },
+  {
+    "ticker": "TRIP",
+    "name": "Tripadvisor, Inc.",
+    "ratio": "2",
+    "ticker_d": "TRIPD",
+    "ticker_c": null,
+    "ticker_usa": "TRIP"
+  },
+  {
+    "ticker": "TRVV",
+    "name": "The Travelers Cos. Inc.",
+    "ratio": "6",
+    "ticker_d": "TRVVD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TSLA",
+    "name": "Tesla, Inc.",
+    "ratio": "15",
+    "ticker_d": "TSLAD",
+    "ticker_c": "TSLAC",
+    "ticker_usa": "TSLA"
+  },
+  {
+    "ticker": "TSM",
+    "name": "Taiwan Semiconductor Manufacturing",
+    "ratio": "9",
+    "ticker_d": "TSMD",
+    "ticker_c": "TSMC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TTE",
+    "name": "TotalEnergies SE",
+    "ratio": "3",
+    "ticker_d": "TTED",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TTM",
+    "name": "Tata Motors Ltd",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TV",
+    "name": "Grupo Televisa S.A.",
+    "ratio": "3",
+    "ticker_d": "TVD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TWLO",
+    "name": "Twilio Inc",
+    "ratio": "36",
+    "ticker_d": "TWLOD",
+    "ticker_c": null,
+    "ticker_usa": "TWLO"
+  },
+  {
+    "ticker": "TWTR",
+    "name": "Twitter, Inc.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "TXN",
+    "name": "Texas Instruments Inc",
+    "ratio": "5",
+    "ticker_d": "TXND",
+    "ticker_c": null,
+    "ticker_usa": "TXN"
+  },
+  {
+    "ticker": "TXR",
+    "name": "Ternium S.A.",
+    "ratio": "4",
+    "ticker_d": "TXRD",
+    "ticker_c": "TXRC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "UAL",
+    "name": "United Airlines Holdings Inc.",
+    "ratio": "5",
+    "ticker_d": "UALD",
+    "ticker_c": "UALC",
+    "ticker_usa": "UAL"
+  },
+  {
+    "ticker": "UBER",
+    "name": "Uber Technologies Inc.",
+    "ratio": "2",
+    "ticker_d": "UBERD",
+    "ticker_c": "UBERC",
+    "ticker_usa": "UBER"
+  },
+  {
+    "ticker": "UGP",
+    "name": "Ultrapar Participações S.A.",
+    "ratio": "1",
+    "ticker_d": "UGPD",
+    "ticker_c": null,
+    "ticker_usa": "UGP"
+  },
+  {
+    "ticker": "UL",
+    "name": "Unilever PLC - Sponsored",
+    "ratio": "3",
+    "ticker_d": "ULD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "UN",
+    "name": "NU Holdings Ltd/Cayman Islands",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "UNH",
+    "name": "UnitedHealth Group Inc.",
+    "ratio": "33",
+    "ticker_d": "UNHD",
+    "ticker_c": "UNHC",
+    "ticker_usa": "UNH"
+  },
+  {
+    "ticker": "UNP",
+    "name": "Union Pacific Corp.",
+    "ratio": "20",
+    "ticker_d": "UNPD",
+    "ticker_c": null,
+    "ticker_usa": "UNP"
+  },
+  {
+    "ticker": "UPST",
+    "name": "Upstart Hldgs Inc",
+    "ratio": "5",
+    "ticker_d": "UPSTD",
+    "ticker_c": "UPSTC",
+    "ticker_usa": "UPST"
+  },
+  {
+    "ticker": "URA",
+    "name": "Global X Uranium ETF",
+    "ratio": "5",
+    "ticker_d": "URAD",
+    "ticker_c": "URAC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "URBN",
+    "name": "Urban Outfitters INC.",
+    "ratio": "2",
+    "ticker_d": "URBND",
+    "ticker_c": null,
+    "ticker_usa": "URBN"
+  },
+  {
+    "ticker": "USB",
+    "name": "U.S. Bancorp",
+    "ratio": "5",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "USB"
+  },
+  {
+    "ticker": "USO",
+    "name": "United States Oil Fund",
+    "ratio": "15",
+    "ticker_d": "USOD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "V",
+    "name": "Visa Inc",
+    "ratio": "18",
+    "ticker_d": "VD",
+    "ticker_c": "VC",
+    "ticker_usa": "V"
+  },
+  {
+    "ticker": "VALE",
+    "name": "Vale S.A.",
+    "ratio": "2",
+    "ticker_d": "VALED",
+    "ticker_c": "VALEC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VALE3",
+    "name": "Vale S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VEA",
+    "name": "Vanguard FTSE Developed Markets ETF",
+    "ratio": "10",
+    "ticker_d": "VEAD",
+    "ticker_c": "VEAC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VIG",
+    "name": "VANGUARD DIVIDEND APPRECIATION",
+    "ratio": "39",
+    "ticker_d": "VIGD",
+    "ticker_c": "VIGC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VIST",
+    "name": "Vista Energy S.A.B. de C.V.",
+    "ratio": "3",
+    "ticker_d": "VISTD",
+    "ticker_c": "VISTC",
+    "ticker_usa": "VIST"
+  },
+  {
+    "ticker": "VIV",
+    "name": "Telefônica Brasil S.A.",
+    "ratio": "1",
+    "ticker_d": "VIVD",
+    "ticker_c": null,
+    "ticker_usa": "VIV"
+  },
+  {
+    "ticker": "VIVT3",
+    "name": "Telefônica Brasil S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VOD",
+    "name": "Vodafone Group Plc",
+    "ratio": "1",
+    "ticker_d": "VODD",
+    "ticker_c": null,
+    "ticker_usa": "VOD"
+  },
+  {
+    "ticker": "VRSN",
+    "name": "Verisign, Inc.",
+    "ratio": "6",
+    "ticker_d": "VRSND",
+    "ticker_c": null,
+    "ticker_usa": "VRSN"
+  },
+  {
+    "ticker": "VRTX",
+    "name": "VERTEX PHARMACEUTICALS INC",
+    "ratio": "101",
+    "ticker_d": "VRTXD",
+    "ticker_c": null,
+    "ticker_usa": "VRTX"
+  },
+  {
+    "ticker": "VST",
+    "name": "VISTRA CORPORATION",
+    "ratio": "26",
+    "ticker_d": "VSTD",
+    "ticker_c": null,
+    "ticker_usa": "VST"
+  },
+  {
+    "ticker": "VXX",
+    "name": "iPath Series B S&P 500 VIX",
+    "ratio": "5",
+    "ticker_d": "VXXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "VZ",
+    "name": "Verizon Communications Inc.",
+    "ratio": "4",
+    "ticker_d": "VZD",
+    "ticker_c": "VZC",
+    "ticker_usa": "VZ"
+  },
+  {
+    "ticker": "WBA",
+    "name": "Walgreens Boots Alliance Inc.",
+    "ratio": "3",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "WBO",
+    "name": "Weibo Corporation",
+    "ratio": "6",
+    "ticker_d": "WBOD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "WEGE3",
+    "name": "Weg S.A.",
+    "ratio": "1",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "WFC",
+    "name": "Wells Fargo & Co.",
+    "ratio": "5",
+    "ticker_d": "WFCD",
+    "ticker_c": "WFCC",
+    "ticker_usa": "WFC"
+  },
+  {
+    "ticker": "WMT",
+    "name": "Walmart Inc.",
+    "ratio": "18",
+    "ticker_d": "WMTD",
+    "ticker_c": "WMTC",
+    "ticker_usa": "WMT"
+  },
+  {
+    "ticker": "XLB",
+    "name": "The Materials Select Sector SPDR Fund",
+    "ratio": "18",
+    "ticker_d": "XLBD",
+    "ticker_c": "XLBC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLC",
+    "name": "The Communication Services Select Sector SPDR Fund",
+    "ratio": "19",
+    "ticker_d": "XLCD",
+    "ticker_c": "XLCC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLE",
+    "name": "ENERGY SELECT SECTOR SPDR FUND",
+    "ratio": "2",
+    "ticker_d": "XLED",
+    "ticker_c": "XLEC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLF",
+    "name": "FINANCIAL SELECT SECTOR SPDR FUND",
+    "ratio": "2",
+    "ticker_d": "XLFD",
+    "ticker_c": "XLFC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLI",
+    "name": "The Industrial Select Sector SPDR Fund",
+    "ratio": "28",
+    "ticker_d": "XLID",
+    "ticker_c": "XLIC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLK",
+    "name": "The Technology Select Sector SPDR Fund",
+    "ratio": "46",
+    "ticker_d": "XLKD",
+    "ticker_c": "XLKC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLP",
+    "name": "The Consumer Staples Select Sector SPDR Fund",
+    "ratio": "16",
+    "ticker_d": "XLPD",
+    "ticker_c": "XLPC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLRE",
+    "name": "The Real Estate Select Sector SPDR Fund",
+    "ratio": "9",
+    "ticker_d": "XLRED",
+    "ticker_c": "XLREC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLU",
+    "name": "Utilities Select Sector SPDR Fund",
+    "ratio": "15",
+    "ticker_d": "XLUD",
+    "ticker_c": "XLUC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLV",
+    "name": "The Health Care Select Sector SPDR Fund",
+    "ratio": "29",
+    "ticker_d": "XLVD",
+    "ticker_c": "XLVC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XLY",
+    "name": "The Consumer Discretionary Select Sector SPDR Fund",
+    "ratio": "43",
+    "ticker_d": "XLYD",
+    "ticker_c": "XLYC",
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XOM",
+    "name": "Exxon Mobil Corporation",
+    "ratio": "10",
+    "ticker_d": "XOMD",
+    "ticker_c": "XOMC",
+    "ticker_usa": "XOM"
+  },
+  {
+    "ticker": "XP",
+    "name": "XP Inc",
+    "ratio": "4",
+    "ticker_d": "XPD",
+    "ticker_c": null,
+    "ticker_usa": "XP"
+  },
+  {
+    "ticker": "XPEV",
+    "name": "XPENG INC",
+    "ratio": "4",
+    "ticker_d": "XPEVD",
+    "ticker_c": null,
+    "ticker_usa": "XPEV"
+  },
+  {
+    "ticker": "XROX",
+    "name": "Xerox Holding Corporation",
+    "ratio": "1",
+    "ticker_d": "XROXD",
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "XYZ",
+    "name": "Square Inc.",
+    "ratio": "20",
+    "ticker_d": "XYZD",
+    "ticker_c": "XYZC",
+    "ticker_usa": "XYZ"
+  },
+  {
+    "ticker": "YELP",
+    "name": "Yelp Inc.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "YELP"
+  },
+  {
+    "ticker": "YZCA",
+    "name": "Yanzhou Coal Mining Co. Ltd.",
+    "ratio": "2",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": null
+  },
+  {
+    "ticker": "ZM",
+    "name": "Zoom Video Communications Inc.",
+    "ratio": "47",
+    "ticker_d": "ZMD",
+    "ticker_c": "ZMC",
+    "ticker_usa": "ZM"
+  }
+]

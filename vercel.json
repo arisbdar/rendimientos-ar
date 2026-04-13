@@ -2,6 +2,7 @@
   "framework": null,
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/cedears", "destination": "/cedears/index.html" },
     { "source": "/api/fci", "destination": "/api/cafci" },
     { "source": "/api/cafci/ficha/:fondoId/:claseId", "destination": "/api/cafci-ficha?fondoId=:fondoId&claseId=:claseId" },
     { "source": "/api/config", "destination": "/config.json" }

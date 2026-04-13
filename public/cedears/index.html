@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CEDEARs | Rendimientos AR</title>
+  <meta name="description" content="Lista actualizada de CEDEARs con precio local, variación diaria y ratio de conversión. Datos live de data912 y catálogo vendorizado de ratios.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rendimientos.co/cedears">
+  <meta property="og:title" content="CEDEARs | Rendimientos AR">
+  <meta property="og:description" content="Seguimiento de CEDEARs con precio local, variación diaria y ratio de conversión en una sola vista.">
+  <meta property="og:image" content="https://rendimientos.co/og-image.png">
+  <meta property="og:site_name" content="Rendimientos AR">
+  <meta property="og:locale" content="es_AR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CEDEARs | Rendimientos AR">
+  <meta name="twitter:description" content="Precio local, variación diaria y ratio de los CEDEARs listados en BYMA.">
+  <meta name="twitter:image" content="https://rendimientos.co/og-image.png">
+
+  <link rel="canonical" href="https://rendimientos.co/cedears">
+  <meta name="referrer" content="origin">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <meta name="theme-color" content="#f0f4f9">
+  <script>!function(){var t=localStorage.getItem('theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t)}()</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=Google+Sans+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/cedears/cedears.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        RENDIMIENTOS.CO
+      </div>
+      <nav class="currency-tabs" aria-label="Secciones">
+        <a href="/" class="currency-tab">Inicio</a>
+        <a href="/cedears" class="currency-tab active" aria-current="page">CEDEARs</a>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
+        <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>CEDEARs</h1>
+    <p>Lista de especies con precio local, variación diaria y ratio de conversión. Se muestra la intersección exacta entre catálogo local y cotización live.</p>
+  </section>
+
+  <main class="container">
+    <section class="section">
+      <div class="cedears-implicit-card" id="cedears-implicit-card">
+        <div class="cedears-implicit-values">
+          <div class="cedears-implicit-box">
+            <span>MEP implícito promedio</span>
+            <strong id="avg-mep">-</strong>
+          </div>
+          <div class="cedears-implicit-box">
+            <span>Cable implícito promedio</span>
+            <strong id="avg-cable">-</strong>
+          </div>
+        </div>
+        <p class="cedears-implicit-note" id="avg-meta">Calculado sobre los activos visibles.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Todos los CEDEARs con precio</h2>
+      <p class="section-desc">Tickers base con su precio ARS y, cuando existen en data912, también especie D (MEP) y C (cable).</p>
+      <div class="cedears-toolbar">
+        <div class="cedears-search-wrap">
+          <input id="cedears-search" class="cedears-search" type="search" placeholder="Buscar ticker o nombre" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="loading cedears-loading" id="cedears-loading">
+        <div class="loading-spinner"></div>
+        <p>Cargando CEDEARs…</p>
+      </div>
+
+      <div class="cedears-error" id="cedears-error" hidden></div>
+
+      <div class="cedears-table-wrap" id="cedears-table" hidden>
+        <table class="cedears-table">
+          <thead>
+            <tr>
+              <th>Activo</th>
+              <th class="col-right">Precio ARS</th>
+              <th class="col-right">Precio D</th>
+              <th class="col-right">Precio C</th>
+              <th class="col-right">Precio EE.UU</th>
+              <th class="col-right">MEP Implícito</th>
+              <th class="col-right">Cable Implícito</th>
+              <th class="col-right">Ratio</th>
+            </tr>
+          </thead>
+          <tbody id="cedears-list"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Ratios vendorizados desde <a href="https://github.com/ferminrp/google-sheets-argento/blob/main/data/cedears.json" target="_blank" rel="noopener noreferrer">google-sheets-argento</a>.</p>
+    <p>Precios en vivo provistos por <a href="https://data912.com/live/arg_cedears" target="_blank" rel="noopener noreferrer">arg_cedears</a> y <a href="https://data912.com/live/usa_stocks" target="_blank" rel="noopener noreferrer">usa_stocks</a> en data912.</p>
+  </footer>
+
+  <script src="/cedears/cedears.js"></script>
+</body>
+</html>
