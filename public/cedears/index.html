@@ -29,6 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=Google+Sans+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/cedears/cedears.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
 </head>
 <body>
   <header class="header">
@@ -74,6 +75,10 @@
       <h2>Todos los CEDEARs con precio</h2>
       <p class="section-desc">Tickers base con su precio ARS y, cuando existen en data912, también especie D (MEP) y C (cable).</p>
       <div class="cedears-toolbar">
+        <div class="cedears-view-toggle" role="tablist" aria-label="Vista de CEDEARs">
+          <button type="button" class="cedears-view-btn active" id="view-table" role="tab" aria-selected="true" data-view="table">Tabla</button>
+          <button type="button" class="cedears-view-btn" id="view-chart" role="tab" aria-selected="false" data-view="chart">Gráfico</button>
+        </div>
         <div class="cedears-search-wrap">
           <input id="cedears-search" class="cedears-search" type="search" placeholder="Buscar ticker o nombre" autocomplete="off" />
         </div>
@@ -102,6 +107,13 @@
           </thead>
           <tbody id="cedears-list"></tbody>
         </table>
+      </div>
+
+      <div class="cedears-chart-wrap" id="cedears-chart-wrap" hidden>
+        <div class="cedears-chart-inner">
+          <canvas id="cedears-scatter"></canvas>
+        </div>
+        <div class="cedears-chart-empty" id="cedears-chart-empty" hidden></div>
       </div>
     </section>
   </main>

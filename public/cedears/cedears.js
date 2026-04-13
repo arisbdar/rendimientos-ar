@@ -1,7 +1,11 @@
 let cedearsItems = [];
+let currentFilteredItems = [];
+let currentView = 'table';
+let cedearsScatterChart = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   setupThemeToggle();
+  setupViewToggle();
   loadCedears();
 });
 
@@ -15,6 +19,34 @@ function setupThemeToggle() {
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });
+}
+
+function setupViewToggle() {
+  const buttons = document.querySelectorAll('.cedears-view-btn');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setView(btn.dataset.view || 'table');
+    });
+  });
+}
+
+function setView(view) {
+  currentView = view === 'chart' ? 'chart' : 'table';
+
+  const tableWrap = document.getElementById('cedears-table');
+  const chartWrap = document.getElementById('cedears-chart-wrap');
+  if (tableWrap) tableWrap.hidden = currentView !== 'table';
+  if (chartWrap) chartWrap.hidden = currentView !== 'chart';
+
+  document.querySelectorAll('.cedears-view-btn').forEach((btn) => {
+    const active = btn.dataset.view === currentView;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-selected', active ? 'true' : 'false');
+  });
+
+  if (currentView === 'chart') {
+    renderScatterChart(currentFilteredItems);
+  }
 }
 
 async function fetchJSON(url) {
@@ -36,7 +68,6 @@ async function fetchJSONWithFallback(primaryUrl, fallbackUrl) {
 async function loadCedears() {
   const loading = document.getElementById('cedears-loading');
   const errorBox = document.getElementById('cedears-error');
-  const table = document.getElementById('cedears-table');
   const searchInput = document.getElementById('cedears-search');
 
   try {
@@ -61,13 +92,15 @@ async function loadCedears() {
       });
     }
 
-    loading.hidden = true;
-    table.hidden = false;
+    if (loading) loading.hidden = true;
+    setView('table');
   } catch (error) {
     console.error('CEDEARs load error:', error);
-    loading.hidden = true;
-    errorBox.hidden = false;
-    errorBox.textContent = 'No se pudo cargar la lista de CEDEARs en este momento.';
+    if (loading) loading.hidden = true;
+    if (errorBox) {
+      errorBox.hidden = false;
+      errorBox.textContent = 'No se pudo cargar la lista de CEDEARs en este momento.';
+    }
   }
 }
 
@@ -89,6 +122,7 @@ function mergeCedears(catalog, live, usaLive) {
     .map(item => {
       const priceArs = quotePrice(liveMap.get(item.ticker));
       if (priceArs === null) return null;
+
       const priceD = item.ticker_d ? quotePrice(liveMap.get(item.ticker_d)) : null;
       const priceC = item.ticker_c ? quotePrice(liveMap.get(item.ticker_c)) : null;
       const priceUnderlying = item.ticker_usa ? quotePrice(usaMap.get(item.ticker_usa)) : null;
@@ -120,9 +154,25 @@ function renderFilteredList(query) {
       String(item.name || '').toUpperCase().includes(term))
     : cedearsItems;
 
-  const list = document.getElementById('cedears-list');
-  if (list) list.innerHTML = filtered.map(renderRow).join('');
+  currentFilteredItems = filtered;
+  renderTable(filtered);
   renderImplicitAverages(filtered);
+
+  if (currentView === 'chart') {
+    renderScatterChart(filtered);
+  }
+}
+
+function renderTable(items) {
+  const list = document.getElementById('cedears-list');
+  if (!list) return;
+
+  if (!items.length) {
+    list.innerHTML = '<tr><td colspan="8" class="cedears-empty-cell">No hay resultados para la búsqueda actual.</td></tr>';
+    return;
+  }
+
+  list.innerHTML = items.map(renderRow).join('');
 }
 
 function renderRow(item) {
@@ -154,6 +204,133 @@ function renderRow(item) {
   `;
 }
 
+function renderScatterChart(items) {
+  const chartEmpty = document.getElementById('cedears-chart-empty');
+  const canvas = document.getElementById('cedears-scatter');
+
+  if (!chartEmpty || !canvas) return;
+
+  if (typeof Chart === 'undefined') {
+    destroyScatterChart();
+    canvas.hidden = true;
+    chartEmpty.hidden = false;
+    chartEmpty.textContent = 'No se pudo inicializar el gráfico en este entorno.';
+    return;
+  }
+
+  if (!items.length) {
+    destroyScatterChart();
+    canvas.hidden = true;
+    chartEmpty.hidden = false;
+    chartEmpty.textContent = 'No hay resultados para la búsqueda actual.';
+    return;
+  }
+
+  const chartItems = items.filter(item =>
+    Number.isFinite(item.impliedMep) && item.impliedMep > 0 &&
+    Number.isFinite(item.impliedCable) && item.impliedCable > 0
+  );
+
+  if (!chartItems.length) {
+    destroyScatterChart();
+    canvas.hidden = true;
+    chartEmpty.hidden = false;
+    chartEmpty.textContent = 'No hay activos con MEP y CCL implícito simultáneamente para esta selección.';
+    return;
+  }
+
+  canvas.hidden = false;
+  chartEmpty.hidden = true;
+  destroyScatterChart();
+
+  const ctx = canvas.getContext('2d');
+  cedearsScatterChart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [
+        {
+          label: 'CEDEARs',
+          data: chartItems.map(item => ({
+            x: item.impliedCable,
+            y: item.impliedMep,
+            ticker: item.ticker,
+            name: item.name,
+          })),
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: '#0b57d0',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 1.2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            title: (context) => {
+              const point = context[0]?.raw;
+              if (!point) return '';
+              return `${point.ticker} - ${point.name}`;
+            },
+            label: (context) => {
+              const point = context.raw;
+              return `MEP: ${formatImplicit(point.y)} | CCL: ${formatImplicit(point.x)}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'CCL implícito (ARS)',
+            color: '#79747e',
+            font: { size: 12, weight: '600' },
+          },
+          ticks: {
+            callback: (value) => formatAxisArs(value),
+            color: '#79747e',
+            font: { size: 11 },
+          },
+          grid: {
+            color: 'rgba(121, 116, 126, 0.18)',
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'MEP implícito (ARS)',
+            color: '#79747e',
+            font: { size: 12, weight: '600' },
+          },
+          ticks: {
+            callback: (value) => formatAxisArs(value),
+            color: '#79747e',
+            font: { size: 11 },
+          },
+          grid: {
+            color: 'rgba(121, 116, 126, 0.18)',
+          },
+        },
+      },
+    },
+  });
+}
+
+function destroyScatterChart() {
+  if (cedearsScatterChart) {
+    cedearsScatterChart.destroy();
+    cedearsScatterChart = null;
+  }
+}
+
 function formatArs(value) {
   const maximumFractionDigits = Math.abs(value) >= 100 ? 2 : 4;
   return new Intl.NumberFormat('es-AR', {
@@ -162,6 +339,13 @@ function formatArs(value) {
     minimumFractionDigits: 0,
     maximumFractionDigits,
   }).format(value);
+}
+
+function formatAxisArs(value) {
+  return new Intl.NumberFormat('es-AR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(Number(value));
 }
 
 function formatUsd(value) {

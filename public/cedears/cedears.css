@@ -44,8 +44,37 @@
 .cedears-toolbar {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 12px;
+}
+
+.cedears-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--card-bg);
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.cedears-view-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.cedears-view-btn.active {
+  background: var(--accent-light);
+  color: var(--accent-dark);
 }
 
 .cedears-search-wrap {
@@ -128,6 +157,13 @@
   vertical-align: middle;
 }
 
+.cedears-empty-cell {
+  padding: 22px 12px !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
 .cedear-row:last-child td {
   border-bottom: none;
 }
@@ -208,6 +244,27 @@
   font-weight: 600;
 }
 
+.cedears-chart-wrap {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  padding: 14px;
+}
+
+.cedears-chart-inner {
+  height: 520px;
+}
+
+.cedears-chart-empty {
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
 @media (max-width: 880px) {
   .cedears-implicit-values {
     grid-template-columns: 1fr;
@@ -223,4 +280,7 @@
     max-width: none;
   }
 
+  .cedears-chart-inner {
+    height: 380px;
+  }
 }
