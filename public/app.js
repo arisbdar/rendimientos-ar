@@ -360,6 +360,8 @@ async function init() {
 
   // Render especiales at the bottom
   renderEspeciales(config.especiales.filter(i => i.activo));
+
+  initTooltips(mainList);
 }
 
 function renderRendimientosChart(items, containerId, options = {}) {
@@ -1062,6 +1064,8 @@ async function loadPlazoFijoUvaPeriodico() {
       renderRendimientosChart(chartItems, 'plazofijo-uva-periodico-chart', { vertical: true, maxItems: 8 });
     }
 
+    initTooltips(container);
+
     if (source) {
       source.innerHTML = 'Fuente: <a href="https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijoUvaPagoPeriodico" target="_blank" rel="noopener noreferrer">ArgentinaDatos API</a>';
     }
@@ -1157,6 +1161,7 @@ async function loadPlazoFijo() {
       };
     });
     renderRendimientosChart(chartItems, 'plazofijo-chart');
+    initTooltips(container);
   } catch (e) {
     console.error('Error loading plazo fijo:', e);
     container.innerHTML = '<div class="loading">Error al cargar datos de plazos fijos.</div>';
@@ -1618,6 +1623,7 @@ async function loadHipotecarios() {
 
     // Render bar chart (ascending — lower TNA is better for hipotecarios)
     renderHipotecariosChart(data);
+    initTooltips(container);
   } catch (err) {
     console.error('Error loading hipotecarios:', err);
     container.innerHTML = '<div class="loading">Error al cargar datos de hipotecarios.</div>';
@@ -1779,6 +1785,8 @@ async function loadLecaps() {
 
     // Render scatter plot (TIR vs Días)
     renderLecapScatter(items);
+
+    initTooltips(container);
   } catch (e) {
     console.error('Error loading LECAPs:', e);
     container.innerHTML = '<div class="loading">Error al cargar datos de LECAPs.</div>';
@@ -1993,6 +2001,8 @@ async function loadSoberanos() {
 
     // Render yield curve
     renderYieldCurve(items);
+
+    initTooltips(container);
 
     const source = document.getElementById('soberanos-source');
     if (source) {
@@ -3375,6 +3385,8 @@ async function loadCER() {
       console.warn('Chart.js not available, skipping curve:', chartError.message);
     }
 
+    initTooltips(container);
+
     const source = document.getElementById('cer-source');
     if (source) {
       source.textContent = '';
@@ -3638,6 +3650,7 @@ async function loadONs() {
     items.sort((a, b) => a.duration - b.duration);
     renderONsTable(container, items);
     renderONsYieldCurve(items);
+    initTooltips(container);
     document.getElementById('ons-source').textContent = '';
   } catch(err) {
     container.innerHTML = '<p style="color:var(--red)">Error cargando ONs: ' + err.message + '</p>';
@@ -5603,3 +5616,158 @@ function updateMundialBracket(matches, nameMap) {
     }
   }
 }
+
+// ─── Financial Term Tooltips ───
+const FINANCIAL_GLOSSARY = {
+  'TNA': 'Tasa Nominal Anual — el porcentaje que te pagan en un año, sin contar interés compuesto',
+  'TEA': 'Tasa Efectiva Anual — lo que realmente ganás en un año si reinvertís los intereses',
+  'TIR': 'Tasa Interna de Retorno — el rendimiento total si mantenés el bono hasta el vencimiento',
+  'TIR REAL': 'Tasa Interna de Retorno Real — rendimiento descontando inflación, si mantenés el bono hasta el vencimiento',
+  'VN': 'Valor Nominal — el valor de referencia del bono (generalmente 100). Los precios se expresan por cada 100 VN',
+  'CER': 'Coeficiente de Estabilización de Referencia — índice que ajusta por inflación. Si la inflación sube, tu bono paga más',
+  'CCL': 'Contado Con Liquidación — tipo de cambio que se obtiene comprando un activo en pesos y vendiéndolo en dólares en el exterior',
+  'MEP': 'Dólar MEP — tipo de cambio comprando y vendiendo bonos en pesos y dólares dentro de Argentina',
+  'Duration': 'Duración — mide cuánto cambia el precio de un bono si las tasas suben o bajan. Mayor duración = más sensibilidad',
+  'DURATION': 'Duración — mide cuánto cambia el precio de un bono si las tasas suben o bajan. Mayor duración = más sensibilidad',
+  'LECAP': 'Letra Capitalizable — instrumento del Tesoro que paga todo al vencimiento (capital + intereses juntos)',
+  'FCI': 'Fondo Común de Inversión — junta plata de muchos inversores y la invierte en distintos activos',
+  'ON': 'Obligación Negociable — bono emitido por una empresa privada, no el gobierno',
+  'BADLAR': 'Tasa de plazos fijos mayores a $1M en bancos privados. Se usa como referencia para muchos productos',
+};
+
+const TOOLTIP_SELECTORS = 'th, .rate-label, .calc-hint, p';
+
+// Shared floating tooltip element
+let _tooltipEl = null;
+let _tooltipHideTimer = null;
+
+function getTooltipEl() {
+  if (!_tooltipEl) {
+    _tooltipEl = document.createElement('div');
+    _tooltipEl.className = 'fin-tooltip';
+    _tooltipEl.innerHTML = '<span class="fin-tooltip-arrow"></span><span class="fin-tooltip-text"></span>';
+    document.body.appendChild(_tooltipEl);
+  }
+  return _tooltipEl;
+}
+
+function showTooltip(termEl) {
+  clearTimeout(_tooltipHideTimer);
+  const tip = getTooltipEl();
+  const text = termEl.getAttribute('data-tooltip');
+  if (!text) return;
+
+  tip.querySelector('.fin-tooltip-text').textContent = text;
+  tip.classList.add('visible');
+
+  // Position relative to the term
+  const rect = termEl.getBoundingClientRect();
+  const arrow = tip.querySelector('.fin-tooltip-arrow');
+
+  // Temporarily show to measure
+  tip.style.left = '0';
+  tip.style.top = '0';
+  const tipRect = tip.getBoundingClientRect();
+
+  // Default: above the term
+  let top = rect.top - tipRect.height - 8;
+  let arrowClass = 'arrow-down';
+
+  // If not enough space above, flip below
+  if (top < 4) {
+    top = rect.bottom + 8;
+    arrowClass = 'arrow-up';
+  }
+
+  let left = rect.left + rect.width / 2 - tipRect.width / 2;
+  // Clamp to viewport
+  left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+  tip.style.top = top + 'px';
+  tip.style.left = left + 'px';
+  arrow.className = 'fin-tooltip-arrow ' + arrowClass;
+
+  // Adjust arrow horizontal position to point at the term
+  const arrowLeft = rect.left + rect.width / 2 - left;
+  arrow.style.left = Math.max(10, Math.min(arrowLeft, tipRect.width - 10)) + 'px';
+  arrow.style.transform = '';
+}
+
+function hideTooltip() {
+  _tooltipHideTimer = setTimeout(() => {
+    if (_tooltipEl) _tooltipEl.classList.remove('visible');
+  }, 100);
+}
+
+function initTooltips(root) {
+  const container = root || document.body;
+  const elements = container.querySelectorAll(TOOLTIP_SELECTORS);
+
+  elements.forEach(el => {
+    if (el.querySelector('.fin-term')) return;
+
+    const terms = Object.keys(FINANCIAL_GLOSSARY).sort((a, b) => b.length - a.length);
+    const pattern = new RegExp('\\b(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')\\b', 'g');
+
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const textNodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.parentElement.closest('.fin-term')) continue;
+      if (pattern.test(node.textContent)) {
+        textNodes.push(node);
+      }
+      pattern.lastIndex = 0;
+    }
+
+    textNodes.forEach(textNode => {
+      const text = textNode.textContent;
+      pattern.lastIndex = 0;
+      const parts = [];
+      let lastIdx = 0;
+      let match;
+
+      while ((match = pattern.exec(text)) !== null) {
+        if (match.index > lastIdx) {
+          parts.push(document.createTextNode(text.slice(lastIdx, match.index)));
+        }
+        const term = match[0];
+        const span = document.createElement('span');
+        span.className = 'fin-term';
+        span.setAttribute('data-tooltip', FINANCIAL_GLOSSARY[term] || FINANCIAL_GLOSSARY[term.toUpperCase()] || '');
+        span.textContent = term;
+        parts.push(span);
+        lastIdx = pattern.lastIndex;
+      }
+
+      if (parts.length > 0) {
+        if (lastIdx < text.length) {
+          parts.push(document.createTextNode(text.slice(lastIdx)));
+        }
+        const frag = document.createDocumentFragment();
+        parts.forEach(p => frag.appendChild(p));
+        textNode.parentNode.replaceChild(frag, textNode);
+      }
+    });
+  });
+
+  // Bind hover (desktop) and tap (mobile) events
+  container.querySelectorAll('.fin-term').forEach(term => {
+    if (term._tooltipBound) return;
+    term._tooltipBound = true;
+    term.addEventListener('mouseenter', () => showTooltip(term));
+    term.addEventListener('mouseleave', () => hideTooltip());
+    term.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tip = getTooltipEl();
+      if (tip.classList.contains('visible')) {
+        hideTooltip();
+      } else {
+        showTooltip(term);
+      }
+    });
+  });
+}
+
+// Close tooltip when tapping elsewhere
+document.addEventListener('click', () => hideTooltip());
