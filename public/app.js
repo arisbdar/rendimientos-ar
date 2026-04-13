@@ -5640,6 +5640,8 @@ const TOOLTIP_SELECTORS = 'th, .rate-label, .calc-hint, p';
 // Shared floating tooltip element
 let _tooltipEl = null;
 let _tooltipHideTimer = null;
+let _activeTooltipTerm = null;
+const _isTouch = 'ontouchstart' in window;
 
 function getTooltipEl() {
   if (!_tooltipEl) {
@@ -5651,20 +5653,12 @@ function getTooltipEl() {
   return _tooltipEl;
 }
 
-function showTooltip(termEl) {
-  clearTimeout(_tooltipHideTimer);
+function positionTooltip(termEl) {
   const tip = getTooltipEl();
-  const text = termEl.getAttribute('data-tooltip');
-  if (!text) return;
-
-  tip.querySelector('.fin-tooltip-text').textContent = text;
-  tip.classList.add('visible');
-
-  // Position relative to the term
   const rect = termEl.getBoundingClientRect();
   const arrow = tip.querySelector('.fin-tooltip-arrow');
 
-  // Temporarily show to measure
+  // Measure from top-left to get dimensions
   tip.style.left = '0';
   tip.style.top = '0';
   const tipRect = tip.getBoundingClientRect();
@@ -5673,30 +5667,41 @@ function showTooltip(termEl) {
   let top = rect.top - tipRect.height - 8;
   let arrowClass = 'arrow-down';
 
-  // If not enough space above, flip below
+  // Flip below if not enough space above
   if (top < 4) {
     top = rect.bottom + 8;
     arrowClass = 'arrow-up';
   }
 
   let left = rect.left + rect.width / 2 - tipRect.width / 2;
-  // Clamp to viewport
+  // Clamp to viewport edges
   left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
 
   tip.style.top = top + 'px';
   tip.style.left = left + 'px';
   arrow.className = 'fin-tooltip-arrow ' + arrowClass;
 
-  // Adjust arrow horizontal position to point at the term
+  // Point arrow at the term center
   const arrowLeft = rect.left + rect.width / 2 - left;
   arrow.style.left = Math.max(10, Math.min(arrowLeft, tipRect.width - 10)) + 'px';
   arrow.style.transform = '';
 }
 
+function showTooltip(termEl) {
+  clearTimeout(_tooltipHideTimer);
+  const tip = getTooltipEl();
+  const text = termEl.getAttribute('data-tooltip');
+  if (!text) return;
+  tip.querySelector('.fin-tooltip-text').textContent = text;
+  tip.classList.add('visible');
+  _activeTooltipTerm = termEl;
+  positionTooltip(termEl);
+}
+
 function hideTooltip() {
-  _tooltipHideTimer = setTimeout(() => {
-    if (_tooltipEl) _tooltipEl.classList.remove('visible');
-  }, 100);
+  clearTimeout(_tooltipHideTimer);
+  if (_tooltipEl) _tooltipEl.classList.remove('visible');
+  _activeTooltipTerm = null;
 }
 
 function initTooltips(root) {
@@ -5751,23 +5756,30 @@ function initTooltips(root) {
     });
   });
 
-  // Bind hover (desktop) and tap (mobile) events
   container.querySelectorAll('.fin-term').forEach(term => {
     if (term._tooltipBound) return;
     term._tooltipBound = true;
-    term.addEventListener('mouseenter', () => showTooltip(term));
-    term.addEventListener('mouseleave', () => hideTooltip());
-    term.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const tip = getTooltipEl();
-      if (tip.classList.contains('visible')) {
-        hideTooltip();
-      } else {
-        showTooltip(term);
-      }
-    });
+
+    if (_isTouch) {
+      // Mobile: tap to toggle, tap again or elsewhere to dismiss
+      term.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (_activeTooltipTerm === term) {
+          hideTooltip();
+        } else {
+          showTooltip(term);
+        }
+      });
+    } else {
+      // Desktop: hover to show/hide
+      term.addEventListener('mouseenter', () => showTooltip(term));
+      term.addEventListener('mouseleave', () => hideTooltip());
+    }
   });
 }
 
-// Close tooltip when tapping elsewhere
-document.addEventListener('click', () => hideTooltip());
+// Dismiss tooltip when tapping/clicking elsewhere
+document.addEventListener('click', () => {
+  if (_activeTooltipTerm) hideTooltip();
+});
