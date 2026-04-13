@@ -838,21 +838,6 @@ body {
 [data-theme="dark"] .soberano-ley.ley-ny { background: var(--accent-light); color: var(--accent); }
 .soberano-ytm { font-weight: 700; }
 
-.admin-link {
-  font-size: 0.72rem;
-  color: var(--text-tertiary);
-  text-decoration: none;
-  padding: 5px 12px;
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  transition: all 0.15s;
-  font-weight: 500;
-}
-
-.admin-link:hover {
-  border-color: var(--text);
-}
-
 /* Auth Area */
 .auth-area {
   display: flex;
@@ -1597,18 +1582,6 @@ body {
 
 .btn-primary:hover { opacity: 0.85; }
 
-.btn-danger {
-  background: var(--red-bg);
-  color: var(--red);
-}
-
-.btn-danger:hover { background: #fee2e2; }
-
-.btn-sm {
-  padding: 4px 10px;
-  font-size: 0.72rem;
-}
-
 /* Compare Page */
 .compare-selectors {
   display: flex;
@@ -1974,11 +1947,7 @@ body {
   vertical-align: super;
   margin-left: 2px;
 }
-.admin-link.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-}
+
 
 #chart-container {
   background: var(--card-bg);
@@ -2303,7 +2272,6 @@ body {
   .currency-tab .flag { display: none; }
   .auth-area { display: none; }
   .auth-login-btn { font-size: 0.6rem; padding: 3px 6px; }
-  .admin-link { display: none; }
   .portfolio-type-grid { grid-template-columns: repeat(2, 1fr); }
   .portfolio-summary-grid { grid-template-columns: repeat(2, 1fr); }
   .subnav-inner { padding: 0 16px; gap: 16px; }

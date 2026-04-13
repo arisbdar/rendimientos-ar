@@ -3291,17 +3291,14 @@ async function loadCER() {
   container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando bonos CER...</p></div>`;
 
   try {
-    const [config, cerData, cerUltimo, preciosData] = await Promise.all([
+    const [config, cerData, preciosData] = await Promise.all([
       fetch('/api/config').then(r => r.json()),
       fetch('/api/cer?v=2').then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }))
     ]);
 
     const bonosCER = config.bonos_cer || {};
-    const cerActual = cerData?.cer || 0; // CER T-10 para cálculos
-    const cerUltimoPublicado = cerUltimo?.cer || 0; // Último CER para mostrar en UI
-    const fechaUltimoCER = cerUltimo?.fecha || '';
+    const cerActual = cerData?.cer || 0;
     const bondPrices = preciosData.data || [];
 
     if (!cerActual || !bondPrices.length) {
