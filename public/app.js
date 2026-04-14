@@ -3291,14 +3291,17 @@ async function loadCER() {
   container.innerHTML = `<div class="loading"><div class="loading-spinner"></div><p>Cargando bonos CER...</p></div>`;
 
   try {
-    const [config, cerData, preciosData] = await Promise.all([
+    const [config, cerData, cerUltimo, preciosData] = await Promise.all([
       fetch('/api/config').then(r => r.json()),
       fetch('/api/cer?v=2').then(r => r.ok ? r.json() : null).catch(() => null),
+      fetch('/api/cer-ultimo').then(r => r.ok ? r.json() : null).catch(() => null),
       fetch('/api/cer-precios').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] }))
     ]);
 
     const bonosCER = config.bonos_cer || {};
-    const cerActual = cerData?.cer || 0;
+    const cerActual = cerData?.cer || 0; // CER T-10 para cálculos
+    const cerUltimoPublicado = cerUltimo?.cer || 0; // Último CER para mostrar en UI
+    const fechaUltimoCER = cerUltimo?.fecha || '';
     const bondPrices = preciosData.data || [];
 
     if (!cerActual || !bondPrices.length) {
@@ -4852,8 +4855,7 @@ function renderCashflowChart(months) {
 }
 
 // ─── Dolar ───
-// Logo map for dolar exchanges — images from criptos.com.ar + local
-// Exchange logos — SVGs from icons.com.ar + ENTITY_LOGOS + initials fallback
+// Exchange logos — local SVGs + API logoUrl (comparadolar.ar) + ENTITY_LOGOS + initials fallback
 const DOLAR_LOGO_FILE = {
   belo: '/logos/exchanges/belo.svg',
   buenbit: '/logos/exchanges/buenbit.svg',
@@ -4884,11 +4886,12 @@ const DOLAR_LOGO_INITIALS = {
   vibrant: { t: 'VB', bg: '#6366f1' },
   saldo: { t: 'SA', bg: '#10b981' },
 };
-function getDolarExchangeLogo(id, name) {
+function getDolarExchangeLogo(id, name, logoUrl) {
   const file = DOLAR_LOGO_FILE[id];
   if (file) return `<img src="${file}" alt="${name}" style="width:24px;height:24px;border-radius:6px;object-fit:contain;">`;
   const entityKey = DOLAR_LOGO_ENTITY[id];
   if (entityKey && ENTITY_LOGOS[entityKey]) return `<img src="${ENTITY_LOGOS[entityKey]}" alt="${name}" style="width:24px;height:24px;border-radius:6px;object-fit:contain;">`;
+  if (logoUrl) return `<img src="${logoUrl}" alt="${name}" style="width:24px;height:24px;border-radius:6px;object-fit:contain;">`;
   const ini = DOLAR_LOGO_INITIALS[id];
   if (ini) return `<div class="dolar-tipo-icon" style="background:${ini.bg};${ini.c ? 'color:' + ini.c : ''}">${ini.t}</div>`;
   return `<div class="dolar-tipo-icon" style="background:#6b7280">${(name || '').slice(0, 2).toUpperCase()}</div>`;
@@ -4908,9 +4911,28 @@ async function loadDolar() {
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     const { exchanges, updated } = await res.json();
 
+    // ── Detect if market is closed (Mon-Fri 11:00-17:00 ART) ──
+    function isMarketOpen() {
+      const now = new Date();
+      // ART is UTC-3
+      const artNow = new Date(now.getTime() + (now.getTimezoneOffset() - 180) * 60000);
+      const day = artNow.getDay();
+      const hour = artNow.getHours();
+      if (day === 0 || day === 6) return false; // weekend
+      return hour >= 10 && hour < 17;
+    }
+    const marketOpen = isMarketOpen();
+    let only24x7 = !marketOpen; // default ON when market is closed
+
+    function getUsdList() {
+      const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0);
+      return only24x7 ? all.filter(e => e.is24x7) : all;
+    }
+
     // ── Best buy / best sell hero — USD billete only ──
-    const usdProviders = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0);
-    if (usdProviders.length > 0) {
+    function renderBest() {
+      const usdProviders = getUsdList();
+      if (usdProviders.length === 0) { bestEl.innerHTML = ''; return; }
       const bestBuy = usdProviders.reduce((a, b) => a.ask < b.ask ? a : b);
       const bestSell = usdProviders.reduce((a, b) => a.bid > b.bid ? a : b);
       const bestSpread = usdProviders.reduce((a, b) => a.spread < b.spread ? a : b);
@@ -4918,27 +4940,28 @@ async function loadDolar() {
       bestEl.innerHTML = `
         <div class="dolar-best-card best-sell">
           <div class="dolar-best-label">Mejor para vender</div>
-          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestSell.id, bestSell.name)} ${bestSell.name}</div>
+          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestSell.id, bestSell.name, bestSell.logoUrl)} ${bestSell.name}</div>
           <div class="dolar-best-price">$${bestSell.bid.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
         </div>
         <div class="dolar-best-card best-buy">
           <div class="dolar-best-label">Mejor para comprar</div>
-          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestBuy.id, bestBuy.name)} ${bestBuy.name}</div>
+          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestBuy.id, bestBuy.name, bestBuy.logoUrl)} ${bestBuy.name}</div>
           <div class="dolar-best-price">$${bestBuy.ask.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
         </div>
         <div class="dolar-best-card dolar-spread-card">
           <div class="dolar-best-label" style="color:var(--yellow)">Menor spread</div>
-          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestSpread.id, bestSpread.name)} ${bestSpread.name}</div>
+          <div class="dolar-best-exchange">${getDolarExchangeLogo(bestSpread.id, bestSpread.name, bestSpread.logoUrl)} ${bestSpread.name}</div>
           <div class="dolar-best-price">${bestSpread.spread}%</div>
         </div>`;
     }
+    renderBest();
 
     // ── Exchange table (proveedores) ──
     let currentCoin = 'usd';
     let currentSort = 'buy';
 
     function renderExchangeTable() {
-      const list = exchanges[currentCoin] || [];
+      const list = currentCoin === 'usd' ? getUsdList() : (exchanges[currentCoin] || []);
       const sorted = [...list].sort((a, b) => {
         if (currentSort === 'buy') return a.ask - b.ask;
         return b.bid - a.bid;
@@ -4949,13 +4972,16 @@ async function loadDolar() {
         const rankClass = rank <= 3 ? `rank-${rank}` : 'rank-other';
         const isBestBuy = currentSort === 'buy' && rank === 1;
         const isBestSell = currentSort === 'sell' && rank === 1;
-        const logo = getDolarExchangeLogo(ex.id, ex.name);
+        const logo = getDolarExchangeLogo(ex.id, ex.name, ex.logoUrl);
         const bidStr = ex.bid ? '$' + ex.bid.toLocaleString('es-AR', {minimumFractionDigits: 2}) : '-';
         const askStr = ex.ask ? '$' + ex.ask.toLocaleString('es-AR', {minimumFractionDigits: 2}) : '-';
+        const bankBadge = ex.isBank ? '<span class="dolar-bank-badge">Banco</span>' : '';
+        const closedBadge = (currentCoin === 'usd' && ex.is24x7 === false) ? '<span class="dolar-bank-badge dolar-closed-badge" title="No opera 24/7">Cerrado</span>' : '';
+        const varHtml = ex.pctVariation != null ? `<span class="dolar-variation ${ex.pctVariation >= 0 ? 'up' : 'down'}">${ex.pctVariation >= 0 ? '+' : ''}${ex.pctVariation.toFixed(2)}%</span>` : '';
         return `<tr>
-          <td><span class="dolar-exchange-name"><span class="dolar-rank ${rankClass}">${rank}</span> ${logo} ${ex.name}</span></td>
+          <td><span class="dolar-exchange-name"><span class="dolar-rank ${rankClass}">${rank}</span> ${logo} ${ex.name}${bankBadge}${closedBadge}</span></td>
           <td class="col-right">${isBestSell ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${bidStr}</td>
-          <td class="col-right">${isBestBuy ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${askStr}</td>
+          <td class="col-right">${isBestBuy ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${askStr}${varHtml}</td>
           <td class="col-right">${ex.spread}%</td>
         </tr>`;
       }).join('');
@@ -4968,7 +4994,7 @@ async function loadDolar() {
       <div class="dolar-exchange-section">
         <div class="dolar-exchange-header">
           <span class="dolar-exchange-title">Proveedores</span>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
             <div class="dolar-coin-toggle">
               <button class="dolar-coin-btn active" data-coin="usd">USD</button>
               <button class="dolar-coin-btn" data-coin="usdt">USDT</button>
@@ -4978,6 +5004,10 @@ async function loadDolar() {
               <button class="dolar-sort-btn active" data-sort="buy">Mejor compra</button>
               <button class="dolar-sort-btn" data-sort="sell">Mejor venta</button>
             </div>
+            <label class="dolar-24x7-toggle" id="dolar-24x7-wrap" title="${marketOpen ? 'Mercado abierto' : 'Mercado cerrado — los bancos pueden tener cotizaciones desactualizadas'}">
+              <input type="checkbox" id="dolar-24x7-checkbox" ${only24x7 ? 'checked' : ''}>
+              <span>Solo 24/7</span>
+            </label>
           </div>
         </div>
         <table class="dolar-exchange-table">
@@ -4995,12 +5025,20 @@ async function loadDolar() {
 
     renderExchangeTable();
 
+    // Show/hide 24/7 toggle based on coin
+    function update24x7Visibility() {
+      const wrap = document.getElementById('dolar-24x7-wrap');
+      if (wrap) wrap.style.display = currentCoin === 'usd' ? '' : 'none';
+    }
+    update24x7Visibility();
+
     // Coin toggle
     exchangesEl.querySelectorAll('.dolar-coin-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         exchangesEl.querySelectorAll('.dolar-coin-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentCoin = btn.dataset.coin;
+        update24x7Visibility();
         renderExchangeTable();
       });
     });
@@ -5015,10 +5053,20 @@ async function loadDolar() {
       });
     });
 
+    // 24/7 toggle
+    const checkbox24x7 = document.getElementById('dolar-24x7-checkbox');
+    if (checkbox24x7) {
+      checkbox24x7.addEventListener('change', () => {
+        only24x7 = checkbox24x7.checked;
+        renderBest();
+        if (currentCoin === 'usd') renderExchangeTable();
+      });
+    }
+
     // Source
     const updTime = new Date(updated);
     const timeStr = updTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-    sourceEl.textContent = `Fuentes: CriptoYa, Criptos.com.ar — Actualizado ${timeStr}`;
+    sourceEl.innerHTML = `Fuente: <a href="https://comparadolar.ar" target="_blank" rel="noopener">comparadolar.ar</a> — Actualizado ${timeStr}`;
 
   } catch (err) {
     console.error('Dolar load error:', err);

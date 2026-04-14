@@ -838,6 +838,21 @@ body {
 [data-theme="dark"] .soberano-ley.ley-ny { background: var(--accent-light); color: var(--accent); }
 .soberano-ytm { font-weight: 700; }
 
+.admin-link {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+
+.admin-link:hover {
+  border-color: var(--text);
+}
+
 /* Auth Area */
 .auth-area {
   display: flex;
@@ -1582,6 +1597,18 @@ body {
 
 .btn-primary:hover { opacity: 0.85; }
 
+.btn-danger {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.btn-danger:hover { background: #fee2e2; }
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 0.72rem;
+}
+
 /* Compare Page */
 .compare-selectors {
   display: flex;
@@ -1947,7 +1974,11 @@ body {
   vertical-align: super;
   margin-left: 2px;
 }
-
+.admin-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 #chart-container {
   background: var(--card-bg);
@@ -2272,6 +2303,7 @@ body {
   .currency-tab .flag { display: none; }
   .auth-area { display: none; }
   .auth-login-btn { font-size: 0.6rem; padding: 3px 6px; }
+  .admin-link { display: none; }
   .portfolio-type-grid { grid-template-columns: repeat(2, 1fr); }
   .portfolio-summary-grid { grid-template-columns: repeat(2, 1fr); }
   .subnav-inner { padding: 0 16px; gap: 16px; }
@@ -2671,6 +2703,42 @@ body {
   background: var(--green-bg);
   color: var(--green);
 }
+.dolar-bank-badge {
+  font-size: 0.55rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.dolar-variation {
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-left: 4px;
+}
+.dolar-variation.up { color: var(--green); }
+.dolar-variation.down { color: var(--red); }
+.dolar-closed-badge {
+  background: var(--red-bg, rgba(239, 68, 68, 0.12));
+  color: var(--red, #ef4444);
+}
+.dolar-24x7-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.dolar-24x7-toggle input { cursor: pointer; accent-color: var(--accent); }
+.dolar-24x7-toggle:hover { border-color: var(--accent); }
 
 @media (max-width: 640px) {
   .dolar-tipos-grid { grid-template-columns: repeat(2, 1fr); }
