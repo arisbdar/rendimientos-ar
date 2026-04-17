@@ -992,6 +992,14 @@
     "ticker_usa": null
   },
   {
+    "ticker": "EWY",
+    "name": "iShares MSCI South Korea ETF",
+    "ratio": "50",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "EWY"
+  },
+  {
     "ticker": "EWZ",
     "name": "ISHARES MSCI BRAZIL CAP",
     "ratio": "2",
@@ -1350,6 +1358,14 @@
     "ticker_d": null,
     "ticker_c": null,
     "ticker_usa": "IBN"
+  },
+  {
+    "ticker": "ICLN",
+    "name": "iShares Global Clean Energy ETF",
+    "ratio": "5",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "ICLN"
   },
   {
     "ticker": "IEMG",
@@ -2368,6 +2384,14 @@
     "ticker_usa": "ROST"
   },
   {
+    "ticker": "RSP",
+    "name": "Invesco S&P 500 Equal Weight ETF",
+    "ratio": "30",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "RSP"
+  },
+  {
     "ticker": "RTX",
     "name": "Raytheon Technologies Corp",
     "ratio": "5",
@@ -3214,6 +3238,14 @@
     "ticker_d": "XLYD",
     "ticker_c": "XLYC",
     "ticker_usa": null
+  },
+  {
+    "ticker": "XME",
+    "name": "SPDR S&P Metals & Mining ETF",
+    "ratio": "30",
+    "ticker_d": null,
+    "ticker_c": null,
+    "ticker_usa": "XME"
   },
   {
     "ticker": "XOM",
