@@ -2,10 +2,22 @@ let cedearsItems = [];
 let currentFilteredItems = [];
 let currentView = 'table';
 let cedearsScatterChart = null;
+let currentSortKey = 'ticker';
+let currentSortDir = 'asc';
+const SORTABLE_NUMERIC_FIELDS = new Set([
+  'priceArs',
+  'priceD',
+  'priceC',
+  'priceUnderlying',
+  'impliedMep',
+  'impliedCable',
+]);
 
 document.addEventListener('DOMContentLoaded', () => {
   setupThemeToggle();
   setupViewToggle();
+  setupHeaderSorting();
+  setupCsvDownload();
   loadCedears();
 });
 
@@ -27,6 +39,55 @@ function setupViewToggle() {
     btn.addEventListener('click', () => {
       setView(btn.dataset.view || 'table');
     });
+  });
+}
+
+function setupHeaderSorting() {
+  const buttons = document.querySelectorAll('.cedears-sort-header');
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.sortKey || 'ticker';
+      if (key === currentSortKey) {
+        currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSortKey = key;
+        currentSortDir = 'asc';
+      }
+      updateHeaderSortUI();
+      renderFilteredList(getSearchTerm());
+    });
+  });
+
+  updateHeaderSortUI();
+}
+
+function updateHeaderSortUI() {
+  const buttons = document.querySelectorAll('.cedears-sort-header');
+  buttons.forEach((button) => {
+    const key = button.dataset.sortKey || '';
+    const isActive = key === currentSortKey;
+    const parentTh = button.closest('th');
+    const indicator = button.querySelector('.sort-indicator');
+
+    button.dataset.active = isActive ? 'true' : 'false';
+    button.dataset.dir = isActive ? currentSortDir : '';
+
+    if (parentTh) {
+      parentTh.setAttribute('aria-sort', isActive ? (currentSortDir === 'asc' ? 'ascending' : 'descending') : 'none');
+    }
+    if (indicator) {
+      indicator.textContent = isActive ? (currentSortDir === 'asc' ? '▲' : '▼') : '';
+    }
+  });
+}
+
+function setupCsvDownload() {
+  const downloadButton = document.getElementById('cedears-download-csv');
+  if (!downloadButton) return;
+
+  downloadButton.disabled = true;
+  downloadButton.addEventListener('click', () => {
+    downloadCurrentCsv();
   });
 }
 
@@ -93,6 +154,7 @@ async function loadCedears() {
     }
 
     if (loading) loading.hidden = true;
+    updateCsvButtonState();
     setView('table');
   } catch (error) {
     console.error('CEDEARs load error:', error);
@@ -101,6 +163,7 @@ async function loadCedears() {
       errorBox.hidden = false;
       errorBox.textContent = 'No se pudo cargar la lista de CEDEARs en este momento.';
     }
+    updateCsvButtonState();
   }
 }
 
@@ -153,14 +216,142 @@ function renderFilteredList(query) {
       item.ticker.toUpperCase().includes(term) ||
       String(item.name || '').toUpperCase().includes(term))
     : cedearsItems;
+  const sorted = sortCedears(filtered);
 
-  currentFilteredItems = filtered;
-  renderTable(filtered);
-  renderImplicitAverages(filtered);
+  currentFilteredItems = sorted;
+  renderTable(sorted);
+  renderImplicitAverages(sorted);
+  updateCsvButtonState();
 
   if (currentView === 'chart') {
-    renderScatterChart(filtered);
+    renderScatterChart(sorted);
   }
+}
+
+function sortCedears(items) {
+  const list = Array.isArray(items) ? items.slice() : [];
+  const dir = currentSortDir === 'desc' ? -1 : 1;
+
+  return list.sort((a, b) => {
+    if (currentSortKey === 'ticker') {
+      return dir * String(a.ticker || '').localeCompare(String(b.ticker || ''), 'en-US');
+    }
+
+    if (currentSortKey === 'ratio') {
+      const ratioCompare = compareNullableNumbers(parseRatioForSort(a.ratio), parseRatioForSort(b.ratio), dir);
+      if (ratioCompare !== 0) return ratioCompare;
+      return dir * String(a.ratio || '').localeCompare(String(b.ratio || ''), 'en-US');
+    }
+
+    if (SORTABLE_NUMERIC_FIELDS.has(currentSortKey)) {
+      const compare = compareNullableNumbers(a[currentSortKey], b[currentSortKey], dir);
+      if (compare !== 0) return compare;
+      return String(a.ticker || '').localeCompare(String(b.ticker || ''), 'en-US');
+    }
+
+    return dir * String(a.ticker || '').localeCompare(String(b.ticker || ''), 'en-US');
+  });
+}
+
+function compareNullableNumbers(aValue, bValue, dir) {
+  const aValid = typeof aValue === 'number' && Number.isFinite(aValue);
+  const bValid = typeof bValue === 'number' && Number.isFinite(bValue);
+
+  if (!aValid && !bValid) return 0;
+  if (!aValid) return 1;
+  if (!bValid) return -1;
+  if (aValue === bValue) return 0;
+
+  return aValue < bValue ? -1 * dir : 1 * dir;
+}
+
+function parseRatioForSort(ratio) {
+  if (ratio === null || ratio === undefined) return null;
+
+  const raw = String(ratio).trim();
+  if (!raw) return null;
+  if (raw.includes(':')) {
+    const [left, right] = raw.split(':');
+    const leftNum = Number(left);
+    const rightNum = Number(right);
+    if (Number.isFinite(leftNum) && Number.isFinite(rightNum) && rightNum !== 0) {
+      return leftNum / rightNum;
+    }
+  }
+
+  const numeric = Number(raw.replace(',', '.'));
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function getSearchTerm() {
+  const searchInput = document.getElementById('cedears-search');
+  return searchInput ? (searchInput.value || '') : '';
+}
+
+function updateCsvButtonState() {
+  const downloadButton = document.getElementById('cedears-download-csv');
+  if (!downloadButton) return;
+  downloadButton.disabled = !currentFilteredItems.length;
+}
+
+function downloadCurrentCsv() {
+  if (!currentFilteredItems.length) return;
+
+  const headers = [
+    'ticker',
+    'name',
+    'ratio',
+    'price_ars',
+    'price_d',
+    'price_c',
+    'price_usa',
+    'implied_mep_ars',
+    'implied_cable_ars',
+    'ticker_d',
+    'ticker_c',
+    'ticker_usa',
+  ];
+
+  const rows = currentFilteredItems.map((item) => ([
+    item.ticker,
+    item.name,
+    item.ratio,
+    formatCsvNumber(item.priceArs),
+    formatCsvNumber(item.priceD),
+    formatCsvNumber(item.priceC),
+    formatCsvNumber(item.priceUnderlying),
+    formatCsvNumber(item.impliedMep),
+    formatCsvNumber(item.impliedCable),
+    item.tickerD,
+    item.tickerC,
+    item.tickerUsa,
+  ]));
+
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(escapeCsvValue).join(','))
+    .join('\n');
+
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const datePart = new Date().toISOString().slice(0, 10);
+  link.href = url;
+  link.download = `cedears-${datePart}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+function formatCsvNumber(value) {
+  if (!Number.isFinite(value)) return '';
+  return String(Math.round(value * 1000000) / 1000000);
+}
+
+function escapeCsvValue(value) {
+  const raw = value === null || value === undefined ? '' : String(value);
+  const escaped = raw.replace(/"/g, '""');
+  return `"${escaped}"`;
 }
 
 function renderTable(items) {

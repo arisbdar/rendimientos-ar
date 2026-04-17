@@ -111,6 +111,9 @@
         <div class="cedears-search-wrap">
           <input id="cedears-search" class="cedears-search" type="search" placeholder="Buscar ticker o nombre" autocomplete="off" />
         </div>
+        <div class="cedears-actions">
+          <button type="button" id="cedears-download-csv" class="cedears-download-btn">Descargar CSV</button>
+        </div>
       </div>
 
       <div class="loading cedears-loading" id="cedears-loading">
@@ -124,14 +127,14 @@
         <table class="cedears-table">
           <thead>
             <tr>
-              <th>Activo</th>
-              <th class="col-right">Precio ARS</th>
-              <th class="col-right">Precio D</th>
-              <th class="col-right">Precio C</th>
-              <th class="col-right">Precio EE.UU</th>
-              <th class="col-right">MEP Implícito</th>
-              <th class="col-right">Cable Implícito</th>
-              <th class="col-right">Ratio</th>
+              <th scope="col"><button type="button" class="cedears-sort-header" data-sort-key="ticker">Activo <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="priceArs">Precio ARS <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="priceD">Precio D <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="priceC">Precio C <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="priceUnderlying">Precio EE.UU <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="impliedMep">MEP Implícito <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="impliedCable">Cable Implícito <span class="sort-indicator" aria-hidden="true"></span></button></th>
+              <th scope="col" class="col-right"><button type="button" class="cedears-sort-header col-right" data-sort-key="ratio">Ratio <span class="sort-indicator" aria-hidden="true"></span></button></th>
             </tr>
           </thead>
           <tbody id="cedears-list"></tbody>

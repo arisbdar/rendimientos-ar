@@ -44,9 +44,9 @@
 .cedears-toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
   margin-bottom: 12px;
+  flex-wrap: wrap;
 }
 
 .cedears-view-toggle {
@@ -79,7 +79,8 @@
 
 .cedears-search-wrap {
   flex: 1;
-  max-width: 340px;
+  min-width: 220px;
+  max-width: 360px;
 }
 
 .cedears-search {
@@ -98,6 +99,35 @@
 .cedears-search:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.cedears-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.cedears-download-btn {
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  height: 34px;
+  padding: 0 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.cedears-download-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-dark);
+  background: var(--accent-light);
+}
+
+.cedears-download-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .cedears-loading {
@@ -149,6 +179,40 @@
 
 .cedears-table .col-right {
   text-align: right;
+}
+
+.cedears-sort-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cedears-sort-header.col-right {
+  margin-left: auto;
+}
+
+.cedears-sort-header:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.cedears-sort-header[data-active='true'] {
+  color: var(--accent-dark);
+}
+
+.sort-indicator {
+  display: inline-block;
+  width: 10px;
+  color: var(--accent);
 }
 
 .cedear-row td {
@@ -278,6 +342,14 @@
 
   .cedears-search-wrap {
     max-width: none;
+  }
+
+  .cedears-actions {
+    margin-left: 0;
+  }
+
+  .cedears-download-btn {
+    width: 100%;
   }
 
   .cedears-chart-inner {
