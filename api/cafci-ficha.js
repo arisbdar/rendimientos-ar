@@ -1,4 +1,4 @@
-// Proxy for CAFCI fund detail API (was a Netlify redirect to external URL)
+// Proxy for CAFCI fund detail API
 export default async function handler(req, res) {
   const { fondoId, claseId } = req.query;
 

@@ -23,27 +23,17 @@ app.use((req, res, next) => {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com",
-      "connect-src 'self' https://api.argentinadatos.com https://data912.com https://api.bcra.gob.ar https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.googletagmanager.com https://api.comparapix.ar",
-      "frame-src https://*.supabase.co",
+      "connect-src 'self' https://api.argentinadatos.com https://data912.com https://api.bcra.gob.ar https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.googletagmanager.com https://api.comparapix.ar",
       "object-src 'none'",
     ].join('; ')
   );
   next();
 });
-
 app.get('/cedears', (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'cedears', 'index.html'));
 });
 
 app.use(express.static(PUBLIC_DIR));
-
-// --- Auth Config API ---
-app.get('/api/auth-config', (req, res) => {
-  res.json({
-    url: process.env.SUPABASE_URL || '',
-    anonKey: process.env.SUPABASE_ANON_KEY || '',
-  });
-});
 
 // --- Config API ---
 
@@ -315,7 +305,7 @@ app.get('/api/cer-precios', async (req, res) => {
     const response = await fetch('https://data912.com/live/arg_bonds');
     const data = await response.json();
     
-    const TICKERS_CER = ['TZX26', 'TZXO6', 'TX26', 'TZXD6', 'TZXM7', 'TZX27', 'TZXD7', 'TZX28', 'TX28', 'DICP', 'PARP'];
+    const TICKERS_CER = ['TZX26', 'TZXO6', 'TX26', 'TZXD6', 'TZXM7', 'TZX27', 'TZXD7', 'TZX28', 'TX28', 'TX31', 'DICP', 'PARP'];
     
     const bondsArray = Array.isArray(data) ? data : (data.data || []);
     const bonosCER = bondsArray.filter(bond => TICKERS_CER.includes(bond.symbol));
@@ -569,6 +559,23 @@ app.get('/api/cotizaciones', async (req, res) => {
   } catch (err) {
     console.error('Cotizaciones proxy error:', err.message);
     res.status(502).json({ error: 'Failed to fetch cotizaciones' });
+  }
+});
+
+// --- Earnings Calendar (SavvyTrader proxy) ---
+
+app.get('/api/earnings', async (req, res) => {
+  const { start, end } = req.query;
+  if (!start || !end) return res.status(400).json({ error: 'start and end query params required' });
+  try {
+    const url = `https://api.savvytrader.com/pricing/assets/earnings/calendar/daily?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`SavvyTrader API error: ${resp.status}`);
+    const data = await resp.json();
+    res.json(data);
+  } catch (err) {
+    console.error('Earnings proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch earnings data' });
   }
 });
 

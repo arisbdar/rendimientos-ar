@@ -57,6 +57,9 @@
         <a href="#" class="currency-tab" id="header-mundo">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Mundo
         </a>
+        <a href="/cedears" class="currency-tab" id="header-cedears">
+          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> CEDEARs
+        </a>
         <a href="#" class="currency-tab" id="header-ars">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> ARS
         </a>
@@ -78,10 +81,7 @@
         <a href="#" class="currency-tab" id="header-bcra">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/><circle cx="12" cy="15" r="2"/></svg></span> BCRA
         </a>
-        <a href="#" class="currency-tab" id="header-portfolio">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span> Portfolio
-        </a>
-        <a href="#" class="currency-tab" id="header-mundial">
+<a href="#" class="currency-tab" id="header-mundial">
           <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 L14.5 8 L12 14 L9.5 8 Z"/><path d="M2 12 L8 9.5 L14 12 L8 14.5 Z"/><path d="M12 22 L9.5 16 L12 10 L14.5 16 Z"/><path d="M22 12 L16 14.5 L10 12 L16 9.5 Z"/></svg></span> Mundial
         </a>
       </nav>
@@ -90,12 +90,6 @@
             <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
-        <div class="auth-area" id="auth-area">
-          <div class="auth-user" id="auth-user" style="display:none">
-            <img class="auth-avatar" id="auth-avatar" src="" alt="" referrerpolicy="no-referrer">
-            <button class="auth-logout-btn" id="auth-logout-btn" title="Cerrar sesión">Salir</button>
-          </div>
-        </div>
       </div>
     </div>
   </header>
@@ -117,8 +111,10 @@
     <div class="subnav-inner" role="tablist" aria-label="Tipo de inversión">
       <a href="#" class="subnav-tab active" data-tab="billeteras" role="tab" id="tab-billeteras-tab" aria-selected="true" aria-controls="tab-billeteras">Cuentas y Billeteras</a>
       <a href="#" class="subnav-tab" data-tab="plazofijo" role="tab" id="tab-plazofijo-tab" aria-selected="false" aria-controls="tab-plazofijo">Plazo Fijo</a>
+      <a href="#" class="subnav-tab" data-tab="plazofijoperiodico" role="tab" id="tab-plazofijoperiodico-tab" aria-selected="false" aria-controls="tab-plazofijoperiodico">Plazo Fijo Periódico</a>
       <a href="#" class="subnav-tab" data-tab="lecaps" role="tab" id="tab-lecaps-tab" aria-selected="false" aria-controls="tab-lecaps">LECAPs</a>
       <a href="#" class="subnav-tab" data-tab="cer" role="tab" id="tab-cer-tab" aria-selected="false" aria-controls="tab-cer">Bonos CER</a>
+      <a href="#" class="subnav-tab" data-tab="inflacion" role="tab" id="tab-inflacion-tab" aria-selected="false" aria-controls="tab-inflacion">Comparador</a>
     </div>
   </nav>
 
@@ -127,32 +123,6 @@
     <h1>Monitor Global</h1>
     <p>Principales indicadores del mercado mundial en tiempo real.</p>
   </section>
-
-  <!-- Home: AI Chat (Claude-style landing) -->
-  <div id="section-home" class="chat-home">
-    <div class="chat-home-center">
-      <div class="chat-home-logo">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
-      <h1 class="chat-home-title">¿En qué puedo ayudarte?</h1>
-      <p class="chat-home-sub">Preguntá sobre tasas, billeteras, bonos, dólar y más — con datos en tiempo real.</p>
-      <div class="chat-home-input-wrap" id="chat-input-wrap">
-        <div class="chat-home-messages" id="chat-messages"></div>
-        <div class="chat-home-input-box">
-          <input type="text" class="chat-home-input" id="chat-input" placeholder="¿Qué querés saber?" maxlength="500" autocomplete="off">
-          <button class="chat-home-send" id="chat-send" aria-label="Enviar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="chat-home-suggestions" id="chat-suggestions">
-        <button class="chat-suggestion" data-q="¿Qué billetera paga más hoy?">¿Qué billetera paga más?</button>
-        <button class="chat-suggestion" data-q="¿Conviene plazo fijo o LECAP?">¿Plazo fijo o LECAP?</button>
-        <button class="chat-suggestion" data-q="¿Cómo está el dólar hoy?">¿Cómo está el dólar?</button>
-        <button class="chat-suggestion" data-q="¿Qué rinde más en pesos hoy?">¿Qué rinde más en pesos?</button>
-      </div>
-    </div>
-  </div>
 
   <main class="container">
 
@@ -168,6 +138,12 @@
         <h2 class="hot-title">HOT <span class="hot-subtitle">US stocks con mayor movimiento</span></h2>
         <div class="hot-grid" id="hot-grid"></div>
       </section>
+
+      <!-- Section: Earnings Calendar -->
+      <section class="section" id="section-earnings">
+        <h2 class="hot-title">EARNINGS <span class="hot-subtitle">Próximos reportes de resultados</span></h2>
+        <div class="earnings-timeline" id="earnings-timeline"></div>
+      </section>
     </div>
 
     <!-- Tab: Billeteras y Fondos -->
@@ -179,7 +155,7 @@
       </section>
 
       <section class="section" id="chart-section">
-        <h2>Comparación de rendimientos</h2>
+        <h2>Comparador de rendimientos</h2>
         <p class="section-desc">TNA de billeteras y fondos de liquidez ordenados por rendimiento</p>
         <div class="chart-wrapper" id="rendimientos-chart"></div>
       </section>
@@ -199,9 +175,21 @@
         <p class="section-source"></p>
       </section>
       <section class="section" id="pf-chart-section">
-        <h2>Comparación de tasas</h2>
+        <h2>Comparador de tasas</h2>
         <p class="section-desc">TNA de plazos fijos ordenados por rendimiento</p>
         <div class="chart-wrapper" id="plazofijo-chart"></div>
+      </section>
+    </div>
+
+    <div id="tab-plazofijoperiodico" role="tabpanel" aria-labelledby="tab-plazofijoperiodico-tab" style="display:none">
+      <section class="section" id="plazofijo-uva-periodico-section">
+        <div class="card-list" id="plazofijo-uva-periodico-list"></div>
+        <p class="section-source" id="plazofijo-uva-periodico-source"></p>
+      </section>
+      <section class="section" id="plazofijo-uva-periodico-chart-section">
+        <h2>Comparador por plazo</h2>
+        <p class="section-desc">TNA de cada tramo UVA con pago periódico, ordenada por rendimiento</p>
+        <div class="chart-wrapper" id="plazofijo-uva-periodico-chart"></div>
       </section>
     </div>
 
@@ -227,9 +215,22 @@
         </p>
       </section>
       <section class="section" id="hipotecarios-chart-section">
-        <h2>Comparación de TNA</h2>
+        <h2>Comparador de TNA</h2>
         <p class="section-desc">Tasas nominales anuales de créditos hipotecarios UVA ordenadas de menor a mayor</p>
         <div class="chart-wrapper" id="hipotecarios-chart"></div>
+      </section>
+    </div>
+
+    <!-- Tab: Comparador -->
+    <div id="tab-inflacion" role="tabpanel" aria-labelledby="tab-inflacion-tab" style="display:none">
+      <section class="section" id="inflacion-section">
+        <div class="inflacion-layout">
+          <div id="inflacion-toggles" class="inflacion-toggles"></div>
+          <div class="inflacion-chart-col">
+            <div class="chart-wrapper" id="inflacion-chart"></div>
+            <p class="section-source" id="inflacion-source"></p>
+          </div>
+        </div>
       </section>
     </div>
 
@@ -318,44 +319,6 @@
       </section>
     </div>
 
-    <!-- Tab: Portfolio -->
-    <div id="tab-portfolio" style="display:none">
-      <!-- Unauthenticated -->
-      <div id="portfolio-login-prompt" class="section" style="text-align:center;padding:60px 20px">
-        <div style="margin-bottom:16px"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text-secondary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
-        <h2 style="margin-bottom:8px">Mi Portfolio</h2>
-        <p style="color:var(--text-secondary);margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto">
-          Gestioná tus inversiones, mirá tu tenencia valorizada en vivo y tu calendario de cobros.
-        </p>
-        <button class="portfolio-google-btn" id="portfolio-google-login">
-          <svg width="18" height="18" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:8px"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Iniciar sesión con Google
-        </button>
-      </div>
-      <!-- Authenticated -->
-      <div id="portfolio-content" style="display:none">
-        <section class="section">
-          <div id="portfolio-greeting"></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:16px">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              <h2 style="margin:0">Mi Portfolio</h2>
-              <div id="portfolio-tc-toggle" style="display:flex;gap:1px;background:var(--bg-subtle);border-radius:6px;padding:2px;font-size:0.7rem"></div>
-            </div>
-            <button class="portfolio-add-btn" id="portfolio-add-btn">+ Agregar activo</button>
-          </div>
-          <div id="portfolio-summary"></div>
-          <div id="portfolio-holdings"></div>
-        </section>
-        <section class="section">
-          <h2>Calendario de cobros</h2>
-          <p class="section-desc">Rentas, cupones y amortizaciones futuras de tus bonos</p>
-          <div class="chart-wrapper" id="portfolio-cashflow-chart-wrapper" style="margin-bottom:16px">
-            <canvas id="portfolio-cashflow-chart"></canvas>
-          </div>
-          <div id="portfolio-cashflows"></div>
-        </section>
-      </div>
-    </div>
 
     <!-- Tab: Mundial -->
     <div id="tab-mundial" style="display:none">
@@ -378,7 +341,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
   <script src="/app.js"></script>
   <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
 </body>

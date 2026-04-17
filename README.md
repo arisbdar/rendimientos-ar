@@ -50,7 +50,7 @@ public/
   icons/             Íconos PWA (192x192, 512x512)
   comparar.html      Comparador de fondos (deshabilitado)
 server.js            Servidor Express para desarrollo local
-netlify/functions/
+api/                 Funciones serverless Vercel
   cafci.js           Proxy ArgentinaDatos → FCIs con TNA calculada
   lecaps.js          Proxy data912 → precios de LECAPs y BONCAPs
   soberanos.js       Proxy data912 → precios de bonos soberanos en USD
@@ -60,8 +60,7 @@ netlify/functions/
   cer-ultimo.js      BCRA API → último CER publicado (para UI)
   mundo.js           Proxy Yahoo Finance → futuros, commodities, crypto (con sparklines)
   news.js            Proxy Google News RSS → noticias financieras en tiempo real
-  visits.js          Contador de visitas público
-netlify.toml         Deploy config y redirects API
+vercel.json          Deploy config
 ```
 
 ## Cómo levantar localmente
@@ -72,7 +71,7 @@ npm start
 # http://localhost:3000
 ```
 
-Las Netlify functions (mundo, soberanos, ons, cer, etc.) solo funcionan en producción. El server local sirve FCIs y config.
+Las funciones serverless (mundo, soberanos, ons, cer, etc.) solo funcionan en producción (Vercel). El server local sirve FCIs y config.
 
 ## Endpoints
 
@@ -121,5 +120,5 @@ Precios en USD de data912 (tickers con sufijo "D"). Flujos de fondos hardcodeado
 ## Deploy
 
 ```bash
-npx netlify deploy --prod
+npx vercel --prod
 ```

@@ -1,7 +1,7 @@
 node_modules/
-.netlify/
 .DS_Store
 .env
 dist/
 target/
 .vercel
+.claude/worktrees/

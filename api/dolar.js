@@ -1,64 +1,51 @@
-// Aggregates dollar exchange rates from DolarAPI + CriptoYa
-const EXCHANGE_WHITELIST = new Set([
-  'buenbit', 'ripio', 'satoshitango', 'fiwind', 'lemoncash',
-  'belo', 'tiendacrypto', 'cocoscrypto', 'bitsoalpha', 'dolarapp',
-  'wallbit', 'bybit', 'letsbit', 'cryptomkt', 'pluscrypto', 'vibrant',
-  'decrypto', 'saldo', 'p2pme',
-]);
+// Aggregates dollar exchange rates from comparadolar.ar API
+const COMPARADOLAR_BASE = 'https://api.comparadolar.ar';
 
-const EXCHANGE_NAMES = {
-  buenbit: 'Buenbit', ripio: 'Ripio',
-  satoshitango: 'SatoshiTango', fiwind: 'Fiwind', lemoncash: 'Lemon',
-  belo: 'Belo', tiendacrypto: 'Tienda Crypto',
-  cocoscrypto: 'Cocos Crypto', bitsoalpha: 'Bitso', dolarapp: 'Dolar App',
-  wallbit: 'Wallbit', bybit: 'Bybit', letsbit: "Let's Bit",
-  cryptomkt: 'CryptoMarket', pluscrypto: 'Plus Crypto', vibrant: 'Vibrant',
-  decrypto: 'Decrypto', saldo: 'Saldo', p2pme: 'P2P.me',
-};
-
-function processExchanges(data, coin) {
-  const exchanges = [];
-  for (const [key, val] of Object.entries(data)) {
-    if (!EXCHANGE_WHITELIST.has(key)) continue;
-    if (!val.ask || !val.bid || val.ask <= 0 || val.bid <= 0) continue;
-    const spread = ((val.ask - val.bid) / val.bid) * 100;
-    if (spread > 10) continue;
-    exchanges.push({
-      id: key, name: EXCHANGE_NAMES[key] || key, coin,
-      ask: val.ask, bid: val.bid, spread: Math.round(spread * 100) / 100,
-    });
-  }
-  return exchanges;
-}
-
-const USD_PROVIDERS = ['belo', 'cocoscapital', 'decrypto', 'fiwind', 'lbfinanzas', 'pluscrypto', 'satoshitango', 'tiendacrypto'];
+// Providers to exclude entirely
+const BLACKLIST = new Set(['brubank']);
+// Providers that only belong in crypto tabs, not USD billete
+const USD_EXCLUDE = new Set(['wallbit', 'global66', 'astropay']);
 
 async function fetchJSON(url) {
   const r = await fetch(url, { headers: { 'User-Agent': 'rendimientos.co/1.0' }, redirect: 'follow' });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  if (!r.ok) throw new Error(`HTTP ${r.status} from ${url}`);
   return r.json();
 }
 
-async function fetchUsdProviders() {
-  const results = await Promise.allSettled(
-    USD_PROVIDERS.map(ex => fetchJSON(`https://criptos.com.ar/api/${ex}`))
-  );
-  const providers = [];
-  for (let i = 0; i < USD_PROVIDERS.length; i++) {
-    if (results[i].status !== 'fulfilled') continue;
-    const data = results[i].value;
-    const usd = data.usd_ars;
-    if (!usd || !usd.ask || parseFloat(usd.ask) <= 0) continue;
-    const ask = parseFloat(usd.ask);
-    const bid = parseFloat(usd.bid);
-    const spread = parseFloat(usd.spread);
-    if (spread > 12) continue;
-    providers.push({
-      id: USD_PROVIDERS[i], name: data.nombre || USD_PROVIDERS[i],
-      ask, bid: bid > 0 ? bid : null, spread: Math.round(spread * 100) / 100,
-    });
-  }
-  return providers;
+function normalizeCryptoExchange(entry) {
+  const slug = entry.slug || entry.id;
+  const ask = parseFloat(entry.ask) || parseFloat(entry.totalAsk) || 0;
+  const bid = parseFloat(entry.bid) || parseFloat(entry.totalBid) || 0;
+  if (ask <= 0 || bid <= 0) return null;
+  const spread = ((ask - bid) / bid) * 100;
+  if (spread > 12) return null;
+  return {
+    id: slug,
+    name: entry.prettyName || slug,
+    ask, bid,
+    spread: Math.round(spread * 100) / 100,
+    logoUrl: entry.logo || entry.logoUrl || null,
+    url: entry.url || null,
+  };
+}
+
+function normalizeUsdProvider(entry) {
+  const ask = parseFloat(entry.ask) || 0;
+  const bid = parseFloat(entry.bid) || 0;
+  if (ask <= 0 || bid <= 0) return null;
+  const spread = ((ask - bid) / bid) * 100;
+  if (spread > 12) return null;
+  return {
+    id: entry.slug,
+    name: entry.prettyName || entry.name || entry.slug,
+    ask, bid,
+    spread: Math.round(spread * 100) / 100,
+    isBank: entry.isBank || false,
+    is24x7: entry.is24x7 || false,
+    pctVariation: entry.pct_variation ?? null,
+    logoUrl: entry.logoUrl || null,
+    url: entry.url || null,
+  };
 }
 
 export default async function handler(req, res) {
@@ -68,18 +55,51 @@ export default async function handler(req, res) {
 
   try {
     const results = await Promise.allSettled([
-      fetchJSON('https://dolarapi.com/v1/dolares'),
-      fetchJSON('https://criptoya.com/api/usdt/ars'),
-      fetchJSON('https://criptoya.com/api/usdc/ars'),
-      fetchUsdProviders(),
+      fetchJSON(`${COMPARADOLAR_BASE}/usd`),
+      fetchJSON(`${COMPARADOLAR_BASE}/usdt`),
+      fetchJSON(`${COMPARADOLAR_BASE}/usdc`),
+      fetchJSON('https://api.cocos.capital/api/v1/public/mep-prices'),
     ]);
 
-    const tipos = results[0].status === 'fulfilled' ? results[0].value : [];
-    const usdt = results[1].status === 'fulfilled' ? processExchanges(results[1].value, 'USDT') : [];
-    const usdc = results[2].status === 'fulfilled' ? processExchanges(results[2].value, 'USDC') : [];
-    const usd = results[3].status === 'fulfilled' ? results[3].value : [];
+    const usdRaw = results[0].status === 'fulfilled' ? results[0].value : [];
+    const usdtRaw = results[1].status === 'fulfilled' ? results[1].value : [];
+    const usdcRaw = results[2].status === 'fulfilled' ? results[2].value : [];
+    const cocosRaw = results[3].status === 'fulfilled' ? results[3].value : null;
 
-    res.status(200).json({ tipos, exchanges: { usd, usdt, usdc }, updated: new Date().toISOString() });
+    const usd = usdRaw.map(normalizeUsdProvider).filter(e => e && !BLACKLIST.has(e.id) && !USD_EXCLUDE.has(e.id));
+    const usdt = usdtRaw.map(normalizeCryptoExchange).filter(e => e && !BLACKLIST.has(e.id));
+    const usdc = usdcRaw.map(normalizeCryptoExchange).filter(e => e && !BLACKLIST.has(e.id));
+
+    // Override Cocos prices with direct cocos.capital API (more accurate / live)
+    if (cocosRaw) {
+      const window = ['open', 'close', 'overnight', 'fx'].map(k => cocosRaw[k]).find(w => w && w.available && w.ask > 0 && w.bid > 0);
+      if (window) {
+        const ask = parseFloat(window.ask);
+        const bid = parseFloat(window.bid);
+        const spread = ((ask - bid) / bid) * 100;
+        const cocosIdx = usd.findIndex(e => e.id === 'cocos');
+        const updated = {
+          ask, bid,
+          spread: Math.round(spread * 100) / 100,
+        };
+        if (cocosIdx >= 0) {
+          Object.assign(usd[cocosIdx], updated);
+        } else {
+          usd.push({
+            id: 'cocos', name: 'Cocos',
+            ...updated,
+            isBank: false, is24x7: true, pctVariation: null,
+            logoUrl: 'https://api.argentinadatos.com/static/logos/cocos.png',
+            url: 'https://cocos.capital',
+          });
+        }
+      }
+    }
+
+    res.status(200).json({
+      exchanges: { usd, usdt, usdc },
+      updated: new Date().toISOString(),
+    });
   } catch (err) {
     console.error('Dolar API error:', err.message);
     res.status(502).json({ error: 'Failed to fetch dollar data' });
