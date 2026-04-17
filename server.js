@@ -4,7 +4,8 @@ const path = require('path');
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const CONFIG_PATH = path.join(__dirname, 'public', 'config.json');
+const PUBLIC_DIR = path.join(__dirname, 'public');
+const CONFIG_PATH = path.join(PUBLIC_DIR, 'config.json');
 
 app.disable('x-powered-by');
 app.use(express.json());
@@ -28,7 +29,12 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/cedears', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'cedears', 'index.html'));
+});
+
+app.use(express.static(PUBLIC_DIR));
 
 // --- Config API ---
 
@@ -39,6 +45,58 @@ function readConfig() {
 // Public read
 app.get('/api/config', (req, res) => {
   res.json(readConfig());
+});
+
+app.get('/api/cedears', async (req, res) => {
+  try {
+    const response = await fetch('https://data912.com/live/arg_cedears', {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`data912 error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid data912 API response format');
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.json({ data, source: 'data912' });
+  } catch (err) {
+    console.error('CEDEARs proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch cedears data' });
+  }
+});
+
+app.get('/api/usa-stocks', async (req, res) => {
+  try {
+    const response = await fetch('https://data912.com/live/usa_stocks', {
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'Mozilla/5.0',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`data912 error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error('Invalid data912 API response format');
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.json({ data, source: 'data912' });
+  } catch (err) {
+    console.error('USA stocks proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch usa stocks data' });
+  }
 });
 
 // --- FCI Data (via ArgentinaDatos) ---

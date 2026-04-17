@@ -1,0 +1,286 @@
+.cedears-implicit-card {
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.cedears-implicit-values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cedears-implicit-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 14px 18px;
+}
+
+.cedears-implicit-box span {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  margin-bottom: 3px;
+}
+
+.cedears-implicit-box strong {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  font-family: var(--font-mono);
+  color: var(--text);
+}
+
+.cedears-implicit-note {
+  margin-top: 8px;
+  padding: 0 2px;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.cedears-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.cedears-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  background: var(--card-bg);
+  padding: 2px;
+  flex-shrink: 0;
+}
+
+.cedears-view-btn {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+.cedears-view-btn.active {
+  background: var(--accent-light);
+  color: var(--accent-dark);
+}
+
+.cedears-search-wrap {
+  flex: 1;
+  max-width: 340px;
+}
+
+.cedears-search {
+  width: 100%;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  padding: 0 12px;
+  outline: none;
+}
+
+.cedears-search:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.cedears-loading {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.cedears-error {
+  padding: 18px 20px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--red-bg);
+  color: var(--red);
+  font-weight: 600;
+}
+
+.cedears-table-wrap {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.cedears-table {
+  width: 100%;
+  min-width: 1120px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.cedears-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--card-bg);
+  color: var(--text-tertiary);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.cedears-table .col-right {
+  text-align: right;
+}
+
+.cedear-row td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.cedears-empty-cell {
+  padding: 22px 12px !important;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
+.cedear-row:last-child td {
+  border-bottom: none;
+}
+
+.cedear-row:hover td {
+  background: color-mix(in srgb, var(--accent-light) 26%, transparent);
+}
+
+.cedear-asset {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cedear-logo-shell {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  background: var(--bg-subtle);
+}
+
+.cedear-logo {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  z-index: 2;
+}
+
+.cedear-logo-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 0.62rem;
+  text-transform: uppercase;
+}
+
+.cedear-meta {
+  min-width: 0;
+}
+
+.cedear-symbol {
+  font-weight: 650;
+  font-size: 0.85rem;
+  letter-spacing: -0.01em;
+}
+
+.cedear-name {
+  font-size: 0.72rem;
+  color: var(--text-tertiary);
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+}
+
+.cedear-price,
+.cedear-ratio {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cedear-price.muted {
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.cedears-chart-wrap {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+  padding: 14px;
+}
+
+.cedears-chart-inner {
+  height: 520px;
+}
+
+.cedears-chart-empty {
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 880px) {
+  .cedears-implicit-values {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .cedears-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cedears-search-wrap {
+    max-width: none;
+  }
+
+  .cedears-chart-inner {
+    height: 380px;
+  }
+}
