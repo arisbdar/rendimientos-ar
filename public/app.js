@@ -1649,10 +1649,10 @@ async function loadLecaps() {
       return;
     }
 
-    // Build live price lookup from BYMA
+    // Build live price lookup from BYMA — use ask (buy price) for TIR, fallback to last trade
     const livePrices = {};
     for (const item of (bymaRes.data || [])) {
-      livePrices[item.symbol] = item.price;
+      livePrices[item.symbol] = item.ask > 0 ? item.ask : item.price;
     }
     const hasLive = Object.keys(livePrices).length > 0;
 
@@ -2502,7 +2502,7 @@ async function loadInflacion() {
     // LECAPs / BONCAPs
     const lecaps = config.lecaps;
     const livePrices = {};
-    for (const item of (lecapsRes.data || [])) livePrices[item.symbol] = item.price;
+    for (const item of (lecapsRes.data || [])) livePrices[item.symbol] = item.ask > 0 ? item.ask : item.price;
     if (lecaps && lecaps.letras) {
       const today = new Date();
       const settlement = typeof getSettlementDate === 'function' ? getSettlementDate(today) : today;
