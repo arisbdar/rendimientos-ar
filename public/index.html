@@ -4,17 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Design preference: redirect to /nuevo if user opted in -->
-  <script>
-    (function(){
-      try {
-        if (localStorage.getItem('designPref') === 'editorial' && location.pathname === '/') {
-          location.replace('/nuevo');
-        }
-      } catch(e) {}
-    })();
-  </script>
-
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VD0TW4HQM3"></script>
   <script>
@@ -45,7 +34,7 @@
 
   <link rel="canonical" href="https://rendimientos.co/">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#f0f4f9">
+  <meta name="theme-color" content="#F4EFE6">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Rendimientos">
@@ -54,7 +43,7 @@
   <script>document.documentElement.setAttribute('data-theme','light')</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700;800&family=Google+Sans+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -62,7 +51,7 @@
   <header class="header">
     <div class="header-inner">
       <div class="header-left">
-        <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> RENDIMIENTOS.CO</div>
+        <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Rendimientos<em>.co</em></div>
       </div>
       <nav class="currency-tabs">
         <a href="#" class="currency-tab" id="header-mundo">
@@ -97,11 +86,6 @@
         </a>
       </nav>
       <div class="header-right">
-        <a href="/nuevo" class="design-switch-link" id="try-new-design" title="Probar el nuevo diseño editorial">
-          <span class="design-switch-dot"></span>
-          <span class="design-switch-text">Probá el diseño nuevo</span>
-          <span class="design-switch-arrow">→</span>
-        </a>
         <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
             <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
@@ -352,8 +336,44 @@
   </main>
 
   <footer class="footer">
-    <p>Fuentes: CAFCI, ArgentinaDatos, BCRA, data912</p>
-    <p>Hecho con <svg style="display:inline-block;vertical-align:middle" width="14" height="14" viewBox="0 0 24 24" fill="var(--red, #e74c3c)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> desde Argentina</p>
+    <div class="footer-grid">
+      <div class="foot-brand">
+        <div class="foot-logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>Rendimientos<em>.co</em></span></div>
+        <p>Comparador independiente de rendimientos en Argentina. Datos oficiales, sin publicidad.</p>
+      </div>
+      <div>
+        <h6>En pesos</h6>
+        <ul>
+          <li><a href="#ars">Billeteras</a></li>
+          <li><a href="#plazofijo">Plazos fijos</a></li>
+          <li><a href="#lecaps">LECAPs</a></li>
+          <li><a href="#cer">Bonos CER</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>En dólares</h6>
+        <ul>
+          <li><a href="#bonos">Bonos soberanos</a></li>
+          <li><a href="#ons">ONs</a></li>
+          <li><a href="#dolar">Dólar</a></li>
+          <li><a href="/cedears">CEDEARs</a></li>
+        </ul>
+      </div>
+      <div>
+        <h6>Más</h6>
+        <ul>
+          <li><a href="#mundo">Mundo</a></li>
+          <li><a href="#hipotecarios">Hipotecarios UVA</a></li>
+          <li><a href="#pix">PIX</a></li>
+          <li><a href="#bcra">BCRA</a></li>
+          <li><a href="#mundial">Mundial 2026</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-sign">
+      <span>Fuentes: CAFCI · ArgentinaDatos · BCRA · BYMA · data912</span>
+      <span>Hecho con <svg style="display:inline-block;vertical-align:middle" width="12" height="12" viewBox="0 0 24 24" fill="var(--red, #e74c3c)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> desde Argentina</span>
+    </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
