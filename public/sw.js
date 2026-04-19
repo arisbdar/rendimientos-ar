@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rendimientos-v1';
+const CACHE_NAME = 'rendimientos-v2';
 const STATIC_ASSETS = [
   '/',
   '/styles.css',
