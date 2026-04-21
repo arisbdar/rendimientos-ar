@@ -16,8 +16,8 @@
       "nombre": "Carrefour Banco",
       "tipo": "Billetera",
       "limite": "$4 M",
-      "tna": 25,
-      "vigente_desde": "12/04/2026",
+      "tna": 24,
+      "vigente_desde": "17/04/2026",
       "logo": "CB",
       "logo_bg": "#004a9f",
       "activo": true
@@ -270,6 +270,14 @@
         "pago_final": 117.677,
         "precio": 107.279,
         "fecha_vencimiento": "2026-07-31",
+        "activo": true
+      },
+      {
+        "ticker": "S14G6",
+        "nombre": "LECAP Agosto 14",
+        "pago_final": 108.03,
+        "precio": null,
+        "fecha_vencimiento": "2026-08-14",
         "activo": true
       },
       {

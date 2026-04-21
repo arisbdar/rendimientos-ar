@@ -113,6 +113,13 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
   color: var(--accent);
 }
 
+/* Tabular numbers everywhere rates/amounts appear */
+.lecap-ticker, .rate-value, .num, .value-primary,
+.lecap-table td, .soberanos-table td, .cer-table td, .ons-table td,
+.product-rate, .product-value, .tna-value, .tir-value {
+  font-variant-numeric: tabular-nums;
+}
+
 /* Header */
 .header {
   background: var(--card-bg);
@@ -284,6 +291,56 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
   border-bottom: 1px solid var(--border);
   gap: 12px;
 }
+
+/* Calculator modal: mono + tabular-nums for all numeric cells;
+   compact heading inside modal body; tidy inputs */
+.mundo-modal-body h3,
+.mundo-modal-header h3 {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: var(--tracking-display);
+}
+.mundo-modal-body h4 {
+  font-family: var(--font-mono) !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary) !important;
+  margin: 16px 0 8px !important;
+}
+.mundo-modal-body table {
+  font-family: var(--font);
+}
+.mundo-modal-body table tbody td,
+.mundo-modal-body table tfoot td {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.78rem;
+}
+.mundo-modal-body table tbody td:first-child,
+.mundo-modal-body table tfoot td:first-child {
+  font-family: var(--font);
+}
+.mundo-modal-body table thead th {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+.mundo-modal-body input[type="number"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.mundo-modal-body [id$="-calc-tir"],
+.mundo-modal-body [id$="-calc-duration"] {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
 .mundo-modal-header-left {
   display: flex;
   flex-direction: column;
@@ -400,11 +457,17 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
 }
 
 .logo {
-  font-size: 1rem;
-  font-weight: 800;
+  font-family: var(--display);
+  font-size: 1.3rem;
+  font-weight: 400;
   color: var(--text);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   cursor: pointer;
+}
+.logo em, .logo i {
+  font-style: italic;
+  color: var(--text-tertiary);
+  font-size: 0.9rem;
 }
 
 .currency-tabs {
@@ -982,20 +1045,25 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
 }
 
 .hero h1 {
-  font-size: 1.4rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
-  margin-bottom: 4px;
+  font-family: var(--display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+  margin-bottom: 8px;
   color: var(--text);
   text-transform: none;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
 }
 
 .hero p {
   color: var(--text-tertiary);
-  font-size: 0.75rem;
-  max-width: 480px;
-  line-height: 1.4;
+  font-size: 0.85rem;
+  max-width: 520px;
+  line-height: 1.5;
 }
 
 /* Container */
@@ -1011,12 +1079,17 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
 }
 
 .section h2 {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 2px;
-  letter-spacing: 0.03em;
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-bottom: 4px;
+  letter-spacing: var(--tracking-display);
   text-transform: none;
   color: var(--text);
+}
+.section h2 em {
+  font-style: italic;
+  color: var(--accent);
 }
 
 .section-desc {
@@ -1229,15 +1302,87 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
 /* Footer */
 .footer {
   max-width: 780px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
-  text-align: center;
-  font-size: 0.7rem;
-  color: var(--text-tertiary);
-  border-top: 1px solid var(--border);
+  margin: 32px auto 0;
+  padding: 40px 24px 48px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-light);
 }
-
-.footer p + p { margin-top: 4px; }
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.foot-brand {
+  max-width: 280px;
+}
+.foot-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -0.02em;
+}
+.foot-logo em {
+  font-style: italic;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+}
+.foot-brand p {
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  font-size: 0.75rem;
+  margin: 0;
+}
+.footer h6 {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-tertiary);
+  margin: 0 0 10px;
+  font-weight: 500;
+}
+.footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.footer ul a {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.78rem;
+  transition: color 0.15s;
+}
+.footer ul a:hover {
+  color: var(--accent);
+}
+.foot-sign {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  flex-wrap: wrap;
+}
+@media (max-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .foot-brand { grid-column: 1 / -1; }
+  .foot-sign { flex-direction: column; gap: 8px; }
+}
 .visit-counter { margin-bottom: 12px; font-size: 1.1rem; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; }
 
 /* Toggle switch */
