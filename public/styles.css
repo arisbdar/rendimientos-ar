@@ -11,74 +11,84 @@
   }
 }
 
-/* Material Design Palette — Stitch-inspired */
+/* Editorial Palette — warm cream + market green */
 :root {
-  --bg: #f0f4f9;
-  --bg-subtle: #e8ecf1;
-  --card-bg: #ffffff;
-  --text: #1d1b20;
-  --text-secondary: #49454f;
-  --text-tertiary: #79747e;
-  --accent: #0b57d0;
-  --accent-light: #d3e3fd;
-  --accent-dark: #0842a0;
-  --green: #1e8e3e;
-  --green-bg: #e6f4ea;
-  --red: #d93025;
-  --red-bg: #fce8e6;
-  --border: #c4c7c5;
-  --border-light: #e1e3e1;
-  --radius: 16px;
-  --radius-sm: 12px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.04);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-  --font: 'Google Sans', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'Google Sans Mono', 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
-  --blue: #1a73e8;
-  --yellow: #f9ab00;
+  --bg: #F4EFE6;
+  --bg-subtle: #FBF7EE;
+  --card-bg: #FFFDF7;
+  --text: #16130E;
+  --text-secondary: #3C3830;
+  --text-tertiary: #807A6D;
+  --text-faint: #B8B1A2;
+  --accent: #1F6B4A;
+  --accent-light: #E6EDE6;
+  --accent-dark: #174F36;
+  --green: #1F6B4A;
+  --green-bg: #E6EDE6;
+  --red: #B8452E;
+  --red-bg: #F3E2DB;
+  --border: #CEC5B0;
+  --border-light: #E2DBCB;
+  --highlight: #E9C46A;
+  --radius: 14px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 1px 0 rgba(22,19,14,.04);
+  --shadow: 0 1px 0 rgba(22,19,14,.04), 0 4px 16px rgba(22,19,14,.04);
+  --shadow-lg: 0 8px 32px rgba(22,19,14,.08);
+  --display: 'Instrument Serif', 'Newsreader', Georgia, serif;
+  --font: 'Inter Tight', 'Google Sans', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Google Sans Mono', 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
+  --tracking-display: -0.03em;
+  --tracking-body: -0.005em;
+  --tracking-mono: 0.04em;
+  --blue: #1F6B4A;
+  --yellow: #E9C46A;
 }
 
 [data-theme="light"] {
-  --bg: #f0f4f9;
-  --bg-subtle: #e8ecf1;
-  --card-bg: #ffffff;
-  --text: #1d1b20;
-  --text-secondary: #49454f;
-  --text-tertiary: #79747e;
-  --accent: #0b57d0;
-  --accent-light: #d3e3fd;
-  --accent-dark: #0842a0;
-  --green: #1e8e3e;
-  --green-bg: #e6f4ea;
-  --red: #d93025;
-  --red-bg: #fce8e6;
-  --border: #c4c7c5;
-  --border-light: #e1e3e1;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
-  --shadow: 0 1px 3px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.04);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --bg: #F4EFE6;
+  --bg-subtle: #FBF7EE;
+  --card-bg: #FFFDF7;
+  --text: #16130E;
+  --text-secondary: #3C3830;
+  --text-tertiary: #807A6D;
+  --text-faint: #B8B1A2;
+  --accent: #1F6B4A;
+  --accent-light: #E6EDE6;
+  --accent-dark: #174F36;
+  --green: #1F6B4A;
+  --green-bg: #E6EDE6;
+  --red: #B8452E;
+  --red-bg: #F3E2DB;
+  --border: #CEC5B0;
+  --border-light: #E2DBCB;
+  --highlight: #E9C46A;
+  --shadow-sm: 0 1px 0 rgba(22,19,14,.04);
+  --shadow: 0 1px 0 rgba(22,19,14,.04), 0 4px 16px rgba(22,19,14,.04);
+  --shadow-lg: 0 8px 32px rgba(22,19,14,.08);
 }
 
 [data-theme="dark"] {
-  --bg: #1b1b1f;
-  --bg-subtle: #2b2b30;
-  --card-bg: #2d2d32;
-  --text: #e6e1e5;
-  --text-secondary: #c4c0c8;
-  --text-tertiary: #938f96;
-  --accent: #a8c7fa;
-  --accent-light: #1a2740;
-  --accent-dark: #7cacf8;
-  --green: #81c995;
-  --green-bg: #1a2e1f;
-  --red: #f28b82;
-  --red-bg: #3c2020;
-  --border: #444449;
-  --border-light: #3a3a3f;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-  --shadow: 0 2px 6px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.15);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
+  --bg: #14120F;
+  --bg-subtle: #1C1915;
+  --card-bg: #201C17;
+  --text: #EDE6D3;
+  --text-secondary: #C4BDAA;
+  --text-tertiary: #8A8372;
+  --text-faint: #5E5849;
+  --accent: #4FAE82;
+  --accent-light: #1E2C24;
+  --accent-dark: #3E9670;
+  --green: #4FAE82;
+  --green-bg: #1E2C24;
+  --red: #D46A52;
+  --red-bg: #2E1C15;
+  --border: #3A3630;
+  --border-light: #2C2822;
+  --highlight: #E9C46A;
+  --shadow-sm: 0 1px 0 rgba(0,0,0,0.4);
+  --shadow: 0 1px 0 rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
 }
 
 body {
@@ -86,7 +96,21 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  letter-spacing: var(--tracking-body);
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Editorial typography polish */
+h1, h2, h3, h4, h5 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: var(--tracking-display);
+  color: var(--text);
+}
+h1 em, h2 em, h3 em, h4 em, h5 em {
+  font-style: italic;
+  color: var(--accent);
 }
 
 /* Header */
@@ -2554,3 +2578,16 @@ body {
     font-size: 0.68rem;
   }
 }
+
+/* View all link for earnings section */
+.view-all-link {
+  font-size: 0.85rem;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+

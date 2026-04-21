@@ -1,0 +1,515 @@
+.earnings-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* Selector de período - alineado a la izquierda */
+.earnings-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+#earnings-period-label {
+  min-width: 140px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: var(--tracking-body);
+}
+
+/* Iconos de vista (semanal/mensual) - a la derecha */
+.earnings-view-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+.earnings-view-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.earnings-view-icon:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.earnings-view-icon.active {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+.earnings-view-icon svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.earnings-view-label {
+  white-space: nowrap;
+}
+
+.earnings-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.earnings-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.earnings-nav-btn:not(:disabled):hover {
+  border-color: var(--accent);
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.earnings-nav-btn svg {
+  display: block;
+}
+
+/* Loading y Error */
+.earnings-loading {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.earnings-error {
+  padding: 18px 20px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  background: var(--red-bg);
+  color: var(--red);
+  font-weight: 600;
+}
+
+/* Earnings Timeline - Estilos de arisbdar */
+.earnings-timeline {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.earnings-day-card {
+  min-width: 200px;
+  max-width: 240px;
+  flex-shrink: 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.earnings-day-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+.earnings-logo-wrap {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--border-light);
+}
+
+.earnings-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.earnings-logo-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  background: var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.earnings-empty-day {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+/* Grilla de logos */
+.earnings-logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+}
+
+.earnings-logo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: help;
+}
+
+.earnings-logo-item:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--card-bg);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.62rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  white-space: normal;
+  min-width: 140px;
+  max-width: 220px;
+  z-index: 20;
+  pointer-events: none;
+  box-shadow: var(--shadow);
+}
+
+.earnings-logo-item:hover::before {
+  content: '';
+  position: absolute;
+  bottom: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--text) transparent transparent transparent;
+  z-index: 20;
+  pointer-events: none;
+}
+
+/* Grilla compacta para vista mensual */
+.month-day-events .earnings-logo-grid {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.month-day-events .earnings-logo-item {
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .month-day-events .earnings-logo-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Secciones Before/After */
+.earnings-day-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.earnings-section {
+  border-top: 1px solid var(--border-light);
+  padding-top: 10px;
+}
+
+.earnings-section:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.earnings-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
+}
+
+.earnings-section-header svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* Badge IPO */
+.ipo-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: var(--green);
+  color: #FFF;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.ipo-badge-small {
+  padding: 1px 5px;
+  font-size: 0.58rem;
+}
+
+/* Header de card con IPO */
+.earnings-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.earnings-day-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.earnings-day-title span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.earnings-day-title strong {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Vista Semanal Grid - 5 días hábiles en una línea */
+.earnings-week-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.earnings-week-grid .earnings-day-card {
+  min-width: auto;
+  max-width: none;
+}
+
+@media (max-width: 1024px) {
+  .earnings-week-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .earnings-week-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .earnings-week-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Vista Mensual - 5 días hábiles */
+.month-weekday-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.month-weekday-row span {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.earnings-month-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.month-day-cell {
+  min-height: 112px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+  padding: 8px;
+}
+
+.month-day-cell.muted {
+  opacity: 0.72;
+}
+
+.month-day-cell.out-of-range {
+  background: var(--bg-subtle);
+}
+
+.month-day-cell header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.month-day-cell header span:first-child {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.month-day-count {
+  font-size: 0.63rem;
+  font-weight: 700;
+  border-radius: 999px;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 2px 6px;
+}
+
+.month-day-events {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.month-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.month-section-header {
+  font-size: 0.6rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.month-event-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.66rem;
+  color: var(--text-secondary);
+}
+
+.month-event-item .earnings-logo-wrap {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+
+.month-more {
+  font-size: 0.62rem;
+  color: var(--text-tertiary);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .earnings-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .earnings-nav {
+    order: 2;
+    justify-content: center;
+  }
+
+  .earnings-view-icons {
+    order: 1;
+    align-self: center;
+  }
+
+  #earnings-period-label {
+    min-width: 120px;
+    font-size: 0.72rem;
+  }
+
+.earnings-week-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .earnings-logo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+    gap: 6px;
+  }
+
+  .earnings-month-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .month-day-cell {
+    min-height: 90px;
+    padding: 6px;
+  }
+
+  .month-weekday-row {
+    display: none;
+  }
+
+  .earnings-section-header {
+    font-size: 0.62rem;
+  }
+
+  .ipo-badge {
+    padding: 1px 5px;
+    font-size: 0.58rem;
+  }
+}
