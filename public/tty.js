@@ -22,6 +22,7 @@ const NAV = [
   { k: 'mundo',       label: 'mundo',       key: 'm' },
   { k: 'earnings',    label: 'earnings',    key: 'e', href: '/earnings' },
   { k: 'cedears',     label: 'cedears',     key: 'c' },
+  { k: 'remesas',     label: 'remesas',     key: 's' },
   { k: 'ars',         label: 'ars',         key: 'a',
     subs: [
       { k: 'billeteras',       label: 'billeteras' },
@@ -2135,6 +2136,279 @@ async function screenBcra(main) {
   }
 }
 
+// ─── Screen: Remesas — cobrar en USD desde el exterior ───────
+// Datos approx + Cocos confirmado por el usuario. Fuente dolarito.ar/remotito.
+const REMESAS = [
+  {
+    name: 'Cocos',
+    logoKey: 'Cocos',
+    fee: 0.50,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 2.50,
+    checking: true,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://cocos.capital',
+    note: 'todo gratis · wire/ach',
+  },
+  {
+    name: 'Wallbit',
+    logoKey: 'Wallbit',
+    fee: 1.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 2.00,
+    checking: true,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://wallbit.io',
+    note: 'checking account',
+  },
+  {
+    name: 'Grabr Fi',
+    logoKey: 'Grabr',
+    fee: 1.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 3.00,
+    checking: true,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://grabr.fi',
+    note: 'checking account',
+  },
+  {
+    name: 'Lemon',
+    logoKey: 'Lemon',
+    fee: 1.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 2.50,
+    checking: false,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://lemon.me',
+    note: 'lemon card · cripto',
+  },
+  {
+    name: 'Takenos',
+    logoKey: 'Takenos',
+    fee: 2.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 2.50,
+    checking: false,
+    subnominada: true,
+    card: false,
+    android: true,
+    apple: true,
+    url: 'https://takenos.com',
+    note: 'link de cobro',
+  },
+  {
+    name: 'Payoneer',
+    logoKey: 'Payoneer',
+    fee: 2.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 1.50,
+    checking: true,
+    subnominada: false,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://payoneer.com',
+    note: 'global account',
+  },
+  {
+    name: 'Arq',
+    logoKey: 'Arq',
+    fee: 2.50,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: 3.00,
+    checking: true,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://arq.app',
+    note: 'checking account',
+  },
+  {
+    name: 'Astropay',
+    logoKey: 'Astropay',
+    fee: 2.00,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: null,
+    checking: false,
+    subnominada: true,
+    card: true,
+    android: true,
+    apple: true,
+    url: 'https://astropay.com',
+    note: 'wallet · spread implícito',
+  },
+  {
+    name: 'Airtm',
+    logoKey: 'Airtm',
+    fee: 3.50,
+    aperturaFree: true,
+    mantenimientoFree: true,
+    feeMin: null,
+    checking: false,
+    subnominada: true,
+    card: false,
+    android: true,
+    apple: true,
+    url: 'https://airtm.com',
+    note: 'p2p · spread variable',
+  },
+  {
+    name: 'Wise',
+    logoKey: 'Wise',
+    fee: null,
+    aperturaFree: null,
+    mantenimientoFree: null,
+    feeMin: null,
+    checking: null,
+    subnominada: null,
+    card: null,
+    android: null,
+    apple: null,
+    url: 'https://wise.com',
+    note: 'no disponible en argentina',
+    unavailable: true,
+  },
+];
+
+// Brand backgrounds for providers without logo file
+const REMESAS_BG = {
+  Cocos: '#0ab386',
+  Wallbit: '#0d2c5e',
+  Grabr: '#ff3e6c',
+  Lemon: '#00c897',
+  Takenos: '#1e2430',
+  Payoneer: '#ff4b26',
+  Arq: '#1a1a6c',
+  Astropay: '#1e1e4a',
+  Airtm: '#00aef0',
+  Wise: '#9fe870',
+};
+
+function remesaLogoHTML(name, sm = false) {
+  // Reuse ENTITY_LOGOS for Cocos; otherwise letters on brand bg.
+  const src = lookupLogoURL(name);
+  const cls = 'logo' + (sm ? ' sm' : '');
+  const init = esc(initials(name));
+  if (src) return `<span class="${cls}" data-initials="${init}"><img src="${esc(src)}" alt="${esc(name)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
+  const bg = REMESAS_BG[name];
+  if (bg) return `<span class="${cls}" style="background:${esc(bg)};color:#fff;border-color:${esc(bg)}">${init}</span>`;
+  return `<span class="${cls}">${init}</span>`;
+}
+
+const check = () => '<span class="up" style="font-family:var(--font-mono)">●</span>';
+const cross = () => '<span class="down" style="font-family:var(--font-mono);opacity:0.6">○</span>';
+const dash = () => '<span class="dim">—</span>';
+
+async function screenRemesas(main) {
+  // Sort by fee asc (Cocos first, then lowest fees)
+  const rows = REMESAS.slice().sort((a, b) => {
+    if (a.unavailable && !b.unavailable) return 1;
+    if (!a.unavailable && b.unavailable) return -1;
+    return (a.fee ?? 99) - (b.fee ?? 99);
+  });
+
+  const best = rows.filter(r => !r.unavailable)[0];
+
+  main.innerHTML = pHd('remesas · cobrar usd del exterior', 'Remesas',
+    'Comparador de apps para cobrar en dólares desde el exterior (freelance, remoto, exportación). Fee %, apertura, fee mínimo y features por proveedor.')
+    + `<section class="s">
+        <h2><span>mejor del momento</span><span class="line"></span></h2>
+        <div class="dol-best-row">
+          <div class="dol-best-card">
+            <div class="lbl">menor fee</div>
+            <div class="with-logo">${remesaLogoHTML(best.name)}<div class="txt"><b>${esc(best.name)}</b><small>${esc(best.note)}</small></div></div>
+            <div class="val hot">${best.fee.toFixed(2)}%</div>
+          </div>
+          <div class="dol-best-card">
+            <div class="lbl">fee mínimo</div>
+            <div class="with-logo">${remesaLogoHTML(best.name)}<div class="txt"><b>${esc(best.name)}</b><small>por transferencia</small></div></div>
+            <div class="val hot">${best.feeMin != null ? 'USD ' + best.feeMin.toFixed(2) : '—'}</div>
+          </div>
+          <div class="dol-best-card">
+            <div class="lbl">ejemplo · usd 1.000</div>
+            <div class="with-logo"><div class="txt"><b>recibís</b><small>neto de comisión + fee mínimo</small></div></div>
+            <div class="val hot">USD ${(1000 - Math.max(1000 * best.fee / 100, best.feeMin || 0)).toFixed(2)}</div>
+          </div>
+        </div>
+      </section>
+      <section class="s">
+        <h2><span>proveedores</span><span class="line"></span><span class="count">${rows.length}</span></h2>
+        <div id="remesas-tbl"></div>
+        <div class="hint" style="margin-top:10px">
+          datos de referencia · fuente: <a href="https://www.dolarito.ar/remotito" target="_blank" rel="noopener" style="color:var(--hot)">dolarito.ar/remotito</a> · cocos confirmado por el equipo.
+          los porcentajes pueden variar según promociones vigentes de cada app.
+        </div>
+      </section>`;
+
+  const tbl = $('#remesas-tbl');
+  tbl.innerHTML = `<table class="t">
+    <thead><tr>
+      <th style="text-align:left">#</th>
+      <th style="text-align:left">proveedor</th>
+      <th>fee %</th>
+      <th>fee mín</th>
+      <th>apertura</th>
+      <th>mantenim.</th>
+      <th>checking</th>
+      <th>tarjeta</th>
+      <th>android / ios</th>
+      <th>usd 1.000 neto</th>
+    </tr></thead>
+    <tbody>${rows.map((r, i) => {
+      if (r.unavailable) {
+        return `<tr style="opacity:0.5">
+          <td class="dim">${String(i + 1).padStart(2, '0')}</td>
+          <td>${remesaLogoHTML(r.name, true)} <span>${esc(r.name)}</span></td>
+          <td class="num dim">—</td>
+          <td class="num dim">—</td>
+          <td class="dim">—</td>
+          <td class="dim">—</td>
+          <td class="dim">—</td>
+          <td class="dim">—</td>
+          <td class="dim">—</td>
+          <td class="num down" style="text-align:left">${esc(r.note)}</td>
+        </tr>`;
+      }
+      const net = 1000 - Math.max(1000 * r.fee / 100, r.feeMin || 0);
+      const bestMark = i === 0;
+      return `<tr${r.name === 'Cocos' ? ' style="background:var(--bg-1)"' : ''}>
+        <td class="${bestMark ? 'hot' : 'dim'}">${String(i + 1).padStart(2, '0')}</td>
+        <td>${remesaLogoHTML(r.name, true)} <span class="${bestMark ? 'hot' : ''}">${esc(r.name)}</span> <small class="dim" style="margin-left:4px">${esc(r.note)}</small></td>
+        <td class="num ${bestMark ? 'hot' : ''}">${r.fee.toFixed(2)}%</td>
+        <td class="num dim">${r.feeMin != null ? 'USD ' + r.feeMin.toFixed(2) : '—'}</td>
+        <td>${r.aperturaFree ? check() : dash()}</td>
+        <td>${r.mantenimientoFree ? check() : dash()}</td>
+        <td>${r.checking ? check() : cross()}</td>
+        <td>${r.card ? check() : cross()}</td>
+        <td class="dim">${(r.android || r.apple) ? (r.android ? 'A' : '—') + ' / ' + (r.apple ? 'i' : '—') : '—'}</td>
+        <td class="num ${bestMark ? 'hot' : ''}">USD ${fmt(net, 2)}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
 // ─── Screen: Mundial ──────────────────────────────────────────
 const MUNDIAL_START = new Date(2026, 5, 11); // 11 jun 2026 (inicio oficial)
 
@@ -2474,6 +2748,7 @@ async function screenMundial(main) {
 const SCREENS = {
   mundo: screenMundo,
   cedears: screenCedears,
+  remesas: screenRemesas,
   ars: screenARS,
   bonos: screenBonos,
   ons: screenONs,
@@ -2486,7 +2761,7 @@ const SCREENS = {
 
 // ─── Keyboard ─────────────────────────────────────────────────
 let _gMode = false, _gTimer = null;
-const G_KEY = { m: 'mundo', c: 'cedears', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
+const G_KEY = { m: 'mundo', c: 'cedears', s: 'remesas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
 const G_EXT = { e: '/earnings' };
 
 function onKey(e) {
@@ -2718,6 +2993,7 @@ function renderFooter() {
           <li><a href="#cedears">cedears</a></li>
           <li><a href="/earnings">earnings</a></li>
           <li><a href="#dolar">dólar</a></li>
+          <li><a href="#remesas">remesas</a></li>
         </ul>
       </div>
       <div>
