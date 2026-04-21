@@ -560,17 +560,356 @@ function normalizeAsset(a, bucket) {
   return { sym, name, last, chg, ytd, sp: sp || [], pct, d };
 }
 
-// ─── Stubs for other screens ──────────────────────────────────
+// ─── Stubs (overridable per phase) ────────────────────────────
 function stubScreen(main, { tag, title, sub, message = 'En construcción — próxima fase.' }) {
   main.innerHTML = pHd(tag, title, sub) + `<div class="empty-state">${esc(message)}</div>`;
 }
 
+// ─── Screen: CEDEARs ──────────────────────────────────────────
 async function screenCedears(main) {
-  stubScreen(main, { tag: 'cedears · us stocks', title: 'CEDEARs', sub: 'Ranking de acciones USA y próximos reportes de resultados.' });
+  main.innerHTML = pHd('cedears · us stocks', 'CEDEARs', 'Acciones estadounidenses listadas en BYMA. Hot movers y próximos reportes de resultados.')
+    + `<section class="s"><h2><span>hot · us stocks con mayor movimiento</span><span class="line"></span><span class="count" id="hot-count">…</span></h2><div id="hot-tbl"><div class="loading-row"> datos de mercado…</div></div></section>`
+    + `<section class="s"><h2><span>earnings · próximos reportes</span><span class="line"></span><span class="count" id="earn-count">…</span></h2><div id="earn-tbl"><div class="loading-row"> próximos reportes…</div></div></section>`;
+
+  // Hot movers
+  try {
+    const raw = await fetchCached('/api/hot-movers', 120_000);
+    const list = (raw.data || []).slice(0, 20);
+    $('#hot-count').textContent = list.length;
+    $('#hot-tbl').innerHTML = list.length ? `<table class="t">
+      <thead><tr>
+        <th style="text-align:left">sym</th>
+        <th style="text-align:left">empresa</th>
+        <th>último (USD)</th>
+        <th>chg</th>
+      </tr></thead>
+      <tbody>${list.map(r => `<tr>
+        <td><span class="hot">${esc(r.symbol)}</span></td>
+        <td class="dim">${esc(r.name)}</td>
+        <td class="num">${fmt(r.price, 2)}</td>
+        <td class="num ${signClass(r.change)}">${arrow(r.change)} ${fmtPct(r.change, 2)}</td>
+      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin datos</div>`;
+  } catch (e) {
+    $('#hot-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+
+  // Earnings (needs start+end range — next 7 days)
+  try {
+    const today = new Date();
+    const end = new Date(today.getTime() + 7 * 86400000);
+    const fmtDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const url = `/api/earnings?start=${fmtDate(today)}&end=${fmtDate(end)}`;
+    const raw = await fetchCached(url, 300_000);
+    const list = Array.isArray(raw) ? raw : (raw.data || []);
+    const clean = list.slice(0, 30);
+    $('#earn-count').textContent = clean.length;
+    $('#earn-tbl').innerHTML = clean.length ? `<table class="t">
+      <thead><tr>
+        <th style="text-align:left">sym</th>
+        <th style="text-align:left">empresa</th>
+        <th style="text-align:left">cuándo</th>
+        <th>est eps</th>
+        <th>eps prev</th>
+      </tr></thead>
+      <tbody>${clean.map(r => {
+        const dt = r.date ? new Date(r.date) : null;
+        const when = dt ? `${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][dt.getDay()]} ${r.time === 'amc' ? 'AMC' : r.time === 'bmo' ? 'BMO' : (r.time || '')}` : '';
+        return `<tr>
+          <td><span class="hot">${esc(r.symbol)}</span></td>
+          <td class="dim">${esc(r.name || '')}</td>
+          <td class="dim">${esc(when)}</td>
+          <td class="num">${r.epsEstimate != null ? '$' + fmt(r.epsEstimate, 2) : '—'}</td>
+          <td class="num dim">${r.epsActual != null ? '$' + fmt(r.epsActual, 2) : (r.epsPrev != null ? '$' + fmt(r.epsPrev, 2) : '—')}</td>
+        </tr>`;
+      }).join('')}</tbody></table>` : `<div class="empty-state">sin reportes próximos</div>`;
+  } catch (e) {
+    $('#earn-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
 }
+
+// ─── Screen: ARS (router into 6 subs) ─────────────────────────
 async function screenARS(main, sub) {
   const current = sub || 'billeteras';
-  stubScreen(main, { tag: `ars · ${current}`, title: 'ARS', sub: 'Tasas en pesos: billeteras, plazos fijos, LECAPs, CER y comparador.', message: 'ars / ' + current + ' — próxima fase' });
+  const renderer = ARS_SUBS[current];
+  if (!renderer) return stubScreen(main, { tag: `ars · ${current}`, title: 'ARS', message: 'sub desconocida' });
+  return renderer(main);
+}
+
+const ARS_SUBS = {};
+
+// 3a. Billeteras
+ARS_SUBS.billeteras = async function(main) {
+  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'TNA de cuentas remuneradas y billeteras digitales, comparadas por tasa.')
+    + `<div id="bil-bars"><div class="loading-row"> cargando billeteras…</div></div>`;
+  try {
+    const cfg = await fetchCached('/api/config', 120_000);
+    const items = (cfg.garantizados || []).filter(g => g.activo !== false)
+      .map(g => ({ name: g.nombre, tna: +g.tna || 0, tag: g.tipo || '', limit: g.limite || '' }))
+      .sort((a, b) => b.tna - a.tna);
+    if (!items.length) { $('#bil-bars').innerHTML = '<div class="empty-state">sin billeteras activas</div>'; return; }
+    renderBars($('#bil-bars'), items, {
+      valFmt: v => v.toFixed(2) + '%',
+      valSub: 'TNA',
+      subLabel: (r) => r.tag + (r.limit ? ` · ${r.limit}` : ''),
+    });
+  } catch (e) {
+    $('#bil-bars').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// 3b. Plazo Fijo 30d
+ARS_SUBS.plazofijo = async function(main) {
+  main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas a 30 días por entidad bancaria (BCRA, clientes y no clientes).')
+    + `<div id="pf-tbl"><div class="loading-row"> cargando bancos…</div></div>`;
+  try {
+    const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
+    const rows = await res.json();
+    const list = (rows || []).filter(p => p.tnaClientes > 0)
+      .map(p => ({
+        bank: shortBank(p.entidad),
+        raw: p.entidad,
+        tna: p.tnaClientes * 100,
+        tnaNoCli: p.tnaNoClientes != null ? p.tnaNoClientes * 100 : null,
+      }))
+      .sort((a, b) => b.tna - a.tna);
+    $('#pf-tbl').innerHTML = `<table class="t">
+      <thead><tr><th style="text-align:left">banco</th><th>tna clientes</th><th>tna no clientes</th><th>$1M · 30d</th></tr></thead>
+      <tbody>${list.map((r, i) => `<tr>
+        <td>${logoHTML(r.bank, true)} <span class="${i===0?'hot':''}">${esc(r.bank)}</span></td>
+        <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
+        <td class="num dim">${r.tnaNoCli != null ? r.tnaNoCli.toFixed(2) + '%' : '—'}</td>
+        <td class="num dim">+$${fmt(1000000 * r.tna / 100 / 12, 0)}</td>
+      </tr>`).join('')}</tbody></table>
+      <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
+  } catch (e) {
+    $('#pf-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// 3c. Plazo Fijo Periódico (UVA con pago periódico)
+ARS_SUBS.plazofijoperiod = async function(main) {
+  main.innerHTML = pHd('ars · plazo fijo periódico', 'Plazo Fijo Periódico', 'UVA con pago periódico de intereses, por entidad.')
+    + `<div id="pfp-tbl"><div class="loading-row"> cargando…</div></div>`;
+  try {
+    const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijoUvaPagoPeriodico');
+    const rows = await res.json();
+    const list = (rows || [])
+      .map(p => ({ bank: shortBank(p.entidad), tna: (p.tna || p.tnaClientes || 0) * 100 }))
+      .filter(r => r.tna > 0)
+      .sort((a, b) => b.tna - a.tna);
+    $('#pfp-tbl').innerHTML = list.length ? `<table class="t">
+      <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
+      <tbody>${list.map((r, i) => `<tr>
+        <td>${logoHTML(r.bank, true)} <span class="${i===0?'hot':''}">${esc(r.bank)}</span></td>
+        <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
+      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin datos</div>`;
+  } catch (e) {
+    $('#pfp-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// 3d. LECAPs — scatter + table bidirectional
+ARS_SUBS.lecaps = async function(main) {
+  main.innerHTML = pHd('ars · lecaps', 'LECAPs', 'Letras capitalizables del Tesoro. Click en un punto o fila para destacar.')
+    + `<div class="cols lg-chart"><div id="lec-scatter"><div class="loading-row"> cargando scatter…</div></div><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="lec-count">…</span></h2><div id="lec-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+  try {
+    const [cfg, live] = await Promise.all([
+      fetchCached('/api/config', 120_000),
+      fetchCached('/api/lecaps', 60_000).catch(() => ({ data: [] })),
+    ]);
+    const livePrices = {};
+    for (const it of (live.data || [])) livePrices[it.symbol] = { ask: +it.ask || 0, price: +it.price || 0, bid: +it.bid || 0 };
+    const today = new Date();
+    const settlement = getSettlementDate(today);
+    const letras = (cfg.lecaps?.letras || []).filter(l => l.activo !== false);
+    const items = letras.map(l => {
+      const live = livePrices[l.ticker] || {};
+      const price = live.ask > 0 ? live.ask : (live.price > 0 ? live.price : l.precio);
+      if (!price || price <= 0) return null;
+      const vto = parseLocalDate(l.fecha_vencimiento);
+      const days = Math.max(1, Math.round((vto - settlement) / 86400000));
+      const ganancia = l.pago_final / price;
+      const tem = (Math.pow(ganancia, 30 / days) - 1) * 100;
+      const tna = (ganancia - 1) * (365 / days) * 100;
+      const tea = (Math.pow(ganancia, 365 / days) - 1) * 100;
+      return { sym: l.ticker, days, tem, tna, tea, price, vto };
+    }).filter(Boolean).sort((a, b) => a.days - b.days);
+
+    const state = { sel: null };
+
+    function render() {
+      $('#lec-scatter').innerHTML = scatterSVG(items, {
+        xKey: 'days', yKey: 'tem', labelKey: 'sym',
+        xLabel: 'dtm (días)', yLabel: 'tem',
+        yFmt: v => v.toFixed(2) + '%', xFmt: v => v + 'd',
+        selected: state.sel,
+      });
+      wireScatterClicks($('#lec-scatter'), (sym) => { state.sel = state.sel === sym ? null : sym; render(); });
+      $('#lec-count').textContent = items.length;
+      $('#lec-table').innerHTML = `<table class="t">
+        <thead><tr><th style="text-align:left">sym</th><th>dtm</th><th>tem</th><th>tna</th><th>tea</th><th>precio</th></tr></thead>
+        <tbody>${items.map(r => {
+          const s = state.sel === r.sym;
+          return `<tr class="clickable${s ? ' sel' : ''}" data-sym="${esc(r.sym)}">
+            <td><span class="${s ? 'hot' : ''}">${esc(r.sym)}</span></td>
+            <td class="num dim">${r.days}</td>
+            <td class="num">${r.tem.toFixed(2)}%</td>
+            <td class="num hot">${r.tna.toFixed(1)}%</td>
+            <td class="num">${r.tea.toFixed(1)}%</td>
+            <td class="num">${r.price.toFixed(2)}</td>
+          </tr>`;
+        }).join('')}</tbody></table>`;
+      $$('tr.clickable[data-sym]', $('#lec-table')).forEach(tr => {
+        tr.addEventListener('click', () => {
+          const sym = tr.getAttribute('data-sym');
+          state.sel = state.sel === sym ? null : sym;
+          render();
+        });
+      });
+    }
+    render();
+  } catch (e) {
+    $('#lec-scatter').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// 3e. CER — scatter + table bidirectional
+ARS_SUBS.cer = async function(main) {
+  main.innerHTML = pHd('ars · bonos cer', 'Bonos CER', 'Ajustados por CER (inflación). Rendimiento real sobre la inflación.')
+    + `<div class="cols lg-chart"><div id="cer-scatter"><div class="loading-row"> cargando scatter…</div></div><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="cer-count">…</span></h2><div id="cer-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+  try {
+    const [cfg, cerRes, cerPriceRes] = await Promise.all([
+      fetchCached('/api/config', 120_000),
+      fetchCached('/api/cer', 300_000).catch(() => ({ cer: null })),
+      fetchCached('/api/cer-precios', 60_000).catch(() => ({ data: [] })),
+    ]);
+    const cerActual = cerRes.cer || cerRes.valor || null;
+    const livePrices = {};
+    for (const it of (cerPriceRes.data || [])) livePrices[it.symbol || it.ticker] = +it.price || +it.c || +it.ask || 0;
+    const today = new Date();
+    const settlement = getSettlementDate(today);
+    const bonosCer = cfg.bonos_cer || {};
+    const items = Object.entries(bonosCer).map(([sym, bond]) => {
+      const vto = parseLocalDate(bond.vencimiento);
+      if (!vto || vto < today) return null;
+      const days = Math.max(1, Math.round((vto - settlement) / 86400000));
+      const dur = days / 365.25;
+      const priceLive = livePrices[sym] || null;
+      const price = priceLive || bond.precio || null;
+      if (!price || !cerActual || !bond.cer_emision) return { sym, days, dur, price };
+      // Adjusted real flows: each flujo amount is expressed per 100 VN pre-CER. Real flow = amount * (cer_actual / cer_emision)
+      const cerRatio = cerActual / bond.cer_emision;
+      const flows = (bond.flujos || []).map(f => ({ fecha: parseLocalDate(f.fecha), monto: f.monto * cerRatio })).filter(f => f.fecha > today);
+      if (!flows.length) return { sym, days, dur, price };
+      const ytm = calcYTM(price, flows, today);
+      // Approximate real TIR = nominal TIR adjusted by CER drift rate of the flows themselves;
+      // since flows are already CER-adjusted, ytm is a good real proxy.
+      return { sym, days, dur: +dur.toFixed(2), tir: ytm, price };
+    }).filter(x => x && x.tir != null).sort((a, b) => a.dur - b.dur);
+
+    const state = { sel: null };
+
+    function render() {
+      $('#cer-scatter').innerHTML = scatterSVG(items, {
+        xKey: 'dur', yKey: 'tir', labelKey: 'sym',
+        xLabel: 'dur (años)', yLabel: 'tir real',
+        yFmt: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%', xFmt: v => v + 'y',
+        selected: state.sel,
+      });
+      wireScatterClicks($('#cer-scatter'), (sym) => { state.sel = state.sel === sym ? null : sym; render(); });
+      $('#cer-count').textContent = items.length;
+      $('#cer-table').innerHTML = `<table class="t">
+        <thead><tr><th style="text-align:left">sym</th><th>dtm</th><th>tir</th><th>dur</th><th>precio</th></tr></thead>
+        <tbody>${items.map(r => {
+          const s = state.sel === r.sym;
+          return `<tr class="clickable${s ? ' sel' : ''}" data-sym="${esc(r.sym)}">
+            <td><span class="${s ? 'hot' : ''}">${esc(r.sym)}</span></td>
+            <td class="num dim">${r.days}d</td>
+            <td class="num hot">${(r.tir >= 0 ? '+' : '') + r.tir.toFixed(2)}%</td>
+            <td class="num">${r.dur.toFixed(2)}</td>
+            <td class="num">${fmt(r.price, 2)}</td>
+          </tr>`;
+        }).join('')}</tbody></table>`;
+      $$('tr.clickable[data-sym]', $('#cer-table')).forEach(tr => {
+        tr.addEventListener('click', () => {
+          const sym = tr.getAttribute('data-sym');
+          state.sel = state.sel === sym ? null : sym;
+          render();
+        });
+      });
+    }
+    if (!items.length) { $('#cer-scatter').innerHTML = '<div class="empty-state">sin bonos CER activos</div>'; $('#cer-table').innerHTML = ''; return; }
+    render();
+  } catch (e) {
+    $('#cer-scatter').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// 3f. Comparador — merge billeteras + FCIs + PF top, sort by TNA desc
+ARS_SUBS.comparador = async function(main) {
+  main.innerHTML = pHd('ars · comparador', 'Comparador', 'Billeteras, FCIs money market y plazo fijo unificados por TNA descendente.')
+    + `<div id="cmp-tbl"><div class="loading-row"> cargando…</div></div>`;
+  try {
+    const [cfg, fciRes, pfRes] = await Promise.all([
+      fetchCached('/api/config', 120_000),
+      fetchCached('/api/cafci', 300_000).catch(() => ({ data: [] })),
+      fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo').then(r => r.json()).catch(() => []),
+    ]);
+    const unified = [];
+    for (const g of (cfg.garantizados || [])) {
+      if (g.activo === false) continue;
+      unified.push({ name: g.nombre, type: g.tipo || 'Billetera', tna: +g.tna || 0, tag: g.limite || '' });
+    }
+    const fcis = (fciRes.data || []).filter(f => f.nombre && f.tna > 0).sort((a, b) => b.tna - a.tna).slice(0, 10);
+    for (const f of fcis) {
+      unified.push({ name: f.nombre.replace(/ - Clase [A-Z]$/, ''), type: 'FCI MM', tna: +f.tna, tag: '' });
+    }
+    const pfTop = (pfRes || []).filter(p => p.tnaClientes > 0).sort((a, b) => b.tnaClientes - a.tnaClientes).slice(0, 5);
+    for (const p of pfTop) {
+      unified.push({ name: shortBank(p.entidad), type: 'Plazo fijo 30d', tna: p.tnaClientes * 100, tag: '' });
+    }
+    unified.sort((a, b) => b.tna - a.tna);
+
+    $('#cmp-tbl').innerHTML = `<table class="t">
+      <thead><tr><th style="text-align:left">#</th><th style="text-align:left">producto</th><th style="text-align:left">tipo</th><th>tna</th><th style="text-align:left">meta</th></tr></thead>
+      <tbody>${unified.map((r, i) => `<tr>
+        <td class="dim">${String(i + 1).padStart(2, '0')}</td>
+        <td>${logoHTML(r.name, true)} <span class="${i===0?'hot':''}">${esc(r.name)}</span></td>
+        <td class="dim">${esc(r.type)}</td>
+        <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
+        <td class="dim">${esc(r.tag)}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch (e) {
+    $('#cmp-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+};
+
+// ─── Bars component ───────────────────────────────────────────
+function renderBars(container, items, { valFmt = v => v.toFixed(2) + '%', valSub = 'tna', subLabel = null } = {}) {
+  const max = Math.max(...items.map(i => i.tna || i.val || 0));
+  container.innerHTML = `<div class="bars">${items.map((r, i) => {
+    const v = r.tna != null ? r.tna : r.val;
+    const width = max > 0 ? (v / max * 100).toFixed(1) + '%' : '0%';
+    const sub = subLabel ? subLabel(r) : '';
+    return `<div class="row">
+      <div class="with-logo">${logoHTML(r.name)}<div class="txt"><b>${esc(r.name)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}</div></div>
+      <div class="meter"><div class="fill" style="--w:${width};width:${width}"></div></div>
+      <div class="val">${valFmt(v)}<small>${esc(valSub)}</small></div>
+      <div class="rk">${String(i + 1).padStart(2, '0')}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+// ─── Short bank name helper ───────────────────────────────────
+function shortBank(name) {
+  if (!name) return '';
+  return name
+    .replace(/^BANCO\s+(DE\s+)?(LA\s+)?/i, '')
+    .replace(/\s+ARGENTINA(\s+S\.?A\.?)?$/i, '')
+    .replace(/\s+S\.?A\.?$/i, '')
+    .replace(/\s*\(.*\)\s*$/i, '')
+    .toLowerCase()
+    .replace(/\b\w/g, c => c.toUpperCase());
 }
 async function screenBonos(main) {
   stubScreen(main, { tag: 'bonos · soberanos usd', title: 'Bonos Soberanos', sub: 'Curva de Bonares y Globales en dólares.' });
