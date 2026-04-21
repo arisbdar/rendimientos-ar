@@ -3,22 +3,22 @@
  * Fidelity: Terminal.html prototype
  * ============================================================ */
 
-/* Palette — Amber (default) */
+/* Palette — Amber (default). Surface en navy oscuro tipo polymarket. */
 :root {
-  --bg: #000000;
-  --bg-1: #070502;
-  --bg-2: #120c03;
+  --bg: #0b1426;
+  --bg-1: #10192d;
+  --bg-2: #16223a;
   --fg: #ffb000;
-  --fg-dim: #a67100;
-  --fg-faint: #5e4200;
-  --muted: #6b5a2e;
-  --rule: #221908;
-  --rule-hi: #3a2a0d;
+  --fg-dim: #b28300;
+  --fg-faint: #6b5624;
+  --muted: #7a6a44;
+  --rule: #1a2540;
+  --rule-hi: #2a3a5a;
   --hot: #ffd86b;
   --up: #4ade80;
   --down: #ff5a4e;
   --inv-bg: #ffb000;
-  --inv-fg: #000000;
+  --inv-fg: #0b1426;
   --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
 }
 
