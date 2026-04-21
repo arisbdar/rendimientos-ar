@@ -130,33 +130,28 @@ function calcDuration(price, flows, settlementDate, ytmPct) {
 }
 
 // ─── Logo map ──────────────────────────────────────────────────
+// Only names whose image file actually exists in public/logos/ — others
+// render as initials on a branded background color (BILLETERA_BG).
 const LOGO_IMG = {
-  'Ualá': '/logos/uala.svg',
-  'Naranja X': '/logos/naranja-x.svg',
-  'Mercado Pago': '/logos/mercado-pago.svg',
-  'Personal Pay': '/logos/personal-pay.svg',
-  'Cocos': '/logos/cocos-logo.png',
-  'Cocos Capital': '/logos/cocos-logo.png',
-  'Reba': '/logos/reba.png',
-  'Prex': '/logos/prex.svg',
+  'Ualá': '/logos/Uala.svg',
+  'Uala': '/logos/Uala.svg',
+  'Reba': '/logos/Reba_Compañía_Financiera.png',
   'Brubank': '/logos/Brubank.svg',
-  'Lemon': '/logos/Lemon_Cash.svg',
-  'Carrefour Banco': '/logos/carrefour_banco.svg',
   'Banco Nación': '/logos/Banco_Nación.png',
   'BNA': '/logos/Banco_Nación.png',
-  'Banco Galicia': '/logos/Banco_Galicia.svg',
-  'Galicia': '/logos/Banco_Galicia.svg',
-  'Banco Santander': '/logos/Banco_Santander.svg',
-  'Santander': '/logos/Banco_Santander.svg',
+  'Banco Galicia': '/logos/Banco_Galicia.png',
+  'Galicia': '/logos/Banco_Galicia.png',
+  'Banco Santander': '/logos/Banco_Santander.png',
+  'Santander': '/logos/Banco_Santander.png',
   'Banco Ciudad': '/logos/Banco_Ciudad.png',
   'Ciudad': '/logos/Banco_Ciudad.png',
   'Banco Hipotecario': '/logos/Banco_Hipotecario.png',
   'Hipotecario': '/logos/Banco_Hipotecario.png',
   'ICBC': '/logos/ICBC_Argentina.png',
-  'Banco Macro': '/logos/Banco_Macro.svg',
-  'Macro': '/logos/Banco_Macro.svg',
-  'Banco BBVA': '/logos/BBVA_(ARG).svg',
-  'BBVA': '/logos/BBVA_(ARG).svg',
+  'Banco Macro': '/logos/Banco_Macro.png',
+  'Macro': '/logos/Banco_Macro.png',
+  'BBVA': '/logos/BBVA_Argentina.png',
+  'BBVA Argentina': '/logos/BBVA_Argentina.png',
   'Banco Comafi': '/logos/Banco_Comafi.png',
   'Comafi': '/logos/Banco_Comafi.png',
   'Banco Credicoop': '/logos/Banco_Credicoop.png',
@@ -165,15 +160,35 @@ const LOGO_IMG = {
   'Supervielle': '/logos/Banco_Supervielle.svg',
   'Banco Voii': '/logos/Banco_Voii.png',
   'Voii': '/logos/Banco_Voii.png',
-  'Banco Bica': '/logos/Banco_Bica.png',
-  'Bica': '/logos/Banco_Bica.png',
+  'Banco Bica': '/logos/Banco_BICA.svg',
+  'Banco BICA': '/logos/Banco_BICA.svg',
   'Banco CMF': '/logos/Banco_CMF.png',
   'CMF': '/logos/Banco_CMF.png',
   'Banco Meridian': '/logos/Banco_Meridian.png',
   'Meridian': '/logos/Banco_Meridian.png',
+  'Banco Patagonia': '/logos/Banco_Patagonia.svg',
+  'Patagonia': '/logos/Banco_Patagonia.svg',
+  'Banco del Sol': '/logos/Banco_del_Sol.svg',
+  'BANCOR': '/logos/BANCOR.svg',
+  'Banco de Córdoba': '/logos/BANCOR.svg',
 };
 
-// Plazo fijo / ranking bank logos (from the editorial app.js PLAZO_FIJO_LOGOS)
+// Brand background color for billeteras/fintechs without SVG in /logos
+const BILLETERA_BG = {
+  'Carrefour Banco': '#004a9f',
+  'Naranja X': '#ff6600',
+  'Mercado Pago': '#00b0ff',
+  'Personal Pay': '#d60036',
+  'Cocos': '#0ab386',
+  'Cocos Capital': '#0ab386',
+  'Cocos Ahorro': '#0ab386',
+  'Lemon': '#00c897',
+  'Lemon Cash': '#00c897',
+  'Prex': '#5e50ff',
+};
+
+// Logos. Only paths that actually exist in public/logos/ are listed —
+// others fall through to initials (which is fine on the terminal aesthetic).
 const PLAZO_FIJO_LOGOS = {
   'Banco Nación': '/logos/Banco_Nación.png',
   'Banco De La Nación Argentina': '/logos/Banco_Nación.png',
@@ -199,8 +214,9 @@ const PLAZO_FIJO_LOGOS = {
   'Banco Hipotecario': '/logos/Banco_Hipotecario.png',
   'Banco Voii': '/logos/Banco_Voii.png',
   'Bibank': '/logos/Bibank.png',
-  'Ualá': '/logos/uala.svg',
-  'Reba': '/logos/reba.png',
+  'Ualá': '/logos/Uala.svg',
+  'Uala': '/logos/Uala.svg',
+  'Reba': '/logos/Reba_Compañía_Financiera.png',
   'Banco BICA': '/logos/Banco_BICA.svg',
   'Banco Bica': '/logos/Banco_BICA.svg',
   'Banco Supervielle': '/logos/Banco_Supervielle.svg',
@@ -214,18 +230,7 @@ const PLAZO_FIJO_LOGOS = {
   'Banco CMF': '/logos/Banco_CMF.png',
   'Banco de Comercio': '/logos/Banco_de_Comercio.png',
   'Crédito Regional': '/logos/Crédito_Regional.png',
-  // Billeteras / garantizados
-  'Naranja X': '/logos/naranja-x.svg',
-  'Mercado Pago': '/logos/mercado-pago.svg',
-  'Personal Pay': '/logos/personal-pay.svg',
-  'Cocos Capital': '/logos/cocos-logo.png',
-  'Cocos Ahorro': '/logos/cocos-logo.png',
-  'Cocos': '/logos/cocos-logo.png',
-  'Prex': '/logos/prex.svg',
   'Brubank': '/logos/Brubank.svg',
-  'Lemon Cash': '/logos/Lemon_Cash.svg',
-  'Lemon': '/logos/Lemon_Cash.svg',
-  'Carrefour Banco': '/logos/carrefour_banco.svg',
   'Banco Patagonia': '/logos/Banco_Patagonia.svg',
   'Patagonia': '/logos/Banco_Patagonia.svg',
 };
@@ -277,6 +282,8 @@ function logoHTML(name, sm = false) {
   const cls = 'logo' + (sm ? ' sm' : '');
   const init = esc(initials(name));
   if (src) return `<span class="${cls}" data-initials="${init}"><img src="${esc(src)}" alt="${esc(name || '')}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
+  const bg = BILLETERA_BG[name];
+  if (bg) return `<span class="${cls}" style="background:${esc(bg)};color:#fff;border-color:${esc(bg)}">${init}</span>`;
   return `<span class="${cls}">${init}</span>`;
 }
 
@@ -897,9 +904,10 @@ ARS_SUBS.billeteras = async function(main) {
       $('#bil-bars').innerHTML = '<div class="empty-state">sin billeteras activas</div>';
     }
 
-    // FCIs money market — filter Renta Mixta out + dedupe + top 15
+    // FCIs money market — tight filter: cap at 40% TNA + exclude any non-MM category names
+    const NOT_MM = /renta\s+(mixta|variable|balanceada|fija\s+(especializada|plus|estrateg))|balanceado|dolar|d[oó]lar\s+mep|retorno\s+absoluto|global|emergente|acciones|ahorro\s+plus/i;
     const fcis = (fciRes.data || [])
-      .filter(f => f.nombre && f.tna > 0 && f.tna < 60 && !/renta\s+mixta/i.test(f.nombre))
+      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && !NOT_MM.test(f.nombre))
       .sort((a, b) => b.tna - a.tna);
     // dedupe by base name (strip " - Clase X")
     const seen = new Set();
@@ -1145,8 +1153,9 @@ ARS_SUBS.comparador = async function(main) {
       if (g.activo === false) continue;
       unified.push({ name: g.nombre, type: g.tipo || 'Billetera', tna: +g.tna || 0, tag: g.limite || '' });
     }
-    // Filter out Renta Mixta noise — MM rates are in 18-35% band; drop anything > 60%
-    const fcis = (fciRes.data || []).filter(f => f.nombre && f.tna > 0 && f.tna < 60 && !/renta\s+mixta/i.test(f.nombre)).sort((a, b) => b.tna - a.tna).slice(0, 10);
+    // Filter out non-MM noise (MM rates live in 18-35% band; cap at 40%)
+    const NOT_MM = /renta\s+(mixta|variable|balanceada|fija\s+(especializada|plus|estrateg))|balanceado|dolar|d[oó]lar\s+mep|retorno\s+absoluto|global|emergente|acciones|ahorro\s+plus/i;
+    const fcis = (fciRes.data || []).filter(f => f.nombre && f.tna > 0 && f.tna < 40 && !NOT_MM.test(f.nombre)).sort((a, b) => b.tna - a.tna).slice(0, 10);
     for (const f of fcis) {
       unified.push({ name: f.nombre.replace(/ - Clase [A-Z]$/, ''), type: 'FCI MM', tna: +f.tna, tag: '' });
     }
