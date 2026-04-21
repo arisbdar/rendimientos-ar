@@ -178,6 +178,7 @@ const BILLETERA_BG = {
   'Carrefour Banco': '#004a9f',
   'Naranja X': '#ff6600',
   'Mercado Pago': '#00b0ff',
+  'Mercado Fondo': '#00b0ff',
   'Personal Pay': '#d60036',
   'Cocos': '#0ab386',
   'Cocos Capital': '#0ab386',
@@ -185,6 +186,16 @@ const BILLETERA_BG = {
   'Lemon': '#00c897',
   'Lemon Cash': '#00c897',
   'Prex': '#5e50ff',
+  'Adcap': '#1a1a6c',
+  'Balanz': '#1f3a93',
+  'IEB+': '#0066cc',
+  'IEB': '#0066cc',
+  'Fiwind': '#ff9900',
+  'Delta': '#e40046',
+  'LB Finanzas': '#0a2e5c',
+  'Claro Pay': '#e30613',
+  'Pellegrini': '#5f3c20',
+  'SBS': '#005caa',
 };
 
 // Logos. Only paths that actually exist in public/logos/ are listed —
@@ -969,16 +980,19 @@ async function screenARS(main, sub) {
 
 const ARS_SUBS = {};
 
-// 3a. Billeteras + Fondos money market
+// 3a. Billeteras — cuentas remuneradas + FCIs curados (Cocos, MP, Ualá, etc.) + otros MM
 ARS_SUBS.billeteras = async function(main) {
-  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas, billeteras digitales y fondos money market (CAFCI), comparados por TNA.')
-    + `<section class="s"><h2><span>billeteras y cuentas remuneradas</span><span class="line"></span><span class="count" id="bil-count">…</span></h2><div id="bil-bars"><div class="loading-row"> cargando…</div></div></section>`
-    + `<section class="s"><h2><span>fondos money market · top 15</span><span class="line"></span><span class="count" id="fci-count">…</span></h2><div id="fci-bars"><div class="loading-row"> cargando fcis…</div></div></section>`;
+  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas (tasa fija) + FCIs money market de las fintechs más populares + ranking general de money market.')
+    + `<section class="s"><h2><span>cuentas remuneradas y billeteras</span><span class="line"></span><span class="count" id="bil-count">…</span></h2><div id="bil-bars"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>money market · fintechs populares</span><span class="line"></span><span class="count" id="fci-curados-count">…</span></h2><div id="fci-curados-bars"><div class="loading-row"> cargando fcis…</div></div></section>`
+    + `<section class="s"><h2><span>otros money market · cafci</span><span class="line"></span><span class="count" id="fci-otros-count">…</span></h2><div id="fci-otros-bars"><div class="loading-row"> cargando resto…</div></div></section>`;
   try {
     const [cfg, fciRes] = await Promise.all([
       fetchCached('/api/config', 120_000),
       fetchCached('/api/cafci', 300_000).catch(() => ({ data: [] })),
     ]);
+
+    // Sección 1: cuentas remuneradas (garantizados)
     const billeteras = (cfg.garantizados || []).filter(g => g.activo !== false)
       .map(g => ({ name: g.nombre, tna: +g.tna || 0, tag: g.tipo || '', limit: g.limite || '' }))
       .sort((a, b) => b.tna - a.tna);
@@ -993,29 +1007,57 @@ ARS_SUBS.billeteras = async function(main) {
       $('#bil-bars').innerHTML = '<div class="empty-state">sin billeteras activas</div>';
     }
 
-    // FCIs money market — filter by backend category tag (plus sanity cap)
-    const fcis = (fciRes.data || [])
-      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && (f.category === 'mm'))
-      .sort((a, b) => b.tna - a.tna);
-    // dedupe by base name (strip " - Clase X")
+    // Lookup de TNAs en vivo desde CAFCI indexado por nombre exacto
+    const cafciByName = {};
+    for (const f of (fciRes.data || [])) {
+      if (f?.nombre && f.tna != null) cafciByName[f.nombre] = +f.tna;
+    }
+
+    // Sección 2: FCIs curados del config (Cocos Rendimiento, Mercado Fondo, Ualintec, etc.)
+    const curados = (cfg.fcis || []).map(f => {
+      const tna = cafciByName[f.nombre];
+      if (tna == null || tna <= 0) return null;
+      return {
+        name: f.entidad || f.nombre,
+        tna,
+        tag: f.nombre,
+        fullName: f.nombre,
+      };
+    }).filter(Boolean).sort((a, b) => b.tna - a.tna);
+    const curadosNames = new Set(curados.map(x => x.fullName));
+    $('#fci-curados-count').textContent = curados.length;
+    if (curados.length) {
+      renderBars($('#fci-curados-bars'), curados, {
+        valFmt: v => v.toFixed(2) + '%',
+        valSub: 'tna',
+        subLabel: r => r.tag,
+      });
+    } else {
+      $('#fci-curados-bars').innerHTML = '<div class="empty-state">sin datos en cafci para los fondos curados</div>';
+    }
+
+    // Sección 3: resto de money market (top 10 excluyendo los ya listados en curados)
+    const otros = [];
     const seen = new Set();
-    const top = [];
-    for (const f of fcis) {
+    const mmSorted = (fciRes.data || [])
+      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && f.category === 'mm' && !curadosNames.has(f.nombre))
+      .sort((a, b) => b.tna - a.tna);
+    for (const f of mmSorted) {
       const base = f.nombre.replace(/ - Clase [A-Z].*$/, '').trim();
       if (seen.has(base)) continue;
       seen.add(base);
-      top.push({ name: base, tna: +f.tna, tag: 'Money Market · FCI' });
-      if (top.length >= 15) break;
+      otros.push({ name: base, tna: +f.tna, tag: 'cafci · money market' });
+      if (otros.length >= 10) break;
     }
-    $('#fci-count').textContent = top.length;
-    if (top.length) {
-      renderBars($('#fci-bars'), top, {
+    $('#fci-otros-count').textContent = otros.length;
+    if (otros.length) {
+      renderBars($('#fci-otros-bars'), otros, {
         valFmt: v => v.toFixed(2) + '%',
         valSub: 'tna',
-        subLabel: () => 'cafci · último día',
+        subLabel: r => r.tag,
       });
     } else {
-      $('#fci-bars').innerHTML = '<div class="empty-state">sin datos cafci</div>';
+      $('#fci-otros-bars').innerHTML = '<div class="empty-state">sin más fondos</div>';
     }
   } catch (e) {
     $('#bil-bars').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
