@@ -497,38 +497,67 @@ async function screenMundo(main) {
 }
 
 // Normalize /api/mundo response → {Indices, Rates, FX, Commodities, Crypto}
+// Real shape: { data: [ {id, symbol, name, group: "Índices"|"Tasas"|"Monedas"|"Energía"|"Metales"|"Agro"|"Crypto", price, prevClose, change, sparkline[]} ], updated }
 function normalizeMundo(raw) {
-  // /api/mundo devuelve un objeto agrupado por categoría con arrays de assets
   if (!raw) return {};
-  const out = {};
-  const map = {
-    'indices': 'Indices', 'rates': 'Rates', 'fx': 'FX',
-    'commodities': 'Commodities', 'crypto': 'Crypto',
-    'Indices': 'Indices', 'Rates': 'Rates', 'FX': 'FX', 'Commodities': 'Commodities', 'Crypto': 'Crypto',
+  const GROUP_MAP = {
+    'Índices': 'Indices',
+    'Indices': 'Indices',
+    'Tasas': 'Rates',
+    'Rates': 'Rates',
+    'Monedas': 'FX',
+    'FX': 'FX',
+    'Energía': 'Commodities',
+    'Metales': 'Commodities',
+    'Agro': 'Commodities',
+    'Commodities': 'Commodities',
+    'Crypto': 'Crypto',
   };
-  for (const key of Object.keys(raw)) {
-    const bucket = map[key];
+  const out = {};
+  for (const cat of MUNDO_CATEGORIES) out[cat] = [];
+  const list = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  for (const item of list) {
+    const bucket = GROUP_MAP[item.group];
     if (!bucket) continue;
-    const list = Array.isArray(raw[key]) ? raw[key] : [];
-    out[bucket] = list.map(normalizeAsset).filter(a => a.sym);
+    const a = normalizeAsset(item, bucket);
+    if (a.sym) out[bucket].push(a);
   }
-  for (const cat of MUNDO_CATEGORIES) if (!out[cat]) out[cat] = [];
   return out;
 }
 
-function normalizeAsset(a) {
+function normalizeAsset(a, bucket) {
   if (!a) return { sym: null };
-  // Try to accommodate both {sym, name, last, chg, ytd, sp, pct} and raw yahoo-ish shapes
-  const sym = a.sym || a.symbol || a.ticker;
+  // Prefer short id (e.g. "spx", "btc") uppercased over the URL-encoded yahoo symbol
+  let sym = a.id || a.sym || a.symbol || a.ticker;
+  if (sym) sym = String(sym).toUpperCase();
   const name = a.name || a.shortName || a.longName || sym;
   const last = a.last != null ? +a.last : (a.price != null ? +a.price : (a.value != null ? +a.value : null));
   const chg = a.chg != null ? +a.chg : (a.pct_change != null ? +a.pct_change : (a.change != null ? +a.change : null));
-  const ytd = a.ytd != null ? +a.ytd : null;
-  let sp = Array.isArray(a.sp) ? a.sp : (Array.isArray(a.spark) ? a.spark : (Array.isArray(a.series) ? a.series : null));
+  let sp = Array.isArray(a.sp) ? a.sp :
+    Array.isArray(a.sparkline) ? a.sparkline :
+    Array.isArray(a.spark) ? a.spark :
+    Array.isArray(a.series) ? a.series : null;
   if (sp && sp.length && typeof sp[0] === 'object') {
     sp = sp.map(p => +(p.v != null ? p.v : p.value != null ? p.value : p.close != null ? p.close : p.price)).filter(v => !isNaN(v));
   }
-  return { sym, name, last, chg, ytd, sp: sp || [], pct: !!a.pct, d: a.d };
+  // Derive a simple "period" % from the sparkline (first → last); approximates YTD-ish on the returned window
+  let ytd = a.ytd != null ? +a.ytd : null;
+  if (ytd == null && sp && sp.length >= 2) {
+    const first = sp[0], lastSp = sp[sp.length - 1];
+    if (first) ytd = ((lastSp - first) / first) * 100;
+  }
+  // Rates (UST 10Y, UST 30Y, etc.) are already in % → render as "4.27%" not "4.27"
+  const pct = bucket === 'Rates' || !!a.pct;
+  // Decimals hint: crypto & rates use 2; FX uses 4; default 2
+  let d = a.d;
+  if (d == null) {
+    if (bucket === 'FX') d = 4;
+    else if (bucket === 'Rates') d = 2;
+    else if (Math.abs(last) >= 1000) d = 0;
+    else if (Math.abs(last) >= 100) d = 1;
+    else d = 2;
+  }
+  return { sym, name, last, chg, ytd, sp: sp || [], pct, d };
 }
 
 // ─── Stubs for other screens ──────────────────────────────────
