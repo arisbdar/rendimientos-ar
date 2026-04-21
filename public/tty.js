@@ -310,6 +310,48 @@ function smoothPath(points) {
   return out.join(' ');
 }
 
+// Polynomial least-squares fit (for the yield-curve trend line).
+// xs/ys: raw data arrays. degree=2 → quadratic. Returns a function f(x)→y.
+function polyFit(xs, ys, degree = 2) {
+  const n = Math.min(xs.length, ys.length);
+  if (n < 2) return null;
+  const deg = Math.min(degree, n - 1);
+  const m = deg + 1;
+  // Build X (n x m) with x^j, then solve normal equations (X^T X) a = X^T y
+  const A = Array.from({length: m}, () => new Array(m).fill(0));
+  const b = new Array(m).fill(0);
+  for (let i = 0; i < n; i++) {
+    const xi = xs[i], yi = ys[i];
+    for (let j = 0; j < m; j++) {
+      b[j] += Math.pow(xi, j) * yi;
+      for (let k = 0; k < m; k++) A[j][k] += Math.pow(xi, j + k);
+    }
+  }
+  // Gauss-Jordan solve
+  for (let i = 0; i < m; i++) {
+    // pivot
+    let piv = i;
+    for (let r = i + 1; r < m; r++) if (Math.abs(A[r][i]) > Math.abs(A[piv][i])) piv = r;
+    if (piv !== i) { [A[i], A[piv]] = [A[piv], A[i]]; [b[i], b[piv]] = [b[piv], b[i]]; }
+    const d = A[i][i];
+    if (!d) return null;
+    for (let k = 0; k < m; k++) A[i][k] /= d;
+    b[i] /= d;
+    for (let r = 0; r < m; r++) {
+      if (r === i) continue;
+      const f = A[r][i];
+      for (let k = 0; k < m; k++) A[r][k] -= f * A[i][k];
+      b[r] -= f * b[i];
+    }
+  }
+  const coeffs = b; // a0 + a1*x + a2*x^2 + ...
+  return (x) => {
+    let y = 0, p = 1;
+    for (let i = 0; i < m; i++) { y += coeffs[i] * p; p *= x; }
+    return y;
+  };
+}
+
 function sparkSVG(data, { positive = true, width = 80, height = 20 } = {}) {
   if (!data || data.length < 2) return '<span class="spark"></span>';
   const min = Math.min(...data), max = Math.max(...data), r = (max - min) || 1;
@@ -366,45 +408,73 @@ function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (
 }
 
 function scatterSVG(data, { xKey, yKey, labelKey, xLabel, yLabel, yFmt = (v) => fmt(v, 2), xFmt = (v) => fmt(v, 0), selected = null, onSelect = null, targetId }) {
-  if (!data || !data.length) return '<div class="chart" style="height:300px"><div class="hd"><div>sin datos</div></div></div>';
-  const W = 620, H = 280, P = { l: 44, r: 16, t: 14, b: 30 };
+  if (!data || !data.length) return '<div class="chart chart-scatter"><div class="hd"><div>sin datos</div></div></div>';
+  // Larger chart, generous padding — text remains readable when scaled to container
+  const W = 1040, H = 560, P = { l: 64, r: 24, t: 24, b: 48 };
   const xs = data.map(d => d[xKey]);
   const ys = data.map(d => d[yKey]);
-  const xMin = Math.min(...xs) * 0.9;
-  const xMax = Math.max(...xs) * 1.05;
-  const yMin = Math.min(...ys) - 1;
-  const yMax = Math.max(...ys) + 1;
+  const xRange = Math.max(...xs) - Math.min(...xs);
+  const yRange = Math.max(...ys) - Math.min(...ys);
+  const xMin = Math.min(...xs) - xRange * 0.05;
+  const xMax = Math.max(...xs) + xRange * 0.05;
+  const yMin = Math.min(...ys) - Math.max(yRange * 0.15, 0.5);
+  const yMax = Math.max(...ys) + Math.max(yRange * 0.15, 0.5);
   const x = v => P.l + ((v - xMin) / (xMax - xMin)) * (W - P.l - P.r);
   const y = v => H - P.b - ((v - yMin) / (yMax - yMin)) * (H - P.t - P.b);
-  const sorted = [...data].sort((a, b) => a[xKey] - b[xKey]);
-  const pathPts = sorted.map(d => [x(d[xKey]), y(d[yKey])]);
-  const path = smoothPath(pathPts);
+
+  // Trend line: quadratic regression over all points (if ≥ 3) else linear spline
+  const fit = data.length >= 3 ? polyFit(xs, ys, 2) : null;
+  let curvePath = '';
+  if (fit) {
+    const steps = 80;
+    const pts = [];
+    for (let i = 0; i <= steps; i++) {
+      const xv = xMin + (i / steps) * (xMax - xMin);
+      pts.push([x(xv), y(fit(xv))]);
+    }
+    curvePath = pts.map((p, i) => `${i === 0 ? 'M' : 'L'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  } else {
+    const sorted = [...data].sort((a, b) => a[xKey] - b[xKey]);
+    curvePath = smoothPath(sorted.map(d => [x(d[xKey]), y(d[yKey])]));
+  }
+
+  // Y-axis: 6 ticks with labels, horizontal grid lines
   let grid = '';
-  for (let i = 0; i < 5; i++) {
-    const v = yMin + (i * (yMax - yMin) / 4);
+  const yTicks = 6;
+  for (let i = 0; i < yTicks; i++) {
+    const v = yMin + (i * (yMax - yMin) / (yTicks - 1));
     grid += `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}"/>
-      <text x="${P.l - 6}" y="${y(v)}" text-anchor="end" dominant-baseline="middle" fill="var(--fg-faint)" font-size="9" font-family="var(--font-mono)">${esc(yFmt(v))}</text>`;
+      <text x="${P.l - 10}" y="${y(v)}" text-anchor="end" dominant-baseline="middle" fill="var(--fg-faint)" font-size="14" font-family="var(--font-mono)">${esc(yFmt(v))}</text>`;
   }
-  for (let i = 0; i < 5; i++) {
-    const v = xMin + (i * (xMax - xMin) / 4);
+  // X-axis: 6 ticks
+  const xTicks = 6;
+  for (let i = 0; i < xTicks; i++) {
+    const v = xMin + (i * (xMax - xMin) / (xTicks - 1));
     grid += `<line class="grid-line" x1="${x(v)}" x2="${x(v)}" y1="${P.t}" y2="${H - P.b}"/>
-      <text x="${x(v)}" y="${H - P.b + 14}" text-anchor="middle" fill="var(--fg-faint)" font-size="9" font-family="var(--font-mono)">${esc(xFmt(Math.round(v)))}</text>`;
+      <text x="${x(v)}" y="${H - P.b + 22}" text-anchor="middle" fill="var(--fg-faint)" font-size="14" font-family="var(--font-mono)">${esc(xFmt(Math.round(v)))}</text>`;
   }
-  const axes = `<line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${H - P.b}" stroke="var(--rule-hi)"/>
-    <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" stroke="var(--rule-hi)"/>`;
-  const curve = `<path d="${path}" fill="none" stroke="var(--fg-dim)" stroke-dasharray="3 3"/>`;
+  // Axis labels on the outside
+  grid += `<text x="${P.l}" y="${P.t - 10}" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)" text-transform="uppercase" letter-spacing="0.08em">${esc(yLabel)}</text>`;
+  grid += `<text x="${W - P.r}" y="${H - 8}" text-anchor="end" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${esc(xLabel)}</text>`;
+
+  const axes = `<line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${H - P.b}" stroke="var(--rule-hi)" stroke-width="1.2"/>
+    <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" stroke="var(--rule-hi)" stroke-width="1.2"/>`;
+  const curve = `<path d="${curvePath}" fill="none" stroke="var(--fg-dim)" stroke-width="1.6" stroke-dasharray="6 4" stroke-linecap="round"/>`;
+
+  // Points — bigger, readable labels, nudged so they don't overlap the point
   const points = data.map(d => {
     const isSel = selected === d[labelKey];
-    const cx = x(d[xKey]).toFixed(1);
-    const cy = y(d[yKey]).toFixed(1);
+    const cx = x(d[xKey]);
+    const cy = y(d[yKey]);
+    const r = isSel ? 7 : 5;
     return `<g data-sym="${esc(d[labelKey])}" class="scatter-pt${isSel ? ' sel' : ''}" style="cursor:pointer">
-      <circle cx="${cx}" cy="${cy}" r="${isSel ? 5 : 3.5}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" stroke="var(--bg)" stroke-width="1.5"/>
-      <text x="${+cx + 6}" y="${+cy - 6}" fill="${isSel ? 'var(--hot)' : 'var(--fg-dim)'}" font-size="9" font-family="var(--font-mono)">${esc(d[labelKey])}</text>
+      <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" stroke="var(--bg)" stroke-width="2"/>
+      <text x="${(cx + 10).toFixed(1)}" y="${(cy - 8).toFixed(1)}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" font-size="13" font-family="var(--font-mono)" font-weight="500" stroke="var(--bg)" stroke-width="3" paint-order="stroke">${esc(d[labelKey])}</text>
     </g>`;
   }).join('');
-  return `<div class="chart" style="height:300px">
-    <div class="hd"><div>${esc(yLabel)} × ${esc(xLabel)}</div></div>
-    <svg viewBox="0 0 ${W} ${H}" ${targetId ? `data-scatter="${esc(targetId)}"` : ''}>${grid}${axes}${curve}${points}</svg>
+  return `<div class="chart chart-scatter">
+    <div class="hd"><div>${esc(yLabel)} × ${esc(xLabel)}</div><div class="dim" style="font-size:10px">curva: regresión cuadrática · ${data.length} puntos</div></div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" ${targetId ? `data-scatter="${esc(targetId)}"` : ''}>${grid}${axes}${curve}${points}</svg>
   </div>`;
 }
 

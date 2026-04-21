@@ -444,6 +444,18 @@ section.s .sub2 {
   height: 100%;
   display: block;
 }
+.chart.chart-scatter {
+  height: clamp(420px, 48vw, 560px);
+  padding: 16px 18px 18px;
+}
+.chart.chart-scatter .hd {
+  left: 18px;
+  right: 18px;
+  top: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
 .chart .hd {
   position: absolute;
   top: 8px;
