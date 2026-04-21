@@ -1930,12 +1930,14 @@ async function screenDolar(main) {
     const state = { coin: 'usd', sort: 'buy', only24x7: !marketOpen };
     $('#dol-24x7').checked = state.only24x7;
 
+    // Proveedores excluidos (por restricciones regulatorias / requests del equipo)
+    const EXCLUDED = new Set(['binance']);
     function getList() {
       if (state.coin === 'usd') {
-        const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0);
+        const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
         return state.only24x7 ? all.filter(e => e.is24x7) : all;
       }
-      return (exchanges[state.coin] || []).filter(e => e.ask > 0 && e.bid > 0);
+      return (exchanges[state.coin] || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
     }
 
     function renderBest() {
@@ -1998,18 +2000,26 @@ async function screenDolar(main) {
       if (wrap) wrap.style.display = state.coin === 'usd' ? '' : 'none';
     }
 
-    $$('#dol-coin button').forEach(b => b.addEventListener('click', () => {
+    // Event delegation — más robusto que attach individual (sobrevive re-renders
+    // y tolera que el botón tenga hijos con pointer-events problemáticos)
+    const coinBar = document.getElementById('dol-coin');
+    if (coinBar) coinBar.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button[data-coin]');
+      if (!btn || !coinBar.contains(btn)) return;
       $$('#dol-coin button').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
-      state.coin = b.getAttribute('data-coin');
+      btn.classList.add('on');
+      state.coin = btn.getAttribute('data-coin');
       show24x7(); renderBest(); renderTable();
-    }));
-    $$('#dol-sort button').forEach(b => b.addEventListener('click', () => {
+    });
+    const sortBar = document.getElementById('dol-sort');
+    if (sortBar) sortBar.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('button[data-sort]');
+      if (!btn || !sortBar.contains(btn)) return;
       $$('#dol-sort button').forEach(x => x.classList.remove('on'));
-      b.classList.add('on');
-      state.sort = b.getAttribute('data-sort');
+      btn.classList.add('on');
+      state.sort = btn.getAttribute('data-sort');
       renderTable();
-    }));
+    });
     $('#dol-24x7').addEventListener('change', e => {
       state.only24x7 = e.target.checked;
       renderBest(); renderTable();
