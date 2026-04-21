@@ -779,7 +779,9 @@ const SVVY_LOGO = (sym) => `https://static.svvytrdr.com/logos/${encodeURICompone
 async function screenHotUSA(main) {
   main.innerHTML = pHd('hot usa · movers + earnings', 'Hot USA', 'Acciones USA con mayor movimiento del día y calendario de próximos reportes de resultados.')
     + `<section class="s"><h2><span>movers · us stocks con mayor movimiento</span><span class="line"></span><span class="count" id="hot-count">…</span></h2><div id="hot-grid"><div class="loading-row"> datos de mercado…</div></div></section>`
-    + `<section class="s"><h2><span>earnings · calendario de próximos reportes</span><span class="line"></span><span class="count" id="earn-count">…</span></h2><div id="earn-timeline"><div class="loading-row"> próximos reportes…</div></div></section>`;
+    + `<section class="s"><h2><span>earnings · próximos reportes</span><span class="line"></span><span class="count" id="earn-count">…</span></h2><div id="earn-timeline"><div class="loading-row"> próximos reportes…</div></div>
+        <p style="margin-top:12px"><a href="/earnings" style="color:var(--hot);text-decoration:none;font-size:12px;text-transform:uppercase;letter-spacing:0.08em">ver calendario completo →</a></p>
+      </section>`;
   // Movers
   try {
     const raw = await fetchCached('/api/hot-movers', 120_000);

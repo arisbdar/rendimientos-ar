@@ -4,7 +4,7 @@ const path = require('path');
 
 const app = express();
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const PUBLIC_DIR = path.join(__dirname, 'public');
+const PUBLIC_DIR = path.resolve(__dirname, 'public');
 const CONFIG_PATH = path.join(PUBLIC_DIR, 'config.json');
 
 app.disable('x-powered-by');
@@ -30,11 +30,33 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/cedears', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'cedears', 'index.html'));
-});
+function sendPublicIndex(res, ...segments) {
+  const filePath = path.join(PUBLIC_DIR, ...segments);
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).send('Not Found');
+  }
+  const html = fs.readFileSync(filePath, 'utf-8');
+  res.type('html').send(html);
+}
+
+app.get('/cedears', (req, res) => sendPublicIndex(res, 'cedears', 'index.html'));
+app.get('/cedears/', (req, res) => sendPublicIndex(res, 'cedears', 'index.html'));
+app.get('/earnings', (req, res) => sendPublicIndex(res, 'earnings', 'index.html'));
+app.get('/earnings/', (req, res) => sendPublicIndex(res, 'earnings', 'index.html'));
 
 app.use(express.static(PUBLIC_DIR));
+
+// Fallback: si express.static no delega o falta la ruta anterior, servir los HTML estáticos.
+app.use((req, res, next) => {
+  if (req.method !== 'GET') return next();
+  const bare = {
+    '/cedears': ['cedears', 'index.html'],
+    '/earnings': ['earnings', 'index.html'],
+  };
+  const segments = bare[req.path];
+  if (segments) return sendPublicIndex(res, ...segments);
+  next();
+});
 
 // --- Config API ---
 

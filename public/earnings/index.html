@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>earnings · rendimientos*.co // tty</title>
+  <meta name="description" content="Calendario de earnings para los próximos 3 meses, vistas semanal y mensual.">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rendimientos.co/earnings">
+  <meta property="og:title" content="earnings · rendimientos*.co // tty">
+  <meta property="og:description" content="Calendario de próximos reportes de resultados (earnings) con vistas semanal y mensual.">
+  <meta property="og:image" content="https://rendimientos.co/og-image.png">
+  <meta property="og:site_name" content="rendimientos.co">
+  <meta property="og:locale" content="es_AR">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="earnings · rendimientos*.co // tty">
+  <meta name="twitter:description" content="Calendario de earnings próximos.">
+  <meta name="twitter:image" content="https://rendimientos.co/og-image.png">
+
+  <link rel="canonical" href="https://rendimientos.co/earnings">
+  <link rel="icon" href="/icons/icon-192.png" type="image/png">
+  <meta name="theme-color" content="#000000">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/tty.css">
+  <link rel="stylesheet" href="/earnings/earnings.css">
+  <style>
+    /* Bridge: earnings.css was authored against the editorial palette.
+       Map those token names to the terminal palette so visuals match tty. */
+    :root {
+      --text: var(--fg);
+      --text-secondary: var(--fg-dim);
+      --text-tertiary: var(--fg-faint);
+      --bg-subtle: var(--bg-1);
+      --card-bg: var(--bg-1);
+      --border: var(--rule);
+      --border-light: var(--rule-hi);
+      --accent: var(--hot);
+      --accent-light: var(--bg-2);
+      --green: var(--up);
+      --red: var(--down);
+      --font: var(--font-mono);
+      --tracking-body: 0.02em;
+      --radius: 0;
+      --radius-sm: 0;
+    }
+    main.wrap { padding-top: 8px; padding-bottom: 40px; }
+    /* Back link pill */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--fg-dim);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 14px 0 2px;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--hot); }
+  </style>
+</head>
+<body data-palette="amber" data-scanlines="on" data-density="medium">
+  <!-- Minimal top bar (mirrors /tty skeleton, statically rendered) -->
+  <header class="top">
+    <div class="wrap">
+      <div class="row1">
+        <a href="/" class="brand">rendimientos<i>*</i>.co <span class="faint" style="margin-left:4px">// tty</span></a>
+        <div class="meta">
+          <span><b>UTC-3</b> <span id="tty-time">--:--:--</span></span>
+          <span id="tty-date" class="dim"></span>
+          <span class="live">LIVE</span>
+        </div>
+      </div>
+      <nav class="primary">
+        <a href="/#mundo"><button>mundo</button></a>
+        <a href="/#hotusa"><button>hot usa</button></a>
+        <a href="/earnings"><button class="on">earnings</button></a>
+        <a href="/cedears"><button>cedears</button></a>
+        <a href="/#ars"><button>ars</button></a>
+        <a href="/#bonos"><button>bonos</button></a>
+        <a href="/#ons"><button>ons</button></a>
+        <a href="/#hipotecarios"><button>hipotecarios</button></a>
+        <a href="/#dolar"><button>dólar</button></a>
+        <a href="/#pix"><button>pix</button></a>
+        <a href="/#bcra"><button>bcra</button></a>
+        <a href="/#mundial"><button>mundial</button></a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <a href="/#hotusa" class="back-link">← volver a hot usa</a>
+
+    <div class="phd">
+      <div class="tag">earnings · próximos reportes</div>
+      <h1>Earnings Calendar</h1>
+      <p>Reportes de resultados de empresas USA para los próximos 3 meses. Click en un día para ver el detalle. Navegá con las flechas o cambiá entre vista semanal y mensual.</p>
+    </div>
+
+    <section class="s">
+      <div id="earnings-toolbar" class="earnings-toolbar" hidden>
+        <div class="earnings-nav">
+          <button id="earnings-prev" class="earnings-nav-btn" aria-label="Período anterior">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span id="earnings-period-label">—</span>
+          <button id="earnings-next" class="earnings-nav-btn" aria-label="Período siguiente">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+        <div class="earnings-view-icons" role="tablist" aria-label="Vista del calendario">
+          <button type="button" class="earnings-view-icon active" data-view="week" role="tab" aria-selected="true" title="Vista semanal">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="21" y2="14"/></svg>
+          </button>
+          <button type="button" class="earnings-view-icon" data-view="month" role="tab" aria-selected="false" title="Vista mensual">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="18"/><line x1="16" y1="14" x2="16" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="earnings-loading" class="loading-row"> cargando calendario…</div>
+      <div id="earnings-error" class="empty-state" hidden></div>
+      <div id="earnings-calendar" class="earnings-calendar" hidden></div>
+      <p id="earnings-source" class="hint" style="margin-top:8px"></p>
+    </section>
+  </main>
+
+  <script>
+    // Mini tty clock for the top bar (standalone — no tty.js needed here)
+    (function clock() {
+      const te = document.getElementById('tty-time');
+      const de = document.getElementById('tty-date');
+      const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      function tick() {
+        const now = new Date();
+        const ar = new Date(now.getTime() + now.getTimezoneOffset() * 60000 - 3 * 60 * 60 * 1000);
+        if (te) te.textContent = `${String(ar.getHours()).padStart(2,'0')}:${String(ar.getMinutes()).padStart(2,'0')}:${String(ar.getSeconds()).padStart(2,'0')}`;
+        if (de) de.textContent = `${String(ar.getDate()).padStart(2,'0')} ${MES[ar.getMonth()]} ${ar.getFullYear()}`.toUpperCase();
+      }
+      tick();
+      setInterval(tick, 1000);
+    })();
+  </script>
+  <script src="/earnings/earnings.js"></script>
+</body>
+</html>
