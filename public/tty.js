@@ -906,7 +906,7 @@ ARS_SUBS.billeteras = async function(main) {
 
     // FCIs money market — filter by backend category tag (plus sanity cap)
     const fcis = (fciRes.data || [])
-      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && (f.category === 'mm' || !f.category))
+      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && (f.category === 'mm'))
       .sort((a, b) => b.tna - a.tna);
     // dedupe by base name (strip " - Clase X")
     const seen = new Set();
@@ -1153,7 +1153,7 @@ ARS_SUBS.comparador = async function(main) {
       unified.push({ name: g.nombre, type: g.tipo || 'Billetera', tna: +g.tna || 0, tag: g.limite || '' });
     }
     // Comparador MM only (backend tag + cap)
-    const fcis = (fciRes.data || []).filter(f => f.nombre && f.tna > 0 && f.tna < 40 && (f.category === 'mm' || !f.category)).sort((a, b) => b.tna - a.tna).slice(0, 10);
+    const fcis = (fciRes.data || []).filter(f => f.nombre && f.tna > 0 && f.tna < 40 && (f.category === 'mm')).sort((a, b) => b.tna - a.tna).slice(0, 10);
     for (const f of fcis) {
       unified.push({ name: f.nombre.replace(/ - Clase [A-Z]$/, ''), type: 'FCI MM', tna: +f.tna, tag: '' });
     }
