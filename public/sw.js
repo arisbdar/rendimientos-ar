@@ -1,22 +1,20 @@
-const CACHE_NAME = 'rendimientos-v2';
+const CACHE_NAME = 'rendimientos-tty-v1';
 const STATIC_ASSETS = [
   '/',
-  '/styles.css',
-  '/app.js',
+  '/tty.css',
+  '/tty.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
 ];
 
-// Install: cache static assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS))
+    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)).catch(() => {})
   );
   self.skipWaiting();
 });
 
-// Activate: clean old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -26,7 +24,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for API, cache-first for static
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -36,18 +33,22 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // External resources (Chart.js, Google Fonts): always network, no cache
-  if (url.hostname === 'cdn.jsdelivr.net' || url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com') {
+  // External (fonts, Chart.js from CDN — though tty.js doesn't use Chart.js): always network
+  if (url.hostname === 'cdn.jsdelivr.net'
+      || url.hostname === 'fonts.googleapis.com'
+      || url.hostname === 'fonts.gstatic.com') {
     event.respondWith(fetch(event.request));
     return;
   }
 
-  // Static assets: network first, fallback to cache
+  // Static assets: network-first with cache fallback
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        if (response && response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone)).catch(() => {});
+        }
         return response;
       })
       .catch(() => caches.match(event.request))

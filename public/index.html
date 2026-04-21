@@ -12,373 +12,45 @@
     gtag('js', new Date());
     gtag('config', 'G-VD0TW4HQM3');
   </script>
-  <title>Rendimientos AR — Compará billeteras, fondos y plazos fijos</title>
-  <meta name="description" content="Compará rendimientos actualizados de billeteras digitales, fondos comunes de inversión y plazos fijos en Argentina. Datos de CAFCI y BCRA.">
 
-  <!-- Open Graph / WhatsApp / Facebook -->
+  <title>rendimientos*.co // tty</title>
+  <meta name="description" content="Terminal de finanzas argentinas. Yields en pesos, bonos en dólares, ONs, CEDEARs, monitor global. Datos oficiales de CAFCI, BCRA, BYMA, data912.">
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rendimientos.co/">
-  <meta property="og:title" content="Rendimientos AR — Compará billeteras, fondos y plazos fijos">
-  <meta property="og:description" content="Compará rendimientos actualizados de billeteras digitales, fondos de inversión y plazos fijos en Argentina. Datos de CAFCI y BCRA.">
+  <meta property="og:title" content="rendimientos*.co // tty">
+  <meta property="og:description" content="Terminal de finanzas argentinas. Yields en pesos y dólares, bonos, ONs, CEDEARs y monitor global — todo en una sola pantalla.">
   <meta property="og:image" content="https://rendimientos.co/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:site_name" content="Rendimientos AR">
+  <meta property="og:site_name" content="rendimientos.co">
   <meta property="og:locale" content="es_AR">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Rendimientos AR — Compará billeteras, fondos y plazos fijos">
-  <meta name="twitter:description" content="Compará rendimientos actualizados de billeteras digitales, fondos de inversión y plazos fijos en Argentina.">
+  <meta name="twitter:title" content="rendimientos*.co // tty">
+  <meta name="twitter:description" content="Terminal de finanzas argentinas. Todo en una sola pantalla.">
   <meta name="twitter:image" content="https://rendimientos.co/og-image.png">
 
   <link rel="canonical" href="https://rendimientos.co/">
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#F4EFE6">
+  <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Rendimientos">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="rndmt*.tty">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
   <link rel="icon" href="/icons/icon-192.png" type="image/png">
-  <script>document.documentElement.setAttribute('data-theme','light')</script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/tty.css">
 </head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="header-inner">
-      <div class="header-left">
-        <div class="logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Rendimientos<em>.co</em></div>
-      </div>
-      <nav class="currency-tabs">
-        <a href="#" class="currency-tab" id="header-mundo">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span> Mundo
-        </a>
-        <a href="/cedears" class="currency-tab" id="header-cedears">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></span> CEDEARs
-        </a>
-        <a href="#" class="currency-tab" id="header-ars">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> ARS
-        </a>
-        <a href="#" class="currency-tab" id="header-soberanos">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M8 10v11M12 10v11M16 10v11M20 10v11"/></svg></span> Bonos
-        </a>
-        <a href="#" class="currency-tab" id="header-ons">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/></svg></span> ONs
-        </a>
-        <a href="#" class="currency-tab" id="header-hipotecarios">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Hipotecarios
-        </a>
-        <a href="#" class="currency-tab" id="header-dolar">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span> Dolar
-        </a>
-        <a href="#" class="currency-tab" id="header-pix">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.17 2.83l5.66 5.66a4 4 0 0 1 0 5.66l-5.66 5.66a4 4 0 0 1-5.66 0L1.85 14.15a4 4 0 0 1 0-5.66l5.66-5.66a4 4 0 0 1 5.66 0z"/></svg></span> PIX
-        </a>
-        <a href="#" class="currency-tab" id="header-bcra">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11"/><circle cx="12" cy="15" r="2"/></svg></span> BCRA
-        </a>
-<a href="#" class="currency-tab" id="header-mundial">
-          <span class="flag"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2 L14.5 8 L12 14 L9.5 8 Z"/><path d="M2 12 L8 9.5 L14 12 L8 14.5 Z"/><path d="M12 22 L9.5 16 L12 10 L14.5 16 Z"/><path d="M22 12 L16 14.5 L10 12 L16 9.5 Z"/></svg></span> Mundial
-        </a>
-      </nav>
-      <div class="header-right">
-        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar tema">
-            <svg class="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Cotizaciones Ticker Strip -->
-  <div class="cotizaciones-strip" id="cotizaciones-strip">
-    <div class="cotizaciones-strip-inner" id="cotizaciones-strip-inner">
-      <!-- Populated by JS -->
-    </div>
-  </div>
-
-  <!-- News Ticker -->
-  <div class="news-ticker" id="news-ticker">
-    <div class="news-ticker-track" id="news-ticker-track"></div>
-    <button class="news-ticker-close" id="news-ticker-close" aria-label="Cerrar noticias">&times;</button>
-  </div>
-
-  <nav class="subnav" style="display:none">
-    <div class="subnav-inner" role="tablist" aria-label="Tipo de inversión">
-      <a href="#" class="subnav-tab active" data-tab="billeteras" role="tab" id="tab-billeteras-tab" aria-selected="true" aria-controls="tab-billeteras">Cuentas y Billeteras</a>
-      <a href="#" class="subnav-tab" data-tab="plazofijo" role="tab" id="tab-plazofijo-tab" aria-selected="false" aria-controls="tab-plazofijo">Plazo Fijo</a>
-      <a href="#" class="subnav-tab" data-tab="plazofijoperiodico" role="tab" id="tab-plazofijoperiodico-tab" aria-selected="false" aria-controls="tab-plazofijoperiodico">Plazo Fijo Periódico</a>
-      <a href="#" class="subnav-tab" data-tab="lecaps" role="tab" id="tab-lecaps-tab" aria-selected="false" aria-controls="tab-lecaps">LECAPs</a>
-      <a href="#" class="subnav-tab" data-tab="cer" role="tab" id="tab-cer-tab" aria-selected="false" aria-controls="tab-cer">Bonos CER</a>
-      <a href="#" class="subnav-tab" data-tab="inflacion" role="tab" id="tab-inflacion-tab" aria-selected="false" aria-controls="tab-inflacion">Comparador</a>
-    </div>
-  </nav>
-
-  <!-- Hero -->
-  <section class="hero" id="hero">
-    <h1>Monitor Global</h1>
-    <p>Principales indicadores del mercado mundial en tiempo real.</p>
-  </section>
-
-  <main class="container">
-
-    <!-- Section: Mundo -->
-    <div id="section-mundo">
-      <section class="section">
-        <div class="mundo-grid" id="mundo-grid"></div>
-        <p class="section-source" id="mundo-source"></p>
-      </section>
-
-      <!-- Section: Hot US Movers -->
-      <section class="section" id="section-hot">
-        <h2 class="hot-title">HOT <span class="hot-subtitle">US stocks con mayor movimiento</span></h2>
-        <div class="hot-grid" id="hot-grid"></div>
-      </section>
-
-      <!-- Section: Earnings Calendar -->
-      <section class="section" id="section-earnings">
-        <h2 class="hot-title">EARNINGS <span class="hot-subtitle">Próximos reportes de resultados</span></h2>
-        <div class="earnings-timeline" id="earnings-timeline"></div>
-      </section>
-    </div>
-
-    <!-- Tab: Billeteras y Fondos -->
-    <div id="tab-billeteras" role="tabpanel" aria-labelledby="tab-billeteras-tab" style="display:none">
-      <section class="section" id="billeteras-fondos">
-        <h2>Billeteras y fondos de liquidez</h2>
-        <p class="section-desc">Billeteras con tasa garantizada y fondos comunes de inversión de bajo riesgo</p>
-        <div class="card-list" id="main-list"></div>
-      </section>
-
-      <section class="section" id="chart-section">
-        <h2>Comparador de rendimientos</h2>
-        <p class="section-desc">TNA de billeteras y fondos de liquidez ordenados por rendimiento</p>
-        <div class="chart-wrapper" id="rendimientos-chart"></div>
-      </section>
-
-      <section class="section" id="especiales">
-        <h2>Rendimientos especiales</h2>
-        <p class="section-desc">Productos con requisitos o condiciones particulares para acceder</p>
-        <div class="card-list" id="especiales-list"></div>
-      </section>
-    </div>
-
-    <!-- Tab: Plazo Fijo -->
-    <div id="tab-plazofijo" role="tabpanel" aria-labelledby="tab-plazofijo-tab" style="display:none">
-      <section class="section" id="plazofijo-section">
-        <div class="card-list" id="plazofijo-list-spacer" style="display:none"></div>
-        <div class="card-list" id="plazofijo-list"></div>
-        <p class="section-source"></p>
-      </section>
-      <section class="section" id="pf-chart-section">
-        <h2>Comparador de tasas</h2>
-        <p class="section-desc">TNA de plazos fijos ordenados por rendimiento</p>
-        <div class="chart-wrapper" id="plazofijo-chart"></div>
-      </section>
-    </div>
-
-    <div id="tab-plazofijoperiodico" role="tabpanel" aria-labelledby="tab-plazofijoperiodico-tab" style="display:none">
-      <section class="section" id="plazofijo-uva-periodico-section">
-        <div class="card-list" id="plazofijo-uva-periodico-list"></div>
-        <p class="section-source" id="plazofijo-uva-periodico-source"></p>
-      </section>
-      <section class="section" id="plazofijo-uva-periodico-chart-section">
-        <h2>Comparador por plazo</h2>
-        <p class="section-desc">TNA de cada tramo UVA con pago periódico, ordenada por rendimiento</p>
-        <div class="chart-wrapper" id="plazofijo-uva-periodico-chart"></div>
-      </section>
-    </div>
-
-    <!-- Tab: LECAPs -->
-    <div id="tab-lecaps" role="tabpanel" aria-labelledby="tab-lecaps-tab" style="display:none">
-      <section class="section" id="lecaps-section">
-        <div id="lecaps-list"></div>
-        <p class="section-source" id="lecaps-source"></p>
-      </section>
-      <section class="section" id="lecaps-chart-section">
-        <div class="scatter-plot">
-          <canvas id="lecaps-scatter"></canvas>
-        </div>
-      </section>
-    </div>
-
-    <!-- Tab: Hipotecarios UVA -->
-    <div id="tab-hipotecarios" role="tabpanel" aria-labelledby="tab-hipotecarios-tab" style="display:none">
-      <section class="section" id="hipotecarios-section">
-        <div class="card-list" id="hipotecarios-list"></div>
-        <p class="section-source" id="hipotecarios-source">
-          Fuente: <a href="https://x.com/SalinasAndres" target="_blank" rel="noopener"><img src="https://pbs.twimg.com/profile_images/1802830575759224832/vKHC7OK1_x96.jpg" alt="" class="source-avatar"> @SalinasAndres</a> <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;opacity:0.5"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </p>
-      </section>
-      <section class="section" id="hipotecarios-chart-section">
-        <h2>Comparador de TNA</h2>
-        <p class="section-desc">Tasas nominales anuales de créditos hipotecarios UVA ordenadas de menor a mayor</p>
-        <div class="chart-wrapper" id="hipotecarios-chart"></div>
-      </section>
-    </div>
-
-    <!-- Tab: Comparador -->
-    <div id="tab-inflacion" role="tabpanel" aria-labelledby="tab-inflacion-tab" style="display:none">
-      <section class="section" id="inflacion-section">
-        <div class="inflacion-layout">
-          <div id="inflacion-toggles" class="inflacion-toggles"></div>
-          <div class="inflacion-chart-col">
-            <div class="chart-wrapper" id="inflacion-chart"></div>
-            <p class="section-source" id="inflacion-source"></p>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Tab: CEDEARs -->
-    <!-- Tab: Soberanos USD -->
-    <div id="tab-soberanos" style="display:none">
-      <section class="section" id="soberanos-section">
-        <div id="soberanos-list"></div>
-        <p class="section-source" id="soberanos-source"></p>
-      </section>
-      <section class="section" id="soberanos-chart-section">
-        <div class="scatter-plot">
-          <canvas id="soberanos-scatter"></canvas>
-        </div>
-      </section>
-
-    </div>
-
-    <!-- Tab: Bonos CER -->
-    <div id="tab-cer" role="tabpanel" aria-labelledby="tab-cer-tab" style="display:none">
-      <section class="section" id="cer-section">
-        <div id="cer-list"></div>
-        <p class="section-source" id="cer-source"></p>
-      </section>
-      <section class="section" id="cer-chart-section">
-        <div class="scatter-plot">
-          <canvas id="cer-scatter"></canvas>
-        </div>
-      </section>
-    </div>
-
-    <div id="tab-ons" role="tabpanel" aria-labelledby="tab-ons-tab" style="display:none">
-      <section class="section" id="ons-section">
-        <div id="ons-list"></div>
-        <p class="section-source" id="ons-source"></p>
-      </section>
-      <section class="section" id="ons-chart-section">
-        <div class="scatter-plot">
-          <canvas id="ons-scatter"></canvas>
-        </div>
-      </section>
-    </div>
-
-    <!-- Tab: Dolar -->
-    <div id="tab-dolar" style="display:none">
-      <section class="section" id="dolar-section">
-        <div id="dolar-best" class="dolar-best-grid"></div>
-        <div id="dolar-tipos" class="dolar-tipos-grid"></div>
-        <div id="dolar-exchanges"></div>
-        <p class="section-source" id="dolar-source"></p>
-      </section>
-    </div>
-
-    <!-- Tab: PIX -->
-    <div id="tab-pix" style="display:none">
-      <section class="section" id="pix-section">
-        <div id="pix-best" class="pix-best-grid"></div>
-        <div id="pix-exchanges"></div>
-        <p class="section-source" id="pix-source"></p>
-      </section>
-    </div>
-
-    <!-- Tab: BCRA -->
-    <div id="tab-bcra" style="display:none">
-      <section class="section">
-        <div id="bcra-list"></div>
-      </section>
-      <section class="section">
-        <h2>Histórico</h2>
-        <div style="margin-bottom:12px">
-          <select id="bcra-chart-selector" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem">
-            <option value="">Elegí una variable...</option>
-          </select>
-          <select id="bcra-chart-range" style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:0.85rem;margin-left:6px">
-            <option value="30">30 días</option>
-            <option value="90">90 días</option>
-            <option value="365" selected>1 año</option>
-            <option value="1825">5 años</option>
-            <option value="3650">10 años</option>
-            <option value="0">Todo el histórico</option>
-          </select>
-        </div>
-        <div class="chart-wrapper">
-          <canvas id="bcra-chart"></canvas>
-        </div>
-      </section>
-    </div>
-
-
-    <!-- Tab: Mundial -->
-    <div id="tab-mundial" style="display:none">
-      <section class="section" id="mundial-section">
-        <div class="mundial-phase-toggle" id="mundial-phase-toggle">
-          <button class="mundial-phase-btn active" data-phase="groups">Fase de Grupos</button>
-          <button class="mundial-phase-btn" data-phase="bracket">Bracket</button>
-        </div>
-        <div id="mundial-groups"></div>
-        <div id="mundial-bracket" style="display:none"></div>
-      </section>
-    </div>
-
-
-  </main>
-
-  <footer class="footer">
-    <div class="footer-grid">
-      <div class="foot-brand">
-        <div class="foot-logo"><svg class="icon-logo" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> <span>Rendimientos<em>.co</em></span></div>
-        <p>Comparador independiente de rendimientos en Argentina. Datos oficiales, sin publicidad.</p>
-      </div>
-      <div>
-        <h6>En pesos</h6>
-        <ul>
-          <li><a href="#ars">Billeteras</a></li>
-          <li><a href="#plazofijo">Plazos fijos</a></li>
-          <li><a href="#lecaps">LECAPs</a></li>
-          <li><a href="#cer">Bonos CER</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6>En dólares</h6>
-        <ul>
-          <li><a href="#bonos">Bonos soberanos</a></li>
-          <li><a href="#ons">ONs</a></li>
-          <li><a href="#dolar">Dólar</a></li>
-          <li><a href="/cedears">CEDEARs</a></li>
-        </ul>
-      </div>
-      <div>
-        <h6>Más</h6>
-        <ul>
-          <li><a href="#mundo">Mundo</a></li>
-          <li><a href="#hipotecarios">Hipotecarios UVA</a></li>
-          <li><a href="#pix">PIX</a></li>
-          <li><a href="#bcra">BCRA</a></li>
-          <li><a href="#mundial">Mundial 2026</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="foot-sign">
-      <span>Fuentes: CAFCI · ArgentinaDatos · BCRA · BYMA · data912</span>
-      <span>Hecho con <svg style="display:inline-block;vertical-align:middle" width="12" height="12" viewBox="0 0 24 24" fill="var(--red, #e74c3c)" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> desde Argentina</span>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
-  <script src="/app.js"></script>
+<body data-palette="amber" data-scanlines="on" data-density="medium">
+  <header class="top" id="topbar"></header>
+  <main class="wrap" id="main" style="padding-top:8px;padding-bottom:40px"></main>
+  <footer class="site" id="site-footer"></footer>
   <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+  <script src="/tty.js"></script>
 </body>
 </html>
