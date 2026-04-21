@@ -409,8 +409,10 @@ function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (
 
 function scatterSVG(data, { xKey, yKey, labelKey, xLabel, yLabel, yFmt = (v) => fmt(v, 2), xFmt = (v) => fmt(v, 0), selected = null, onSelect = null, targetId }) {
   if (!data || !data.length) return '<div class="chart chart-scatter"><div class="hd"><div>sin datos</div></div></div>';
-  // Larger chart, generous padding — text remains readable when scaled to container
-  const W = 1040, H = 560, P = { l: 64, r: 24, t: 24, b: 48 };
+  // Near-square viewBox matches the tbl-left right-column shape (~1:0.9),
+  // so preserveAspectRatio lets the chart fill the container without
+  // letterboxing. Text intrinsic sizes read well at any screen width.
+  const W = 720, H = 640, P = { l: 72, r: 28, t: 36, b: 56 };
   const xs = data.map(d => d[xKey]);
   const ys = data.map(d => d[yKey]);
   const xRange = Math.max(...xs) - Math.min(...xs);
@@ -444,18 +446,18 @@ function scatterSVG(data, { xKey, yKey, labelKey, xLabel, yLabel, yFmt = (v) => 
   for (let i = 0; i < yTicks; i++) {
     const v = yMin + (i * (yMax - yMin) / (yTicks - 1));
     grid += `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}"/>
-      <text x="${P.l - 10}" y="${y(v)}" text-anchor="end" dominant-baseline="middle" fill="var(--fg-faint)" font-size="14" font-family="var(--font-mono)">${esc(yFmt(v))}</text>`;
+      <text x="${P.l - 12}" y="${y(v)}" text-anchor="end" dominant-baseline="middle" fill="var(--fg-faint)" font-size="18" font-family="var(--font-mono)">${esc(yFmt(v))}</text>`;
   }
   // X-axis: 6 ticks
   const xTicks = 6;
   for (let i = 0; i < xTicks; i++) {
     const v = xMin + (i * (xMax - xMin) / (xTicks - 1));
     grid += `<line class="grid-line" x1="${x(v)}" x2="${x(v)}" y1="${P.t}" y2="${H - P.b}"/>
-      <text x="${x(v)}" y="${H - P.b + 22}" text-anchor="middle" fill="var(--fg-faint)" font-size="14" font-family="var(--font-mono)">${esc(xFmt(Math.round(v)))}</text>`;
+      <text x="${x(v)}" y="${H - P.b + 26}" text-anchor="middle" fill="var(--fg-faint)" font-size="18" font-family="var(--font-mono)">${esc(xFmt(Math.round(v)))}</text>`;
   }
   // Axis labels on the outside
-  grid += `<text x="${P.l}" y="${P.t - 10}" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)" text-transform="uppercase" letter-spacing="0.08em">${esc(yLabel)}</text>`;
-  grid += `<text x="${W - P.r}" y="${H - 8}" text-anchor="end" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${esc(xLabel)}</text>`;
+  grid += `<text x="${P.l}" y="${P.t - 14}" fill="var(--fg-faint)" font-size="15" font-family="var(--font-mono)" letter-spacing="0.08em">${esc(yLabel.toUpperCase())}</text>`;
+  grid += `<text x="${W - P.r}" y="${H - 10}" text-anchor="end" fill="var(--fg-faint)" font-size="15" font-family="var(--font-mono)" letter-spacing="0.08em">${esc(xLabel.toUpperCase())}</text>`;
 
   const axes = `<line x1="${P.l}" y1="${P.t}" x2="${P.l}" y2="${H - P.b}" stroke="var(--rule-hi)" stroke-width="1.2"/>
     <line x1="${P.l}" y1="${H - P.b}" x2="${W - P.r}" y2="${H - P.b}" stroke="var(--rule-hi)" stroke-width="1.2"/>`;
@@ -466,10 +468,10 @@ function scatterSVG(data, { xKey, yKey, labelKey, xLabel, yLabel, yFmt = (v) => 
     const isSel = selected === d[labelKey];
     const cx = x(d[xKey]);
     const cy = y(d[yKey]);
-    const r = isSel ? 7 : 5;
+    const r = isSel ? 8 : 6;
     return `<g data-sym="${esc(d[labelKey])}" class="scatter-pt${isSel ? ' sel' : ''}" style="cursor:pointer">
-      <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" stroke="var(--bg)" stroke-width="2"/>
-      <text x="${(cx + 10).toFixed(1)}" y="${(cy - 8).toFixed(1)}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" font-size="13" font-family="var(--font-mono)" font-weight="500" stroke="var(--bg)" stroke-width="3" paint-order="stroke">${esc(d[labelKey])}</text>
+      <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" stroke="var(--bg)" stroke-width="2.5"/>
+      <text x="${(cx + 11).toFixed(1)}" y="${(cy - 10).toFixed(1)}" fill="${isSel ? 'var(--hot)' : 'var(--fg)'}" font-size="16" font-family="var(--font-mono)" font-weight="500" stroke="var(--bg)" stroke-width="4" paint-order="stroke">${esc(d[labelKey])}</text>
     </g>`;
   }).join('');
   return `<div class="chart chart-scatter">
