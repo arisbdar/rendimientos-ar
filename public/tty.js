@@ -2293,19 +2293,20 @@ const REMESAS = [
 ];
 
 // Logos de cada proveedor de remesas. Fuentes:
-// 1. Archivos reales en /logos/exchanges/ (wallbit, lemon, takenos, astropay, dolarapp→arq)
+// 1. Archivos reales en /logos/exchanges/ (wallbit, lemon, takenos, astropay,
+//    dolarapp→arq, airtm, payoneer, grabr)
 // 2. Cocos usa ENTITY_LOGOS (base64 inline) de la sección ARS billeteras
-// 3. Grabr Fi, Payoneer, Airtm, Wise: SVG base64 inline con color de marca + monograma
+// 3. Wise sigue con monograma base64 hasta tener SVG oficial
 const REMESAS_LOGO = {
   Cocos: undefined, // lookupLogoURL → ENTITY_LOGOS['Cocos']
   Wallbit: '/logos/exchanges/wallbit.svg',
   Lemon: '/logos/exchanges/lemon.svg',
-  'Grabr Fi': 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCI+PHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiBmaWxsPSIjZmYzZTZjIi8+PHRleHQgeD0iMTQiIHk9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0idWktc2Fucy1zZXJpZixzeXN0ZW0tdWksLWFwcGxlLXN5c3RlbSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiA+R1I8L3RleHQ+PC9zdmc+',
+  'Grabr Fi': '/logos/exchanges/grabr.svg',
   Takenos: '/logos/exchanges/takenos.svg',
-  Payoneer: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCI+PHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiBmaWxsPSIjZmY0YjI2Ii8+PHRleHQgeD0iMTQiIHk9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0idWktc2Fucy1zZXJpZixzeXN0ZW0tdWksLWFwcGxlLXN5c3RlbSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiA+UDwvdGV4dD48L3N2Zz4=',
+  Payoneer: '/logos/exchanges/payoneer.svg',
   Arq: '/logos/exchanges/dolarapp.svg',
   Astropay: '/logos/exchanges/astropay.svg',
-  Airtm: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCI+PHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiBmaWxsPSIjMDBhZWYwIi8+PHRleHQgeD0iMTQiIHk9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0idWktc2Fucy1zZXJpZixzeXN0ZW0tdWksLWFwcGxlLXN5c3RlbSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZmZmIiA+QTwvdGV4dD48L3N2Zz4=',
+  Airtm: '/logos/exchanges/airtm.svg',
   Wise: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCI+PHJlY3Qgd2lkdGg9IjI4IiBoZWlnaHQ9IjI4IiBmaWxsPSIjOWZlODcwIi8+PHRleHQgeD0iMTQiIHk9IjE4IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0idWktc2Fucy1zZXJpZixzeXN0ZW0tdWksLWFwcGxlLXN5c3RlbSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMTYzMzAwIiA+VzwvdGV4dD48L3N2Zz4=',
 };
 
