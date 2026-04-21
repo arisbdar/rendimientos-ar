@@ -20,6 +20,7 @@ const LS = {
 // Nav structure — must match README order
 const NAV = [
   { k: 'mundo',       label: 'mundo',       key: 'm' },
+  { k: 'hotusa',      label: 'hot usa',     key: 'u' },
   { k: 'cedears',     label: 'cedears',     key: 'c' },
   { k: 'ars',         label: 'ars',         key: 'a',
     subs: [
@@ -172,33 +173,157 @@ const LOGO_IMG = {
   'Meridian': '/logos/Banco_Meridian.png',
 };
 
+// Plazo fijo / ranking bank logos (from the editorial app.js PLAZO_FIJO_LOGOS)
+const PLAZO_FIJO_LOGOS = {
+  'Banco Nación': '/logos/Banco_Nación.png',
+  'Banco De La Nación Argentina': '/logos/Banco_Nación.png',
+  'Banco Santander': '/logos/Banco_Santander.png',
+  'Banco Santander Argentina': '/logos/Banco_Santander.png',
+  'Banco Galicia': '/logos/Banco_Galicia.png',
+  'Banco Galicia Argentina': '/logos/Banco_Galicia.png',
+  'Banco Provincia': '/logos/Banco_Provincia.svg',
+  'BBVA Argentina': '/logos/BBVA_Argentina.png',
+  'Banco BBVA Argentina': '/logos/BBVA_Argentina.png',
+  'Banco Macro': '/logos/Banco_Macro.png',
+  'Banco Credicoop': '/logos/Banco_Credicoop.png',
+  'ICBC': '/logos/ICBC_Argentina.png',
+  'ICBC Argentina': '/logos/ICBC_Argentina.png',
+  'Industrial And Commercial Bank Of China': '/logos/ICBC_Argentina.png',
+  'Banco Ciudad': '/logos/Banco_Ciudad.png',
+  'Banco De La Ciudad De Buenos Aires': '/logos/Banco_Ciudad.png',
+  'Banco Comafi': '/logos/Banco_Comafi.png',
+  'Banco de Corrientes': '/logos/Banco_de_Corrientes.svg',
+  'Banco de Córdoba': '/logos/BANCOR.svg',
+  'Banco del Chubut': '/logos/Banco_del_Chubut.png',
+  'Banco del Sol': '/logos/Banco_del_Sol.svg',
+  'Banco Hipotecario': '/logos/Banco_Hipotecario.png',
+  'Banco Voii': '/logos/Banco_Voii.png',
+  'Bibank': '/logos/Bibank.png',
+  'Ualá': '/logos/uala.svg',
+  'Reba': '/logos/reba.png',
+  'Banco BICA': '/logos/Banco_BICA.svg',
+  'Banco Bica': '/logos/Banco_BICA.svg',
+  'Banco Supervielle': '/logos/Banco_Supervielle.svg',
+  'Banco Tierra del Fuego': '/logos/Banco_Prov__Tierra_del_Fuego.png',
+  'Banco de Formosa': '/logos/Banco_de_Formosa.png',
+  'Banco Dino': '/logos/Banco_Dino.png',
+  'Banco Julio': '/logos/Banco_Julio.png',
+  'Banco Mariva': '/logos/Banco_Mariva.png',
+  'Banco Masventas': '/logos/Banco_Masventas.png',
+  'Banco Meridian': '/logos/Banco_Meridian.png',
+  'Banco CMF': '/logos/Banco_CMF.png',
+  'Banco de Comercio': '/logos/Banco_de_Comercio.png',
+  'Crédito Regional': '/logos/Crédito_Regional.png',
+  // Billeteras / garantizados
+  'Naranja X': '/logos/naranja-x.svg',
+  'Mercado Pago': '/logos/mercado-pago.svg',
+  'Personal Pay': '/logos/personal-pay.svg',
+  'Cocos Capital': '/logos/cocos-logo.png',
+  'Cocos Ahorro': '/logos/cocos-logo.png',
+  'Cocos': '/logos/cocos-logo.png',
+  'Prex': '/logos/prex.svg',
+  'Brubank': '/logos/Brubank.svg',
+  'Lemon Cash': '/logos/Lemon_Cash.svg',
+  'Lemon': '/logos/Lemon_Cash.svg',
+  'Carrefour Banco': '/logos/carrefour_banco.svg',
+  'Banco Patagonia': '/logos/Banco_Patagonia.svg',
+  'Patagonia': '/logos/Banco_Patagonia.svg',
+};
+
+// Hipotecarios UVA bank logos
+const HIPOTECARIO_LOGOS = {
+  'Hipotecario': '/logos/Banco_Hipotecario.png',
+  'Ciudad': '/logos/Banco_Ciudad.png',
+  'ICBC': '/logos/ICBC_Argentina.png',
+  'BNA': '/logos/Banco_Nación.png',
+  'Santander': '/logos/Banco_Santander.png',
+  'Macro': '/logos/Banco_Macro.png',
+  'BBVA': '/logos/BBVA_Argentina.png',
+  'Galicia': '/logos/Banco_Galicia.png',
+  'Credicoop': '/logos/Banco_Credicoop.png',
+  'Comafi': '/logos/Banco_Comafi.png',
+  'Banco de Chubut': '/logos/Banco_del_Chubut.png',
+  'Banco de la Provincia': '/logos/Banco_de_la_Prov__de_Buenos_Aires.png',
+  'Supervielle': '/logos/Banco_Supervielle.svg',
+  'Brubank': '/logos/Brubank.svg',
+  'Patagonia': '/logos/Banco_Patagonia.svg',
+  'Banco del Sol': '/logos/Banco_del_Sol.svg',
+  'BANCOR': '/logos/BANCOR.svg',
+  'Banco de Corrientes': '/logos/Banco_de_Corrientes.svg',
+  'Grupo Petersen': '/logos/Grupo_Petersen.svg',
+};
+
+function lookupLogoURL(name) {
+  if (!name) return null;
+  if (LOGO_IMG[name]) return LOGO_IMG[name];
+  if (PLAZO_FIJO_LOGOS[name]) return PLAZO_FIJO_LOGOS[name];
+  if (HIPOTECARIO_LOGOS[name]) return HIPOTECARIO_LOGOS[name];
+  // Try case-insensitive lookup across all sources
+  const lower = name.toLowerCase();
+  for (const map of [LOGO_IMG, PLAZO_FIJO_LOGOS, HIPOTECARIO_LOGOS]) {
+    for (const k of Object.keys(map)) {
+      if (k.toLowerCase() === lower) return map[k];
+    }
+  }
+  return null;
+}
+
 function initials(name) {
   if (!name) return '·';
   return name.replace(/^(Banco\s+)/i, '').split(/[\s-]+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '·';
 }
 function logoHTML(name, sm = false) {
-  const src = LOGO_IMG[name];
+  const src = lookupLogoURL(name);
   const cls = 'logo' + (sm ? ' sm' : '');
-  if (src) return `<span class="${cls}"><img src="${esc(src)}" alt="${esc(name || '')}"></span>`;
-  return `<span class="${cls}">${esc(initials(name))}</span>`;
+  const init = esc(initials(name));
+  if (src) return `<span class="${cls}" data-initials="${init}"><img src="${esc(src)}" alt="${esc(name || '')}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
+  return `<span class="${cls}">${init}</span>`;
 }
 
 // ─── SVG helpers ───────────────────────────────────────────────
+
+// Catmull-Rom → cubic Bézier: given [[x,y],...] → smooth SVG path (M ... C ...)
+function smoothPath(points) {
+  if (!points || points.length < 2) return '';
+  const p = points.map(([x, y]) => [+x, +y]);
+  if (p.length === 2) return `M${p[0][0].toFixed(2)},${p[0][1].toFixed(2)} L${p[1][0].toFixed(2)},${p[1][1].toFixed(2)}`;
+  const out = [`M${p[0][0].toFixed(2)},${p[0][1].toFixed(2)}`];
+  for (let i = 0; i < p.length - 1; i++) {
+    const p0 = p[i === 0 ? 0 : i - 1];
+    const p1 = p[i];
+    const p2 = p[i + 1];
+    const p3 = p[i + 2 < p.length ? i + 2 : i + 1];
+    const t = 0.2; // tension; lower = smoother
+    const c1x = p1[0] + (p2[0] - p0[0]) * t;
+    const c1y = p1[1] + (p2[1] - p0[1]) * t;
+    const c2x = p2[0] - (p3[0] - p1[0]) * t;
+    const c2y = p2[1] - (p3[1] - p1[1]) * t;
+    out.push(`C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${p2[0].toFixed(2)},${p2[1].toFixed(2)}`);
+  }
+  return out.join(' ');
+}
+
 function sparkSVG(data, { positive = true, width = 80, height = 20 } = {}) {
   if (!data || data.length < 2) return '<span class="spark"></span>';
   const min = Math.min(...data), max = Math.max(...data), r = (max - min) || 1;
   const step = width / (data.length - 1);
-  const pts = data.map((v, i) => {
-    const x = (i * step).toFixed(1);
-    const y = (height - ((v - min) / r) * height).toFixed(1);
-    return `${x},${y}`;
-  }).join(' ');
+  const pts = data.map((v, i) => [i * step, height - ((v - min) / r) * height]);
+  const linePath = smoothPath(pts);
+  const fillPath = `M${pts[0][0].toFixed(2)},${height} L${linePath.replace(/^M/, '')} L${pts[pts.length - 1][0].toFixed(2)},${height} Z`;
   const color = positive ? 'var(--up)' : 'var(--down)';
-  const fill = positive ? 'rgba(74,222,128,0.08)' : 'rgba(255,90,78,0.08)';
+  const fill = positive ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)';
   return `<svg class="spark" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" preserveAspectRatio="none">
-    <polyline points="0,${height} ${pts} ${width},${height}" fill="${fill}" stroke="none"/>
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.3"/>
+    <path d="${fillPath}" fill="${fill}" stroke="none"/>
+    <path d="${linePath}" fill="none" stroke="${color}" stroke-width="1.3"/>
   </svg>`;
+}
+
+// Logo helpers for assorted sources
+function logoImgHTML(url, name, sm = false) {
+  if (!url) return logoHTML(name, sm);
+  const cls = 'logo' + (sm ? ' sm' : '');
+  const init = esc(initials(name));
+  return `<span class="${cls}" data-initials="${init}"><img src="${esc(url)}" alt="${esc(name || '')}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
 }
 
 function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (v) => fmtPct(v, 2) } = {}) {
@@ -206,7 +331,8 @@ function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (
   const W = 600, H = 160, P = { l: 8, r: 8, t: 24, b: 8 };
   const min = Math.min(...data), max = Math.max(...data), r = (max - min) || 1;
   const step = (W - P.l - P.r) / (data.length - 1);
-  const pts = data.map((v, i) => `${(P.l + i * step).toFixed(1)},${(P.t + (H - P.t - P.b) - ((v - min) / r) * (H - P.t - P.b)).toFixed(1)}`).join(' ');
+  const pts = data.map((v, i) => [P.l + i * step, P.t + (H - P.t - P.b) - ((v - min) / r) * (H - P.t - P.b)]);
+  const linePath = smoothPath(pts);
   const last = data[data.length - 1];
   const first = data[0];
   const chg = first ? ((last - first) / first) * 100 : 0;
@@ -215,6 +341,7 @@ function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (
     const y = (P.t + f * (H - P.t - P.b)).toFixed(1);
     return `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}"/>`;
   }).join('');
+  const fillPath = `M${P.l},${H - P.b} L${linePath.replace(/^M/, '')} L${(W - P.r).toFixed(2)},${H - P.b} Z`;
   return `<div class="chart">
     <div class="hd">
       <div>
@@ -225,8 +352,8 @@ function lineChartHTML(data, { label = '', valFmt = (v) => fmt(v, 2), pctFmt = (
     </div>
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
       ${gridLines}
-      <polyline points="${P.l},${H - P.b} ${pts} ${W - P.r},${H - P.b}" fill="${up ? 'rgba(74,222,128,0.08)' : 'rgba(255,90,78,0.08)'}" stroke="none"/>
-      <polyline points="${pts}" fill="none" stroke="${up ? 'var(--up)' : 'var(--down)'}" stroke-width="1.3"/>
+      <path d="${fillPath}" fill="${up ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)'}" stroke="none"/>
+      <path d="${linePath}" fill="none" stroke="${up ? 'var(--up)' : 'var(--down)'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>`;
 }
@@ -243,7 +370,8 @@ function scatterSVG(data, { xKey, yKey, labelKey, xLabel, yLabel, yFmt = (v) => 
   const x = v => P.l + ((v - xMin) / (xMax - xMin)) * (W - P.l - P.r);
   const y = v => H - P.b - ((v - yMin) / (yMax - yMin)) * (H - P.t - P.b);
   const sorted = [...data].sort((a, b) => a[xKey] - b[xKey]);
-  const path = sorted.map((d, i) => `${i === 0 ? 'M' : 'L'}${x(d[xKey]).toFixed(1)},${y(d[yKey]).toFixed(1)}`).join(' ');
+  const pathPts = sorted.map(d => [x(d[xKey]), y(d[yKey])]);
+  const path = smoothPath(pathPts);
   let grid = '';
   for (let i = 0; i < 5; i++) {
     const v = yMin + (i * (yMax - yMin) / 4);
@@ -566,65 +694,172 @@ function stubScreen(main, { tag, title, sub, message = 'En construcción — pr�
   main.innerHTML = pHd(tag, title, sub) + `<div class="empty-state">${esc(message)}</div>`;
 }
 
-// ─── Screen: CEDEARs ──────────────────────────────────────────
-async function screenCedears(main) {
-  main.innerHTML = pHd('cedears · us stocks', 'CEDEARs', 'Acciones estadounidenses listadas en BYMA. Hot movers y próximos reportes de resultados.')
-    + `<section class="s"><h2><span>hot · us stocks con mayor movimiento</span><span class="line"></span><span class="count" id="hot-count">…</span></h2><div id="hot-tbl"><div class="loading-row"> datos de mercado…</div></div></section>`
-    + `<section class="s"><h2><span>earnings · próximos reportes</span><span class="line"></span><span class="count" id="earn-count">…</span></h2><div id="earn-tbl"><div class="loading-row"> próximos reportes…</div></div></section>`;
+// ─── Screen: Hot USA — movers + earnings calendar ─────────────
+const SVVY_LOGO = (sym) => `https://static.svvytrdr.com/logos/${encodeURIComponent(sym)}.webp`;
 
-  // Hot movers
+async function screenHotUSA(main) {
+  main.innerHTML = pHd('hot usa · movers + earnings', 'Hot USA', 'Acciones USA con mayor movimiento del día y calendario de próximos reportes de resultados.')
+    + `<section class="s"><h2><span>movers · us stocks con mayor movimiento</span><span class="line"></span><span class="count" id="hot-count">…</span></h2><div id="hot-grid"><div class="loading-row"> datos de mercado…</div></div></section>`
+    + `<section class="s"><h2><span>earnings · calendario de próximos reportes</span><span class="line"></span><span class="count" id="earn-count">…</span></h2><div id="earn-timeline"><div class="loading-row"> próximos reportes…</div></div></section>`;
+  // Movers
   try {
     const raw = await fetchCached('/api/hot-movers', 120_000);
     const list = (raw.data || []).slice(0, 20);
     $('#hot-count').textContent = list.length;
-    $('#hot-tbl').innerHTML = list.length ? `<table class="t">
-      <thead><tr>
-        <th style="text-align:left">sym</th>
-        <th style="text-align:left">empresa</th>
-        <th>último (USD)</th>
-        <th>chg</th>
-      </tr></thead>
-      <tbody>${list.map(r => `<tr>
-        <td><span class="hot">${esc(r.symbol)}</span></td>
-        <td class="dim">${esc(r.name)}</td>
-        <td class="num">${fmt(r.price, 2)}</td>
-        <td class="num ${signClass(r.change)}">${arrow(r.change)} ${fmtPct(r.change, 2)}</td>
-      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin datos</div>`;
+    if (!list.length) { $('#hot-grid').innerHTML = '<div class="empty-state">sin datos</div>'; }
+    else {
+      $('#hot-grid').innerHTML = `<div class="hot-grid">${list.map(r => {
+        const isUp = r.change >= 0;
+        return `<div class="hot-card">
+          ${logoImgHTML(SVVY_LOGO(r.symbol), r.symbol)}
+          <div class="hot-info">
+            <div class="hot-symbol">${esc(r.symbol)}</div>
+            <div class="hot-name dim">${esc(r.name)}</div>
+          </div>
+          <div class="hot-right">
+            <div class="hot-price">$${fmt(r.price, 2)}</div>
+            <div class="hot-change ${isUp ? 'up' : 'down'}">${arrow(r.change)} ${fmtPct(r.change, 2)}</div>
+          </div>
+        </div>`;
+      }).join('')}</div>`;
+    }
   } catch (e) {
-    $('#hot-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+    $('#hot-grid').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
-
-  // Earnings (needs start+end range — next 7 days)
+  // Earnings timeline — next 14 days, top 5 per active day, 7 days max
   try {
     const today = new Date();
-    const end = new Date(today.getTime() + 7 * 86400000);
-    const fmtDate = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const url = `/api/earnings?start=${fmtDate(today)}&end=${fmtDate(end)}`;
-    const raw = await fetchCached(url, 300_000);
-    const list = Array.isArray(raw) ? raw : (raw.data || []);
-    const clean = list.slice(0, 30);
-    $('#earn-count').textContent = clean.length;
-    $('#earn-tbl').innerHTML = clean.length ? `<table class="t">
-      <thead><tr>
-        <th style="text-align:left">sym</th>
-        <th style="text-align:left">empresa</th>
-        <th style="text-align:left">cuándo</th>
-        <th>est eps</th>
-        <th>eps prev</th>
-      </tr></thead>
-      <tbody>${clean.map(r => {
-        const dt = r.date ? new Date(r.date) : null;
-        const when = dt ? `${['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][dt.getDay()]} ${r.time === 'amc' ? 'AMC' : r.time === 'bmo' ? 'BMO' : (r.time || '')}` : '';
-        return `<tr>
-          <td><span class="hot">${esc(r.symbol)}</span></td>
-          <td class="dim">${esc(r.name || '')}</td>
-          <td class="dim">${esc(when)}</td>
-          <td class="num">${r.epsEstimate != null ? '$' + fmt(r.epsEstimate, 2) : '—'}</td>
-          <td class="num dim">${r.epsActual != null ? '$' + fmt(r.epsActual, 2) : (r.epsPrev != null ? '$' + fmt(r.epsPrev, 2) : '—')}</td>
-        </tr>`;
-      }).join('')}</tbody></table>` : `<div class="empty-state">sin reportes próximos</div>`;
+    const end = new Date(today.getTime() + 14 * 86400000);
+    const fd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const raw = await fetchCached(`/api/earnings?start=${fd(today)}&end=${fd(end)}`, 300_000);
+    const data = typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
+    const todayStr = fd(today);
+    const days = Object.keys(data).filter(d => d >= todayStr).sort();
+    const parsed = {};
+    for (const day of days) {
+      const items = (data[day] || []).filter(e => e.isDateConfirmed && e.marketCap > 0).sort((a, b) => b.marketCap - a.marketCap).slice(0, 5);
+      if (items.length) parsed[day] = items;
+    }
+    const activeDays = Object.keys(parsed).sort().slice(0, 7);
+    $('#earn-count').textContent = activeDays.reduce((s, d) => s + parsed[d].length, 0);
+    if (!activeDays.length) { $('#earn-timeline').innerHTML = '<div class="empty-state">sin reportes próximos</div>'; return; }
+    $('#earn-timeline').innerHTML = `<div class="earn-timeline">${activeDays.map(day => {
+      const d = new Date(day + 'T00:00:00');
+      const DOW = ['dom','lun','mar','mié','jue','vie','sáb'];
+      const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const head = `${DOW[d.getDay()]} ${String(d.getDate()).padStart(2,'0')} ${MES[d.getMonth()]}`;
+      return `<div class="earn-day">
+        <div class="earn-day-head">${esc(head.toUpperCase())}</div>
+        <div class="earn-day-items">${parsed[day].map(e => {
+          const lbl = e.earningsTime === 'bmo' ? 'BMO' : e.earningsTime === 'amc' ? 'AMC' : '';
+          return `<div class="earn-item">
+            ${logoImgHTML(SVVY_LOGO(e.symbol), e.symbol, true)}
+            <span class="earn-sym">${esc(e.symbol)}</span>
+            <span class="earn-time dim">${esc(lbl)}</span>
+          </div>`;
+        }).join('')}</div>
+      </div>`;
+    }).join('')}</div>`;
   } catch (e) {
-    $('#earn-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+    $('#earn-timeline').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+}
+
+// ─── Screen: CEDEARs (MEP / CCL implícito, tabla completa) ────
+async function screenCedears(main) {
+  main.innerHTML = pHd('cedears · byma', 'CEDEARs', 'Acciones USA listadas en BYMA. Precio ARS + especie D (MEP) + especie C (CCL) + subyacente USD → MEP y CCL implícitos.')
+    + `<section class="s"><h2><span>implícitos promedio</span><span class="line"></span></h2><div id="ced-impl" class="kline"><div class="loading-row"> calculando…</div></div></section>`
+    + `<section class="s"><h2><span>tabla completa</span><span class="line"></span><span class="count" id="ced-count">…</span></h2>
+        <div class="dol-controls"><input id="ced-search" placeholder="buscar ticker o empresa…" class="ced-search"/></div>
+        <div id="ced-tbl"><div class="loading-row"> cargando catálogo…</div></div>
+      </section>`;
+  try {
+    const [catalog, live, usa] = await Promise.all([
+      fetchCached('/data/cedears.json', 3600_000),
+      fetchCached('/api/cedears', 60_000).catch(() => ({ data: [] })),
+      fetchCached('/api/usa-stocks', 60_000).catch(() => ({ data: [] })),
+    ]);
+    const liveArr = Array.isArray(live.data) ? live.data : (Array.isArray(live) ? live : []);
+    const usaArr = Array.isArray(usa.data) ? usa.data : (Array.isArray(usa) ? usa : []);
+    const liveMap = {}, usaMap = {};
+    for (const it of liveArr) if (it?.symbol) liveMap[it.symbol] = it;
+    for (const it of usaArr) if (it?.symbol) usaMap[it.symbol] = it;
+    const pricePick = (q) => {
+      if (!q) return null;
+      // Prefer px_ask or c (close) if > 0
+      if (q.px_ask > 0) return +q.px_ask;
+      if (q.c > 0) return +q.c;
+      if (q.price > 0) return +q.price;
+      return null;
+    };
+    const items = (Array.isArray(catalog) ? catalog : [])
+      .filter(x => x && x.ticker)
+      .map(x => {
+        const priceArs = pricePick(liveMap[x.ticker]);
+        if (priceArs == null) return null;
+        const priceD = x.ticker_d ? pricePick(liveMap[x.ticker_d]) : null;
+        const priceC = x.ticker_c ? pricePick(liveMap[x.ticker_c]) : null;
+        const priceUsd = x.ticker_usa ? pricePick(usaMap[x.ticker_usa]) : null;
+        return {
+          ticker: x.ticker, name: x.name, ratio: x.ratio,
+          priceArs, priceD, priceC, priceUsd,
+          impliedMep: priceD ? priceArs / priceD : null,
+          impliedCcl: priceC ? priceArs / priceC : null,
+        };
+      })
+      .filter(Boolean);
+    const state = { filter: '' };
+
+    function compute() {
+      const f = state.filter.trim().toUpperCase();
+      return f ? items.filter(r => r.ticker.toUpperCase().includes(f) || String(r.name || '').toUpperCase().includes(f)) : items;
+    }
+
+    function renderImpl(list) {
+      const mep = list.filter(x => x.impliedMep).map(x => x.impliedMep);
+      const ccl = list.filter(x => x.impliedCcl).map(x => x.impliedCcl);
+      const avgMep = mep.length ? mep.reduce((a, b) => a + b, 0) / mep.length : null;
+      const avgCcl = ccl.length ? ccl.reduce((a, b) => a + b, 0) / ccl.length : null;
+      $('#ced-impl').innerHTML = `
+        <div class="k"><div class="lbl">mep implícito</div><div class="val hot">${avgMep != null ? '$' + fmt(avgMep, 2) : '—'}</div><div class="chg dim">promedio · ${mep.length} activos</div></div>
+        <div class="k"><div class="lbl">ccl implícito</div><div class="val hot">${avgCcl != null ? '$' + fmt(avgCcl, 2) : '—'}</div><div class="chg dim">promedio · ${ccl.length} activos</div></div>
+        <div class="k"><div class="lbl">total</div><div class="val hot">${list.length}</div><div class="chg dim">cedears con precio</div></div>`;
+    }
+
+    function renderTable() {
+      const list = compute();
+      $('#ced-count').textContent = list.length;
+      renderImpl(list);
+      if (!list.length) { $('#ced-tbl').innerHTML = '<div class="empty-state">sin resultados</div>'; return; }
+      const rows = list.slice(0, 400).map(r => `<tr>
+        <td>${logoImgHTML(SVVY_LOGO(r.ticker), r.ticker, true)} <span class="hot">${esc(r.ticker)}</span> <span class="dim" style="margin-left:6px">${esc(r.name)}</span></td>
+        <td class="num">$${fmt(r.priceArs, 2)}</td>
+        <td class="num ${r.priceD ? '' : 'dim'}">${r.priceD ? fmt(r.priceD, 2) : '—'}</td>
+        <td class="num ${r.priceC ? '' : 'dim'}">${r.priceC ? fmt(r.priceC, 2) : '—'}</td>
+        <td class="num ${r.priceUsd ? '' : 'dim'}">${r.priceUsd ? fmt(r.priceUsd, 2) : '—'}</td>
+        <td class="num ${r.impliedMep ? 'hot' : 'dim'}">${r.impliedMep ? '$' + fmt(r.impliedMep, 2) : '—'}</td>
+        <td class="num ${r.impliedCcl ? 'hot' : 'dim'}">${r.impliedCcl ? '$' + fmt(r.impliedCcl, 2) : '—'}</td>
+        <td class="num dim">${esc(r.ratio || '')}</td>
+      </tr>`).join('');
+      $('#ced-tbl').innerHTML = `<table class="t">
+        <thead><tr>
+          <th style="text-align:left">activo</th>
+          <th>ars</th>
+          <th>d (usd)</th>
+          <th>c (usd)</th>
+          <th>subyac.</th>
+          <th>mep impl.</th>
+          <th>ccl impl.</th>
+          <th>ratio</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>${list.length > 400 ? `<div class="hint" style="margin-top:8px">mostrando primeros 400 de ${list.length} — usá la búsqueda para filtrar</div>` : ''}`;
+    }
+
+    $('#ced-search').addEventListener('input', (e) => { state.filter = e.target.value || ''; renderTable(); });
+    renderTable();
+  } catch (e) {
+    $('#ced-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
 }
 
@@ -638,48 +873,74 @@ async function screenARS(main, sub) {
 
 const ARS_SUBS = {};
 
-// 3a. Billeteras
+// 3a. Billeteras + Fondos money market
 ARS_SUBS.billeteras = async function(main) {
-  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'TNA de cuentas remuneradas y billeteras digitales, comparadas por tasa.')
-    + `<div id="bil-bars"><div class="loading-row"> cargando billeteras…</div></div>`;
+  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas, billeteras digitales y fondos money market (CAFCI), comparados por TNA.')
+    + `<section class="s"><h2><span>billeteras y cuentas remuneradas</span><span class="line"></span><span class="count" id="bil-count">…</span></h2><div id="bil-bars"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>fondos money market · top 15</span><span class="line"></span><span class="count" id="fci-count">…</span></h2><div id="fci-bars"><div class="loading-row"> cargando fcis…</div></div></section>`;
   try {
-    const cfg = await fetchCached('/api/config', 120_000);
-    const items = (cfg.garantizados || []).filter(g => g.activo !== false)
+    const [cfg, fciRes] = await Promise.all([
+      fetchCached('/api/config', 120_000),
+      fetchCached('/api/cafci', 300_000).catch(() => ({ data: [] })),
+    ]);
+    const billeteras = (cfg.garantizados || []).filter(g => g.activo !== false)
       .map(g => ({ name: g.nombre, tna: +g.tna || 0, tag: g.tipo || '', limit: g.limite || '' }))
       .sort((a, b) => b.tna - a.tna);
-    if (!items.length) { $('#bil-bars').innerHTML = '<div class="empty-state">sin billeteras activas</div>'; return; }
-    renderBars($('#bil-bars'), items, {
-      valFmt: v => v.toFixed(2) + '%',
-      valSub: 'TNA',
-      subLabel: (r) => r.tag + (r.limit ? ` · ${r.limit}` : ''),
-    });
+    $('#bil-count').textContent = billeteras.length;
+    if (billeteras.length) {
+      renderBars($('#bil-bars'), billeteras, {
+        valFmt: v => v.toFixed(2) + '%',
+        valSub: 'tna',
+        subLabel: (r) => r.tag + (r.limit ? ` · ${r.limit}` : ''),
+      });
+    } else {
+      $('#bil-bars').innerHTML = '<div class="empty-state">sin billeteras activas</div>';
+    }
+
+    // FCIs money market — filter Renta Mixta out + dedupe + top 15
+    const fcis = (fciRes.data || [])
+      .filter(f => f.nombre && f.tna > 0 && f.tna < 60 && !/renta\s+mixta/i.test(f.nombre))
+      .sort((a, b) => b.tna - a.tna);
+    // dedupe by base name (strip " - Clase X")
+    const seen = new Set();
+    const top = [];
+    for (const f of fcis) {
+      const base = f.nombre.replace(/ - Clase [A-Z].*$/, '').trim();
+      if (seen.has(base)) continue;
+      seen.add(base);
+      top.push({ name: base, tna: +f.tna, tag: 'Money Market · FCI' });
+      if (top.length >= 15) break;
+    }
+    $('#fci-count').textContent = top.length;
+    if (top.length) {
+      renderBars($('#fci-bars'), top, {
+        valFmt: v => v.toFixed(2) + '%',
+        valSub: 'tna',
+        subLabel: () => 'cafci · último día',
+      });
+    } else {
+      $('#fci-bars').innerHTML = '<div class="empty-state">sin datos cafci</div>';
+    }
   } catch (e) {
     $('#bil-bars').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
 };
 
-// 3b. Plazo Fijo 30d
+// 3b. Plazo Fijo 30d — simple, only TNA
 ARS_SUBS.plazofijo = async function(main) {
-  main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas a 30 días por entidad bancaria (BCRA, clientes y no clientes).')
+  main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas a 30 días por entidad bancaria. Fuente BCRA.')
     + `<div id="pf-tbl"><div class="loading-row"> cargando bancos…</div></div>`;
   try {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
     const rows = await res.json();
     const list = (rows || []).filter(p => p.tnaClientes > 0)
-      .map(p => ({
-        bank: shortBank(p.entidad),
-        raw: p.entidad,
-        tna: p.tnaClientes * 100,
-        tnaNoCli: p.tnaNoClientes != null ? p.tnaNoClientes * 100 : null,
-      }))
+      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), tna: p.tnaClientes * 100 }))
       .sort((a, b) => b.tna - a.tna);
     $('#pf-tbl').innerHTML = `<table class="t">
-      <thead><tr><th style="text-align:left">banco</th><th>tna clientes</th><th>tna no clientes</th><th>$1M · 30d</th></tr></thead>
+      <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
       <tbody>${list.map((r, i) => `<tr>
         <td>${logoHTML(r.bank, true)} <span class="${i===0?'hot':''}">${esc(r.bank)}</span></td>
         <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
-        <td class="num dim">${r.tnaNoCli != null ? r.tnaNoCli.toFixed(2) + '%' : '—'}</td>
-        <td class="num dim">+$${fmt(1000000 * r.tna / 100 / 12, 0)}</td>
       </tr>`).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
   } catch (e) {
@@ -687,23 +948,46 @@ ARS_SUBS.plazofijo = async function(main) {
   }
 };
 
-// 3c. Plazo Fijo Periódico (UVA con pago periódico)
+// Format bank name to match logo map keys (Banco Santander, Banco Nación, etc.)
+function formatBankNameTTY(raw) {
+  if (!raw) return '';
+  let s = String(raw).trim();
+  // Split into words, Title Case each
+  s = s.toLowerCase().replace(/\b([a-záéíóúñ])/g, m => m.toUpperCase());
+  // Fix accent: "Nacion" → "Nación"
+  s = s.replace(/Nacion\b/, 'Nación').replace(/Argentina S\.?A\.?/gi, 'Argentina').replace(/\s+S\.?A\.?$/i, '');
+  return s.trim();
+}
+
+// 3c. Plazo Fijo Periódico UVA — BNA tasas por tramo (el endpoint real solo devuelve BNA)
 ARS_SUBS.plazofijoperiod = async function(main) {
-  main.innerHTML = pHd('ars · plazo fijo periódico', 'Plazo Fijo Periódico', 'UVA con pago periódico de intereses, por entidad.')
-    + `<div id="pfp-tbl"><div class="loading-row"> cargando…</div></div>`;
+  main.innerHTML = pHd('ars · plazo fijo periódico', 'Plazo Fijo UVA Periódico', 'Banco Nación — plazo fijo UVA con pago periódico de intereses, por tramo de plazo.')
+    + `<div id="pfp-tbl"><div class="loading-row"> cargando tramos…</div></div>`;
   try {
-    const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijoUvaPagoPeriodico');
-    const rows = await res.json();
-    const list = (rows || [])
-      .map(p => ({ bank: shortBank(p.entidad), tna: (p.tna || p.tnaClientes || 0) * 100 }))
-      .filter(r => r.tna > 0)
-      .sort((a, b) => b.tna - a.tna);
-    $('#pfp-tbl').innerHTML = list.length ? `<table class="t">
-      <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
-      <tbody>${list.map((r, i) => `<tr>
-        <td>${logoHTML(r.bank, true)} <span class="${i===0?'hot':''}">${esc(r.bank)}</span></td>
-        <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
-      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin datos</div>`;
+    const rows = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijoUvaPagoPeriodico').then(r => r.json());
+    const bna = Array.isArray(rows) ? rows.find(x => x?.id === 'bna' || /naci[oó]n/i.test(x?.entidad || '')) : null;
+    const tasas = bna?.tasas || [];
+    if (!tasas.length) { $('#pfp-tbl').innerHTML = '<div class="empty-state">sin tramos vigentes</div>'; return; }
+    const sorted = [...tasas].sort((a, b) => (a.plazoMinDias || 0) - (b.plazoMinDias || 0));
+    $('#pfp-tbl').innerHTML = `<table class="t">
+      <thead><tr>
+        <th style="text-align:left">tramo de plazo</th>
+        <th>tna</th>
+        <th>tea (aprox)</th>
+      </tr></thead>
+      <tbody>${sorted.map((t, i) => {
+        const tna = (typeof t.tna === 'number' ? t.tna : parseFloat(t.tna)) * 100;
+        const plazo = t.plazoMinDias && t.plazoMaxDias
+          ? (t.plazoMinDias === t.plazoMaxDias ? `${t.plazoMinDias}d` : `${t.plazoMinDias} a ${t.plazoMaxDias}d`)
+          : (t.plazoMinDias ? `${t.plazoMinDias}+d` : '—');
+        const tea = (Math.pow(1 + tna/100/12, 12) - 1) * 100;
+        return `<tr>
+          <td>${logoHTML('Banco Nación', true)} <span class="${i===0?'hot':''}">${esc(plazo)}</span></td>
+          <td class="num ${i===0?'hot':''}">${tna.toFixed(2)}%</td>
+          <td class="num dim">${tea.toFixed(2)}%</td>
+        </tr>`;
+      }).join('')}</tbody></table>
+      <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com — tramos oficiales de BNA</div>`;
   } catch (e) {
     $('#pfp-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
@@ -712,7 +996,7 @@ ARS_SUBS.plazofijoperiod = async function(main) {
 // 3d. LECAPs — scatter + table bidirectional
 ARS_SUBS.lecaps = async function(main) {
   main.innerHTML = pHd('ars · lecaps', 'LECAPs', 'Letras capitalizables del Tesoro. Click en un punto o fila para destacar.')
-    + `<div class="cols lg-chart"><div id="lec-scatter"><div class="loading-row"> cargando scatter…</div></div><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="lec-count">…</span></h2><div id="lec-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+    + `<div class="cols tbl-left"><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="lec-count">…</span></h2><div id="lec-table"><div class="loading-row"> cargando tabla…</div></div></section></div><div id="lec-scatter"><div class="loading-row"> cargando scatter…</div></div></div>`;
   try {
     const [cfg, live] = await Promise.all([
       fetchCached('/api/config', 120_000),
@@ -777,7 +1061,7 @@ ARS_SUBS.lecaps = async function(main) {
 // 3e. CER — scatter + table bidirectional
 ARS_SUBS.cer = async function(main) {
   main.innerHTML = pHd('ars · bonos cer', 'Bonos CER', 'Ajustados por CER (inflación). Rendimiento real sobre la inflación.')
-    + `<div class="cols lg-chart"><div id="cer-scatter"><div class="loading-row"> cargando scatter…</div></div><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="cer-count">…</span></h2><div id="cer-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+    + `<div class="cols tbl-left"><div><section class="s"><h2><span>detalle</span><span class="line"></span><span class="count" id="cer-count">…</span></h2><div id="cer-table"><div class="loading-row"> cargando tabla…</div></div></section></div><div id="cer-scatter"><div class="loading-row"> cargando scatter…</div></div></div>`;
   try {
     const [cfg, cerRes, cerPriceRes] = await Promise.all([
       fetchCached('/api/config', 120_000),
@@ -916,7 +1200,7 @@ function shortBank(name) {
 // ─── Screen: Bonos soberanos ──────────────────────────────────
 async function screenBonos(main) {
   main.innerHTML = pHd('bonos · soberanos usd', 'Bonos Soberanos', 'Bonares (ley local) y Globales (ley NY). YTM × duration con precios en vivo.')
-    + `<div class="cols lg-chart"><div id="sov-scatter"><div class="loading-row"> cargando curva…</div></div><div><section class="s"><h2><span>ladder</span><span class="line"></span><span class="count" id="sov-count">…</span></h2><div id="sov-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+    + `<div class="cols tbl-left"><div><section class="s"><h2><span>ladder</span><span class="line"></span><span class="count" id="sov-count">…</span></h2><div id="sov-table"><div class="loading-row"> cargando tabla…</div></div></section></div><div id="sov-scatter"><div class="loading-row"> cargando curva…</div></div></div>`;
   try {
     const [cfg, sovRes] = await Promise.all([
       fetchCached('/api/config', 120_000),
@@ -991,7 +1275,7 @@ async function screenBonos(main) {
 // ─── Screen: ONs ──────────────────────────────────────────────
 async function screenONs(main) {
   main.innerHTML = pHd('ons · corporativos', 'Obligaciones Negociables', 'Bonos corporativos USD. YTM × duration con precios en vivo (especie D).')
-    + `<div class="cols lg-chart"><div id="ons-scatter"><div class="loading-row"> cargando curva…</div></div><div><section class="s"><h2><span>ladder</span><span class="line"></span><span class="count" id="ons-count">…</span></h2><div id="ons-table"><div class="loading-row"> cargando tabla…</div></div></section></div></div>`;
+    + `<div class="cols tbl-left"><div><section class="s"><h2><span>ladder</span><span class="line"></span><span class="count" id="ons-count">…</span></h2><div id="ons-table"><div class="loading-row"> cargando tabla…</div></div></section></div><div id="ons-scatter"><div class="loading-row"> cargando curva…</div></div></div>`;
   try {
     const [cfg, pricesRes] = await Promise.all([
       fetchCached('/api/config', 120_000),
@@ -1067,7 +1351,7 @@ async function screenONs(main) {
 
 // ─── Screen: Hipotecarios ─────────────────────────────────────
 async function screenHipotecarios(main) {
-  main.innerHTML = pHd('hipotecarios · uva', 'Hipotecarios', 'TNA de créditos hipotecarios UVA por banco (ordenadas de menor a mayor: gana la más baja).')
+  main.innerHTML = pHd('hipotecarios · uva', 'Hipotecarios', 'TNA de créditos hipotecarios UVA por banco (ordenadas de menor a mayor: gana la más baja). Fuente: @SalinasAndres.')
     + `<div id="hip-bars"><div class="loading-row"> cargando…</div></div>`;
   try {
     const raw = await fetchCached('/api/hipotecarios', 300_000);
@@ -1075,13 +1359,13 @@ async function screenHipotecarios(main) {
       .map(x => ({
         name: x.banco,
         tna: +x.tna,
-        tag: `${x.financiamiento || ''} · ${x.plazo_max_anios || '?'}y · cuota/ingreso ${x.relacion_cuota_ingreso || ''}`.replace(/\s+·\s+·/g, ' ·').trim(),
+        tag: `${x.financiamiento || ''} · ${x.plazo_max_anios || '?'}y · cuota/ingreso ${x.relacion_cuota_ingreso || ''}`.replace(/\s+·\s+·\s+/g, ' · ').trim(),
       }))
       .sort((a, b) => a.tna - b.tna);
     if (!list.length) { $('#hip-bars').innerHTML = '<div class="empty-state">sin datos</div>'; return; }
     renderBars($('#hip-bars'), list, {
       valFmt: v => v.toFixed(2) + '%',
-      valSub: 'TNA',
+      valSub: 'tna',
       subLabel: r => r.tag,
     });
   } catch (e) {
@@ -1091,55 +1375,120 @@ async function screenHipotecarios(main) {
 
 // ─── Screen: Dólar ────────────────────────────────────────────
 async function screenDolar(main) {
-  main.innerHTML = pHd('dólar · cotizaciones', 'Dólar', 'Cotizaciones de las principales variantes del dólar frente al peso argentino.')
-    + `<section class="s"><h2><span>cotizaciones</span><span class="line"></span><span class="count" id="dol-count">…</span></h2><div id="dol-tbl"><div class="loading-row"> cargando…</div></div></section>`
-    + `<section class="s"><h2><span>brecha mep / oficial · evolución</span><span class="line"></span></h2><div id="dol-chart"><div class="loading-row"> cargando serie…</div></div></section>`;
+  main.innerHTML = pHd('dólar · cotizaciones', 'Dólar', 'Mejor compra / venta / menor spread entre proveedores. Toggle 24/7 para filtrar los que operan fuera del horario de mercado.')
+    + `<section class="s"><h2><span>mejor del momento</span><span class="line"></span></h2><div id="dol-best" class="dol-best-row"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>proveedores</span><span class="line"></span></h2>
+        <div class="dol-controls">
+          <div class="dol-seg" id="dol-coin">
+            <button data-coin="usd" class="on">USD</button>
+            <button data-coin="usdt">USDT</button>
+            <button data-coin="usdc">USDC</button>
+          </div>
+          <div class="dol-seg" id="dol-sort">
+            <button data-sort="buy" class="on">mejor compra</button>
+            <button data-sort="sell">mejor venta</button>
+          </div>
+          <label class="dol-24x7" id="dol-24x7-wrap">
+            <input type="checkbox" id="dol-24x7"> <span>solo 24/7</span>
+          </label>
+        </div>
+        <div id="dol-tbl"><div class="loading-row"> cargando proveedores…</div></div>
+      </section>`;
   try {
-    const rows = await fetch('https://api.argentinadatos.com/v1/cotizaciones/dolares/').then(r => r.json()).catch(() => []);
-    // Latest quote per "casa"
-    const latest = {};
-    for (const r of rows) {
-      const prev = latest[r.casa];
-      if (!prev || r.fecha > prev.fecha) latest[r.casa] = r;
-    }
-    const order = ['oficial', 'blue', 'bolsa', 'contadoconliqui', 'cripto', 'tarjeta', 'mayorista'];
-    const nameMap = { oficial: 'Oficial', blue: 'Blue', bolsa: 'MEP (bolsa)', contadoconliqui: 'CCL', cripto: 'Cripto', tarjeta: 'Tarjeta', mayorista: 'Mayorista' };
-    const list = order.filter(k => latest[k]).map(k => {
-      const r = latest[k];
-      return { name: nameMap[k], venta: +r.venta, compra: +r.compra, spread: (+r.venta - +r.compra), fecha: r.fecha };
-    });
-    $('#dol-count').textContent = list.length;
-    $('#dol-tbl').innerHTML = list.length ? `<table class="t">
-      <thead><tr><th style="text-align:left">cotización</th><th>compra</th><th>venta</th><th>spread</th><th style="text-align:left">fecha</th></tr></thead>
-      <tbody>${list.map((r, i) => `<tr>
-        <td><span class="${i===0?'hot':''}">${esc(r.name)}</span></td>
-        <td class="num dim">$${fmt(r.compra, 2)}</td>
-        <td class="num hot">$${fmt(r.venta, 2)}</td>
-        <td class="num dim">$${fmt(r.spread, 2)}</td>
-        <td class="dim">${esc(r.fecha)}</td>
-      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin datos</div>`;
+    const { exchanges, updated } = await fetchCached('/api/dolar', 60_000);
+    // market open Mon-Fri 10-17 ART
+    const now = new Date();
+    const artNow = new Date(now.getTime() + (now.getTimezoneOffset() - 180) * 60000);
+    const marketOpen = artNow.getDay() >= 1 && artNow.getDay() <= 5 && artNow.getHours() >= 10 && artNow.getHours() < 17;
+    const state = { coin: 'usd', sort: 'buy', only24x7: !marketOpen };
+    $('#dol-24x7').checked = state.only24x7;
 
-    // Brecha MEP / Oficial serie (últimos 90 pts)
-    const byCasa = { oficial: [], bolsa: [] };
-    for (const r of rows) {
-      if (byCasa[r.casa]) byCasa[r.casa].push({ fecha: r.fecha, venta: +r.venta });
+    function getList() {
+      if (state.coin === 'usd') {
+        const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0);
+        return state.only24x7 ? all.filter(e => e.is24x7) : all;
+      }
+      return (exchanges[state.coin] || []).filter(e => e.ask > 0 && e.bid > 0);
     }
-    for (const k of Object.keys(byCasa)) byCasa[k].sort((a, b) => a.fecha < b.fecha ? -1 : 1);
-    const oficial = byCasa.oficial.slice(-90);
-    const bolsa = byCasa.bolsa.slice(-90);
-    const dates = new Set([...oficial.map(x => x.fecha), ...bolsa.map(x => x.fecha)]);
-    const ofMap = Object.fromEntries(oficial.map(x => [x.fecha, x.venta]));
-    const boMap = Object.fromEntries(bolsa.map(x => [x.fecha, x.venta]));
-    const serie = [...dates].sort()
-      .map(d => {
-        const o = ofMap[d], b = boMap[d];
-        if (!o || !b) return null;
-        return ((b - o) / o) * 100;
-      })
-      .filter(x => x != null);
-    $('#dol-chart').innerHTML = serie.length > 2
-      ? lineChartHTML(serie, { label: 'BRECHA MEP / OFICIAL · ÚLTIMOS 90 DÍAS · %', valFmt: v => v.toFixed(1) + '%' })
-      : '<div class="empty-state">serie insuficiente</div>';
+
+    function renderBest() {
+      const list = getList();
+      if (!list.length) { $('#dol-best').innerHTML = '<div class="empty-state">sin proveedores</div>'; return; }
+      const bestBuy = list.reduce((a, b) => a.ask < b.ask ? a : b);
+      const bestSell = list.reduce((a, b) => a.bid > b.bid ? a : b);
+      const bestSp = list.reduce((a, b) => (a.spread < b.spread ? a : b));
+      $('#dol-best').innerHTML = `
+        <div class="dol-best-card">
+          <div class="lbl">mejor para vender</div>
+          <div class="with-logo">${logoImgHTML(bestSell.logoUrl, bestSell.name)}<div class="txt"><b>${esc(bestSell.name)}</b><small>vendés a</small></div></div>
+          <div class="val hot">$${fmt(bestSell.bid, 2)}</div>
+        </div>
+        <div class="dol-best-card">
+          <div class="lbl">mejor para comprar</div>
+          <div class="with-logo">${logoImgHTML(bestBuy.logoUrl, bestBuy.name)}<div class="txt"><b>${esc(bestBuy.name)}</b><small>comprás a</small></div></div>
+          <div class="val hot">$${fmt(bestBuy.ask, 2)}</div>
+        </div>
+        <div class="dol-best-card">
+          <div class="lbl">menor spread</div>
+          <div class="with-logo">${logoImgHTML(bestSp.logoUrl, bestSp.name)}<div class="txt"><b>${esc(bestSp.name)}</b><small>compra/venta</small></div></div>
+          <div class="val hot">${fmt(bestSp.spread, 2)}%</div>
+        </div>`;
+    }
+
+    function renderTable() {
+      const list = getList();
+      const sorted = [...list].sort((a, b) => state.sort === 'buy' ? a.ask - b.ask : b.bid - a.bid);
+      $('#dol-tbl').innerHTML = sorted.length ? `<table class="t">
+        <thead><tr>
+          <th style="text-align:left">#</th>
+          <th style="text-align:left">proveedor</th>
+          <th>vendés a</th>
+          <th>comprás a</th>
+          <th>spread</th>
+          <th>var</th>
+        </tr></thead>
+        <tbody>${sorted.map((ex, i) => {
+          const isBestBuy = state.sort === 'buy' && i === 0;
+          const isBestSell = state.sort === 'sell' && i === 0;
+          const tag24 = ex.is24x7 === false ? '<span class="tag neutral" style="margin-left:6px">closed</span>' : '';
+          const tagBank = ex.isBank ? '<span class="tag" style="margin-left:6px">banco</span>' : '';
+          const varCls = ex.pctVariation != null ? signClass(ex.pctVariation) : 'dim';
+          const varTxt = ex.pctVariation != null ? fmtPct(ex.pctVariation, 2) : '—';
+          return `<tr>
+            <td class="dim">${String(i + 1).padStart(2, '0')}</td>
+            <td>${logoImgHTML(ex.logoUrl, ex.name, true)} <span class="${i===0?'hot':''}">${esc(ex.name)}</span>${tagBank}${tag24}</td>
+            <td class="num ${isBestSell?'hot':''}">$${fmt(ex.bid, 2)}</td>
+            <td class="num ${isBestBuy?'hot':''}">$${fmt(ex.ask, 2)}</td>
+            <td class="num dim">${fmt(ex.spread, 2)}%</td>
+            <td class="num ${varCls}">${varTxt}</td>
+          </tr>`;
+        }).join('')}</tbody></table>
+        <div class="hint" style="margin-top:8px">fuente: comparadolar.ar · ${updated ? new Date(updated).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : ''}</div>` : `<div class="empty-state">sin datos</div>`;
+    }
+
+    function show24x7() {
+      const wrap = $('#dol-24x7-wrap');
+      if (wrap) wrap.style.display = state.coin === 'usd' ? '' : 'none';
+    }
+
+    $$('#dol-coin button').forEach(b => b.addEventListener('click', () => {
+      $$('#dol-coin button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      state.coin = b.getAttribute('data-coin');
+      show24x7(); renderBest(); renderTable();
+    }));
+    $$('#dol-sort button').forEach(b => b.addEventListener('click', () => {
+      $$('#dol-sort button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      state.sort = b.getAttribute('data-sort');
+      renderTable();
+    }));
+    $('#dol-24x7').addEventListener('change', e => {
+      state.only24x7 = e.target.checked;
+      renderBest(); renderTable();
+    });
+
+    show24x7(); renderBest(); renderTable();
   } catch (e) {
     $('#dol-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
@@ -1147,35 +1496,72 @@ async function screenDolar(main) {
 
 // ─── Screen: PIX ──────────────────────────────────────────────
 async function screenPix(main) {
-  main.innerHTML = pHd('pix · ar → br', 'PIX', 'Transferencias desde billeteras argentinas a cuentas brasileñas. Tasa BRL/ARS comprada (cuanto más alto mejor para el que manda plata).')
-    + `<div id="pix-tbl"><div class="loading-row"> cargando proveedores…</div></div>`;
+  main.innerHTML = pHd('pix · ar → br', 'PIX', 'Mejor / peor proveedor para mandar reales a Brasil desde Argentina. Ranking por precio BRL/ARS ascendente (menor = mejor).')
+    + `<section class="s"><h2><span>mejor / peor</span><span class="line"></span></h2><div id="pix-best" class="dol-best-row"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>proveedores</span><span class="line"></span><span class="count" id="pix-count">…</span></h2><div id="pix-tbl"><div class="loading-row"> cargando proveedores…</div></div></section>`;
   try {
     const raw = await fetchCached('/api/pix', 180_000);
-    const list = [];
-    for (const [id, prov] of Object.entries(raw)) {
-      if (!prov.isPix) continue;
-      const brlArs = (prov.quotes || []).find(q => q.symbol === 'BRLARS');
-      const brlUsdt = (prov.quotes || []).find(q => q.symbol === 'BRLUSDT');
-      const brlUsd = (prov.quotes || []).find(q => q.symbol === 'BRLUSD');
-      list.push({
+    const providers = [];
+    for (const [id, info] of Object.entries(raw)) {
+      if (!info || !info.isPix) continue;
+      const brlArs = (info.quotes || []).find(q => q.symbol === 'BRLARS');
+      if (!brlArs || !brlArs.buy) continue;
+      providers.push({
         id,
         name: id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-        brlArs: brlArs?.buy ? +brlArs.buy : null,
-        brlUsdt: brlUsdt?.buy ? +brlUsdt.buy : null,
-        brlUsd: brlUsd?.buy ? +brlUsd.buy : null,
-        spread: brlUsdt?.spread_pct || brlUsd?.spread_pct || null,
+        price: +brlArs.buy,
+        sell: brlArs.sell ? +brlArs.sell : null,
+        spread: brlArs.spread_pct != null ? +brlArs.spread_pct : null,
+        logo: info.logo || null,
+        url: info.url || null,
+        hasFees: !!info.hasFees,
       });
     }
-    list.sort((a, b) => (b.brlArs || 0) - (a.brlArs || 0));
-    $('#pix-tbl').innerHTML = list.length ? `<table class="t">
-      <thead><tr><th style="text-align:left">proveedor</th><th>brl/ars</th><th>brl/usdt</th><th>brl/usd</th><th>spread</th></tr></thead>
-      <tbody>${list.map((r, i) => `<tr>
-        <td><span class="${i===0?'hot':''}">${esc(r.name)}</span></td>
-        <td class="num ${i===0?'hot':''}">${r.brlArs != null ? '$' + fmt(r.brlArs, 2) : '—'}</td>
-        <td class="num dim">${r.brlUsdt != null ? r.brlUsdt.toFixed(4) : '—'}</td>
-        <td class="num dim">${r.brlUsd != null ? r.brlUsd.toFixed(4) : '—'}</td>
-        <td class="num dim">${r.spread != null ? r.spread.toFixed(2) + '%' : '—'}</td>
-      </tr>`).join('')}</tbody></table>` : `<div class="empty-state">sin proveedores</div>`;
+    providers.sort((a, b) => a.price - b.price);
+    if (!providers.length) { $('#pix-tbl').innerHTML = '<div class="empty-state">sin proveedores</div>'; return; }
+    const best = providers[0], worst = providers[providers.length - 1];
+
+    $('#pix-best').innerHTML = `
+      <div class="dol-best-card">
+        <div class="lbl">mejor precio</div>
+        <div class="with-logo">${logoImgHTML(best.logo, best.name)}<div class="txt"><b>${esc(best.name)}</b><small>mandás a</small></div></div>
+        <div class="val hot">$${fmt(best.price, 2)}</div>
+      </div>
+      <div class="dol-best-card">
+        <div class="lbl">peor precio</div>
+        <div class="with-logo">${logoImgHTML(worst.logo, worst.name)}<div class="txt"><b>${esc(worst.name)}</b><small>mandás a</small></div></div>
+        <div class="val down">$${fmt(worst.price, 2)}</div>
+      </div>
+      <div class="dol-best-card">
+        <div class="lbl">diferencia</div>
+        <div class="with-logo"><div class="txt"><b>best vs worst</b><small>ars por real</small></div></div>
+        <div class="val hot">$${fmt(worst.price - best.price, 2)}</div>
+      </div>`;
+
+    $('#pix-count').textContent = providers.length;
+    $('#pix-tbl').innerHTML = `<table class="t">
+      <thead><tr>
+        <th style="text-align:left">#</th>
+        <th style="text-align:left">proveedor</th>
+        <th>precio ars/brl</th>
+        <th>vs best</th>
+        <th>spread</th>
+        <th></th>
+      </tr></thead>
+      <tbody>${providers.map((p, i) => {
+        const diff = p.price - best.price;
+        const spread = p.spread != null ? p.spread.toFixed(1) + '%' : '—';
+        const fees = p.hasFees ? '<span class="tag" style="margin-left:6px">+fees</span>' : '';
+        return `<tr>
+          <td class="dim">${String(i + 1).padStart(2, '0')}</td>
+          <td>${logoImgHTML(p.logo, p.name, true)} <span class="${i===0?'hot':''}">${esc(p.name)}</span>${fees}</td>
+          <td class="num ${i===0?'hot':''}">$${fmt(p.price, 2)}</td>
+          <td class="num ${diff > 0 ? 'down' : 'dim'}">${diff > 0 ? '+$' + fmt(diff, 2) : '—'}</td>
+          <td class="num dim">${spread}</td>
+          <td>${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" style="color:var(--hot);text-decoration:underline">ir</a>` : ''}</td>
+        </tr>`;
+      }).join('')}</tbody></table>
+      <div class="hint" style="margin-top:8px">fuente: comparapix.ar</div>`;
   } catch (e) {
     $('#pix-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
@@ -1262,6 +1648,7 @@ async function screenMundial(main) {
 
 const SCREENS = {
   mundo: screenMundo,
+  hotusa: screenHotUSA,
   cedears: screenCedears,
   ars: screenARS,
   bonos: screenBonos,
@@ -1275,7 +1662,7 @@ const SCREENS = {
 
 // ─── Keyboard ─────────────────────────────────────────────────
 let _gMode = false, _gTimer = null;
-const G_KEY = { m: 'mundo', c: 'cedears', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
+const G_KEY = { m: 'mundo', u: 'hotusa', c: 'cedears', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
 
 function onKey(e) {
   // Ignore if user is typing in input/textarea

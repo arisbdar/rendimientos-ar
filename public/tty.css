@@ -474,6 +474,8 @@ section.s .sub2 {
 @media (min-width: 960px) {
   .cols.two { grid-template-columns: 1.3fr 1fr; }
   .cols.lg-chart { grid-template-columns: 1.6fr 1fr; }
+  /* Table-left layout: table takes more space, chart pinned right */
+  .cols.tbl-left { grid-template-columns: 1.3fr 1fr; }
 }
 
 /* Loading states */
@@ -725,4 +727,200 @@ table.t td.cell-logo { padding-left: 0; }
   text-align: center;
   padding: 28px 0;
   font-size: 12px;
+}
+
+/* KPI line (for CEDEARs avg implícitos) */
+.kline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.kline .k .lbl {
+  font-size: 10px;
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.kline .k .val {
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  color: var(--hot);
+  margin-top: 2px;
+}
+.kline .k .chg { font-size: 11px; }
+
+/* Dolar/PIX best cards row */
+.dol-best-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 12px;
+}
+@media (max-width: 700px) { .dol-best-row { grid-template-columns: 1fr; } }
+.dol-best-card {
+  border: 1px solid var(--rule);
+  padding: 12px 14px;
+  background: var(--bg-1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.dol-best-card .lbl {
+  font-size: 10px;
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.dol-best-card .val {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Dolar controls (coin / sort / 24x7) */
+.dol-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 14px 0 10px;
+}
+.dol-seg {
+  display: inline-flex;
+  border: 1px solid var(--rule-hi);
+}
+.dol-seg button {
+  padding: 4px 10px;
+  color: var(--fg-dim);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-right: 1px solid var(--rule-hi);
+}
+.dol-seg button:last-child { border-right: 0; }
+.dol-seg button.on {
+  background: var(--fg);
+  color: var(--inv-fg);
+}
+.dol-seg button:hover { color: var(--hot); }
+.dol-seg button.on:hover { color: var(--inv-fg); }
+.dol-24x7 {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.dol-24x7 input { accent-color: var(--fg); }
+
+/* Search input (CEDEARs) */
+.ced-search {
+  flex: 1;
+  background: var(--bg-1);
+  border: 1px solid var(--rule-hi);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: 0;
+  max-width: 420px;
+}
+.ced-search::placeholder { color: var(--fg-faint); }
+.ced-search:focus { border-color: var(--fg); }
+
+/* Hot USA movers grid */
+.hot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+.hot-card {
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  cursor: default;
+}
+.hot-card:hover { border-color: var(--fg-dim); }
+.hot-card .hot-info { min-width: 0; }
+.hot-card .hot-symbol {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+}
+.hot-card .hot-name {
+  font-size: 11px;
+  color: var(--fg-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hot-card .hot-right { text-align: right; }
+.hot-card .hot-price {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--hot);
+  font-variant-numeric: tabular-nums;
+}
+.hot-card .hot-change {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Earnings timeline (Hot USA) */
+.earn-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.earn-day {
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+  background: var(--bg);
+}
+.earn-day-head {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed var(--rule-hi);
+}
+.earn-day-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.earn-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 2px 0;
+}
+.earn-sym {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fg);
+}
+.earn-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
