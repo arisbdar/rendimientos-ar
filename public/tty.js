@@ -18,12 +18,10 @@ const LS = {
 };
 
 // Nav structure — must match README order
+// Orden del nav por prioridad. `tier: 'sec'` = secundario (más dim, después del separador).
 const NAV = [
+  // ── primarios (más importantes) ──
   { k: 'mundo',       label: 'mundo',       key: 'm' },
-  { k: 'earnings',    label: 'earnings',    key: 'e', href: '/earnings' },
-  { k: 'cedears',     label: 'cedears',     key: 'c' },
-  { k: 'remesas',     label: 'remesas',     key: 's' },
-  { k: 'cuotas',      label: 'cuotas',      key: 'q' },
   { k: 'ars',         label: 'ars',         key: 'a',
     subs: [
       { k: 'billeteras',       label: 'billeteras' },
@@ -36,11 +34,16 @@ const NAV = [
   },
   { k: 'bonos',        label: 'bonos',        key: 'b' },
   { k: 'ons',          label: 'ons',          key: 'o' },
-  { k: 'hipotecarios', label: 'hipotecarios', key: 'h' },
   { k: 'dolar',        label: 'dólar',        key: 'd' },
   { k: 'pix',          label: 'pix',          key: 'p' },
-  { k: 'bcra',         label: 'bcra',         key: 'r' },
-  { k: 'mundial',      label: 'mundial',      key: 'w' },
+  { k: 'remesas',      label: 'remesas',      key: 's' },
+  // ── secundarios (menos importantes) ──
+  { k: 'earnings',    label: 'earnings',     key: 'e', href: '/earnings', tier: 'sec' },
+  { k: 'cedears',     label: 'cedears',      key: 'c', tier: 'sec' },
+  { k: 'hipotecarios',label: 'hipotecarios', key: 'h', tier: 'sec' },
+  { k: 'bcra',        label: 'bcra',         key: 'r', tier: 'sec' },
+  { k: 'mundial',     label: 'mundial',      key: 'w', tier: 'sec' },
+  { k: 'cuotas',      label: 'cuotas',       key: 'q', tier: 'sec' },
 ];
 
 // ─── Helpers ───────────────────────────────────────────────────
@@ -574,13 +577,23 @@ function renderTopBar() {
 function renderNav() {
   const nav = $('#tty-nav-primary');
   if (!nav) return;
-  nav.innerHTML = NAV.map(item => {
-    if (item.href) {
-      // External page link (e.g. /earnings, /cedears in other pages)
-      return `<a href="${esc(item.href)}" class="tty-nav-ext"><button>${esc(item.label)}</button></a>`;
+  const parts = [];
+  let sepInserted = false;
+  for (const item of NAV) {
+    // Separador visual justo antes del primer item secundario
+    if (item.tier === 'sec' && !sepInserted) {
+      parts.push('<span class="nav-sep" aria-hidden="true">│</span>');
+      sepInserted = true;
     }
-    return `<button data-nav="${esc(item.k)}" class="${STATE.section.main === item.k ? 'on' : ''}">${esc(item.label)}</button>`;
-  }).join('');
+    const secCls = item.tier === 'sec' ? ' sec' : '';
+    if (item.href) {
+      parts.push(`<a href="${esc(item.href)}" class="tty-nav-ext${secCls}"><button>${esc(item.label)}</button></a>`);
+    } else {
+      const onCls = STATE.section.main === item.k ? ' on' : '';
+      parts.push(`<button data-nav="${esc(item.k)}" class="${(onCls + secCls).trim()}">${esc(item.label)}</button>`);
+    }
+  }
+  nav.innerHTML = parts.join('');
   $$('button[data-nav]', nav).forEach(b => {
     b.addEventListener('click', () => goTo(b.getAttribute('data-nav'), null));
   });

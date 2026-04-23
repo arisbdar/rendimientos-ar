@@ -213,6 +213,25 @@ nav.primary button.on::after {
   height: 1px;
   background: var(--fg);
 }
+/* Items secundarios: más tenues, font más chico, menos padding */
+nav.primary button.sec,
+nav.primary .tty-nav-ext.sec button {
+  color: var(--fg-faint);
+  font-size: 11px;
+  opacity: 0.85;
+  padding-right: 8px;
+}
+nav.primary button.sec:hover,
+nav.primary .tty-nav-ext.sec button:hover { color: var(--hot); opacity: 1; }
+nav.primary button.sec.on { color: var(--fg); opacity: 1; }
+/* Separador visual entre tier primario y secundario */
+nav.primary .nav-sep {
+  color: var(--rule-hi);
+  padding: 0 8px 0 4px;
+  font-size: 13px;
+  user-select: none;
+  align-self: center;
+}
 
 /* Subnav */
 nav.sub {
@@ -764,6 +783,9 @@ table.t td.cell-logo { padding-left: 0; }
   .brand i { font-size: 13px; }
   nav.primary { font-size: 11px; gap: 0 2px; padding-bottom: 4px; }
   nav.primary button { padding: 3px 8px 3px 0; }
+  nav.primary button.sec,
+  nav.primary .tty-nav-ext.sec button { font-size: 10px; padding-right: 6px; }
+  nav.primary .nav-sep { padding: 0 4px; font-size: 11px; }
   nav.sub { padding: 6px 0; font-size: 11px; }
   nav.sub button { padding: 2px 8px; }
 
