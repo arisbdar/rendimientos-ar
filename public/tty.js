@@ -2552,17 +2552,17 @@ const REMESAS = [
   {
     name: 'Wallbit',
     logoKey: 'Wallbit',
-    fee: 1.00,
+    fee: 0,
     aperturaFree: true,
     mantenimientoFree: true,
-    feeMin: 2.00,
+    feeMin: 0,
     checking: true,
     subnominada: true,
     card: true,
     android: true,
     apple: true,
     url: 'https://wallbit.io',
-    note: 'checking account',
+    note: 'sin costo · checking account',
   },
   {
     name: 'Grabr Fi',
@@ -2597,22 +2597,22 @@ const REMESAS = [
   {
     name: 'Takenos',
     logoKey: 'Takenos',
-    fee: 2.00,
+    fee: 0,
     aperturaFree: true,
     mantenimientoFree: true,
-    feeMin: 2.50,
+    feeMin: 0,
     checking: false,
     subnominada: true,
     card: false,
     android: true,
     apple: true,
     url: 'https://takenos.com',
-    note: 'link de cobro',
+    note: 'sin costo · link de cobro',
   },
   {
     name: 'Payoneer',
     logoKey: 'Payoneer',
-    fee: 2.00,
+    fee: 1.00,
     aperturaFree: true,
     mantenimientoFree: true,
     feeMin: 1.50,
@@ -2627,7 +2627,8 @@ const REMESAS = [
   {
     name: 'Arq',
     logoKey: 'Arq',
-    fee: 2.50,
+    fee: 0,
+    feeFlat: 3.00,       // USD flat por transferencia (no es %)
     aperturaFree: true,
     mantenimientoFree: true,
     feeMin: 3.00,
@@ -2637,12 +2638,12 @@ const REMESAS = [
     android: true,
     apple: true,
     url: 'https://arq.app',
-    note: 'checking account',
+    note: 'USD 3 flat · checking account',
   },
   {
     name: 'Astropay',
     logoKey: 'Astropay',
-    fee: 2.00,
+    fee: 1.00,
     aperturaFree: true,
     mantenimientoFree: true,
     feeMin: null,
@@ -2718,14 +2719,30 @@ const cross = () => '<span class="down" style="font-family:var(--font-mono);opac
 const dash = () => '<span class="dim">—</span>';
 
 async function screenRemesas(main) {
-  // Sort by fee asc (Cocos first, then lowest fees)
+  // Costo efectivo sobre USD 1000 — considera fee %, mínimo y flat.
+  const effectiveCost = (r, amount = 1000) => {
+    const pct = (r.fee || 0) * amount / 100;
+    const min = r.feeMin || 0;
+    const flat = r.feeFlat || 0;
+    // Si hay flat, se suma al % (Arq: 0% + USD 3); mínimo aplica como piso del %
+    return Math.max(pct, min) + flat;
+  };
+  // Sort por costo efectivo asc sobre USD 1000 (más barato primero)
   const rows = REMESAS.slice().sort((a, b) => {
     if (a.unavailable && !b.unavailable) return 1;
     if (!a.unavailable && b.unavailable) return -1;
-    return (a.fee ?? 99) - (b.fee ?? 99);
+    return effectiveCost(a) - effectiveCost(b);
   });
 
   const best = rows.filter(r => !r.unavailable)[0];
+
+  // Formato legible del costo para la best card: "gratis", "USD 3 flat" o "X%"
+  const feeLabel = (r) => {
+    if (r.feeFlat) return 'USD ' + r.feeFlat.toFixed(0) + ' flat';
+    if ((r.fee || 0) === 0 && (r.feeMin || 0) === 0) return 'gratis';
+    return r.fee.toFixed(2) + '%';
+  };
+  const bestNet = 1000 - effectiveCost(best);
 
   main.innerHTML = pHd('remesas · cobrar usd del exterior', 'Remesas',
     'Comparador de apps para cobrar en dólares desde el exterior (freelance, remoto, exportación). Fee %, apertura, fee mínimo y features por proveedor.')
@@ -2733,19 +2750,19 @@ async function screenRemesas(main) {
         <h2><span>mejor del momento</span><span class="line"></span></h2>
         <div class="dol-best-row">
           <div class="dol-best-card">
-            <div class="lbl">menor fee</div>
+            <div class="lbl">menor costo</div>
             <div class="with-logo">${remesaLogoHTML(best.name)}<div class="txt"><b>${esc(best.name)}</b><small>${esc(best.note)}</small></div></div>
-            <div class="val hot">${best.fee.toFixed(2)}%</div>
+            <div class="val hot">${feeLabel(best)}</div>
           </div>
           <div class="dol-best-card">
             <div class="lbl">fee mínimo</div>
             <div class="with-logo">${remesaLogoHTML(best.name)}<div class="txt"><b>${esc(best.name)}</b><small>por transferencia</small></div></div>
-            <div class="val hot">${best.feeMin != null ? 'USD ' + best.feeMin.toFixed(2) : '—'}</div>
+            <div class="val hot">${best.feeMin != null && best.feeMin > 0 ? 'USD ' + best.feeMin.toFixed(2) : '—'}</div>
           </div>
           <div class="dol-best-card">
             <div class="lbl">ejemplo · usd 1.000</div>
-            <div class="with-logo"><div class="txt"><b>recibís</b><small>neto de comisión + fee mínimo</small></div></div>
-            <div class="val hot">USD ${(1000 - Math.max(1000 * best.fee / 100, best.feeMin || 0)).toFixed(2)}</div>
+            <div class="with-logo"><div class="txt"><b>recibís</b><small>neto de comisión</small></div></div>
+            <div class="val hot">USD ${bestNet.toFixed(2)}</div>
           </div>
         </div>
       </section>
@@ -2763,7 +2780,7 @@ async function screenRemesas(main) {
     <thead><tr>
       <th style="text-align:left">#</th>
       <th style="text-align:left">proveedor</th>
-      <th>fee %</th>
+      <th>fee</th>
       <th>fee mín</th>
       <th>apertura</th>
       <th>mantenim.</th>
@@ -2787,13 +2804,22 @@ async function screenRemesas(main) {
           <td class="num down" style="text-align:left">${esc(r.note)}</td>
         </tr>`;
       }
-      const net = 1000 - Math.max(1000 * r.fee / 100, r.feeMin || 0);
+      const net = 1000 - effectiveCost(r);
       const bestMark = i === 0;
+      // Display del fee: "gratis" si 0% + 0 min; "flat X" si tiene feeFlat; si no, "X%"
+      let feeCell;
+      if (r.feeFlat) {
+        feeCell = `<span class="${bestMark ? 'hot' : ''}">USD ${r.feeFlat.toFixed(0)} flat</span>`;
+      } else if ((r.fee || 0) === 0 && (r.feeMin || 0) === 0) {
+        feeCell = `<span class="up">gratis</span>`;
+      } else {
+        feeCell = `<span class="${bestMark ? 'hot' : ''}">${r.fee.toFixed(2)}%</span>`;
+      }
       return `<tr${r.name === 'Cocos' ? ' style="background:var(--bg-1)"' : ''}>
         <td class="${bestMark ? 'hot' : 'dim'}">${String(i + 1).padStart(2, '0')}</td>
         <td>${remesaLogoHTML(r.name, true)} <span class="${bestMark ? 'hot' : ''}">${esc(r.name)}</span> <small class="dim" style="margin-left:4px">${esc(r.note)}</small></td>
-        <td class="num ${bestMark ? 'hot' : ''}">${r.fee.toFixed(2)}%</td>
-        <td class="num dim">${r.feeMin != null ? 'USD ' + r.feeMin.toFixed(2) : '—'}</td>
+        <td class="num">${feeCell}</td>
+        <td class="num dim">${r.feeMin != null && r.feeMin > 0 ? 'USD ' + r.feeMin.toFixed(2) : '—'}</td>
         <td>${r.aperturaFree ? check() : dash()}</td>
         <td>${r.mantenimientoFree ? check() : dash()}</td>
         <td>${r.checking ? check() : cross()}</td>

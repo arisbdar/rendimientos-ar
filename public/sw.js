@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rendimientos-tty-v7';
+const CACHE_NAME = 'rendimientos-tty-v8';
 const STATIC_ASSETS = [
   '/',
   '/tty.css',
