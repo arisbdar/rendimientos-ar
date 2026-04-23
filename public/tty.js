@@ -4,7 +4,7 @@
 
 // ─── State ────────────────────────────────────────────────────
 const STATE = {
-  section: { main: 'mundo', sub: null },
+  section: { main: 'monitor', sub: 'mundo' },
   palette: 'white',
   scanlines: 'on',
   density: 'medium',
@@ -21,7 +21,12 @@ const LS = {
 // Orden del nav por prioridad. `tier: 'sec'` = secundario (más dim, después del separador).
 const NAV = [
   // ── primarios (más importantes) ──
-  { k: 'mundo',       label: 'mundo',       key: 'm' },
+  { k: 'monitor',     label: 'monitor',     key: 'm',
+    subs: [
+      { k: 'mundo',  label: 'mundo'  },
+      { k: 'argy',   label: 'argy'   },
+    ]
+  },
   { k: 'ars',         label: 'ars',         key: 'a',
     subs: [
       { k: 'billeteras',       label: 'billeteras' },
@@ -642,6 +647,8 @@ function parseHash() {
   const h = (location.hash || '').replace(/^#/, '');
   if (!h) return null;
   const [main, sub] = h.split('.');
+  // Backward-compat: '#mundo' y '#mundo.xxx' del diseño anterior → 'monitor.mundo'
+  if (main === 'mundo') return { main: 'monitor', sub: 'mundo' };
   if (!NAV.find(n => n.k === main)) return null;
   return { main, sub: sub || null };
 }
@@ -695,6 +702,13 @@ const MUNDO_ORDER = {
   // Crypto — por capitalización
   BTC: 0, ETH: 1, AVAX: 2,
 };
+
+// ─── Monitor router: mundo (internacional) | argy (argentina) ──
+async function screenMonitor(main, sub) {
+  const current = sub || 'mundo';
+  if (current === 'argy') return screenArgy(main);
+  return screenMundo(main);
+}
 
 async function screenMundo(main) {
   main.innerHTML = pHd('mundo · monitor global', 'Monitor Global', 'Principales indicadores del mercado mundial, separados por categoría. Click en una fila para verla grande a la derecha.')
@@ -945,6 +959,131 @@ function normalizeAsset(a, bucket) {
   // Orden natural dentro de la categoría (ver MUNDO_ORDER). Items sin entry → 99.
   const ord = MUNDO_ORDER[sym] != null ? MUNDO_ORDER[sym] : 99;
   return { sym, name, last, chg, ytd, sp: sp || [], pct, d, ord };
+}
+
+// ─── Screen: Argy — Monitor Argentina (FX, tasas, macro) ────────
+// Curated dashboard con las variables que más se miran: dólar (mayorista,
+// minorista, MEP, CCL, blue, cripto), tasas (TAMAR, BADLAR, depósitos,
+// préstamos), macro (riesgo país, inflación, reservas) y monetario.
+// Fuente: /api/cotizaciones (oficial+MEP+CCL+riesgo), /api/dolar
+// (blue/cripto/USDT), /api/bcra (todo lo demás).
+async function screenArgy(main) {
+  main.innerHTML = pHd('monitor · argy · variables clave',
+    'Monitor Argentina',
+    'Cotizaciones, tasas y macro de Argentina en una sola pantalla. Datos BCRA + comparadolar + argentinadatos.')
+    + `<section class="s"><h2><span>dólar</span><span class="line"></span></h2><div id="argy-fx" class="argy-grid"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>tasas</span><span class="line"></span></h2><div id="argy-rates" class="argy-grid"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>macro</span><span class="line"></span></h2><div id="argy-macro" class="argy-grid"><div class="loading-row"> cargando…</div></div></section>`
+    + `<section class="s"><h2><span>monetario</span><span class="line"></span></h2><div id="argy-mon" class="argy-grid"><div class="loading-row"> cargando…</div></div></section>`
+    + `<p class="hint" style="margin-top:12px">Fuentes: BCRA (tasas, inflación, reservas, monetario) · argentinadatos (riesgo país, MEP, CCL) · comparadolar (blue, cripto/USDT). Actualizados cada 5 min.</p>`;
+
+  try {
+    const [cot, bcra, dol] = await Promise.all([
+      fetchCached('/api/cotizaciones', 60_000).catch(() => ({})),
+      fetchCached('/api/bcra', 300_000).catch(() => ({ data: [] })),
+      fetchCached('/api/dolar', 60_000).catch(() => ({ exchanges: {} })),
+    ]);
+
+    const bcraList = Array.isArray(bcra.data) ? bcra.data : [];
+    // Buscar variable BCRA por substring en el nombre (case-insensitive)
+    const findVar = (q) => bcraList.find(v => String(v.nombre || '').toLowerCase().includes(q.toLowerCase()));
+
+    // Helper para renderizar una card de stat
+    function card(lbl, val, sub, cls) {
+      const klass = cls || '';
+      return `<div class="argy-card ${klass}">
+        <div class="lbl">${esc(lbl)}</div>
+        <div class="val hot">${val}</div>
+        ${sub ? `<div class="sub dim">${sub}</div>` : ''}
+      </div>`;
+    }
+
+    // ─── Dólar ───
+    const usdArr = (dol.exchanges && dol.exchanges.usd) || [];
+    const usdtArr = (dol.exchanges && dol.exchanges.usdt) || [];
+    // Blue: promedio de entidades "crypto-like" 24/7 (excluimos bancos)
+    const nonBanks = usdArr.filter(e => !e.isBank && e.is24x7 && e.ask > 0);
+    const avgBlueAsk = nonBanks.length ? nonBanks.reduce((a, b) => a + b.ask, 0) / nonBanks.length : null;
+    // USDT: promedio ask
+    const usdtValid = usdtArr.filter(e => e.ask > 0);
+    const avgUsdt = usdtValid.length ? usdtValid.reduce((a, b) => a + b.ask, 0) / usdtValid.length : null;
+
+    const mayorista = findVar('mayorista');
+    const minorista = findVar('minorista');
+    const cot_oficial = cot.oficial && cot.oficial.price;
+    const cot_mep = cot.mep && cot.mep.price;
+    const cot_ccl = cot.ccl && cot.ccl.price;
+    const brechaMep = (cot_mep && cot_oficial) ? ((cot_mep / cot_oficial - 1) * 100) : null;
+    const brechaCcl = (cot_ccl && cot_oficial) ? ((cot_ccl / cot_oficial - 1) * 100) : null;
+
+    $('#argy-fx').innerHTML = [
+      card('mayorista', cot_oficial ? '$' + fmt(cot_oficial, 2) : (mayorista ? '$' + fmt(+mayorista.valor, 2) : '—'), 'BCRA referencia'),
+      card('minorista', minorista ? '$' + fmt(+minorista.valor, 2) : '—', 'BCRA vendedor'),
+      card('MEP', cot_mep ? '$' + fmt(cot_mep, 2) : '—', brechaMep != null ? `brecha +${fmt(brechaMep, 1)}%` : 'AL30/AL30D'),
+      card('CCL', cot_ccl ? '$' + fmt(cot_ccl, 2) : '—', brechaCcl != null ? `brecha +${fmt(brechaCcl, 1)}%` : 'AL30/AL30C'),
+      card('blue', avgBlueAsk ? '$' + fmt(avgBlueAsk, 2) : '—', nonBanks.length ? `promedio ${nonBanks.length} exchanges` : 'sin datos'),
+      card('cripto · USDT', avgUsdt ? '$' + fmt(avgUsdt, 2) : '—', usdtValid.length ? `promedio ${usdtValid.length} exchanges` : 'sin datos'),
+    ].join('');
+
+    // ─── Tasas ───
+    const tamarTna = findVar('TAMAR Privados (TNA)');
+    const tamarTea = findVar('TAMAR Privados (TEA)');
+    const badlarTna = findVar('BADLAR Privados (TNA)');
+    const badlarTea = findVar('BADLAR Privados (TEA)');
+    const dep30 = findVar('Depósitos 30');
+    const presPer = findVar('Préstamos Personales');
+    const adelCC = findVar('Adelantos');
+    const baibar = findVar('BAIBAR');
+
+    $('#argy-rates').innerHTML = [
+      card('TAMAR', tamarTna ? fmt(+tamarTna.valor, 2) + '%' : '—',
+        tamarTea ? `TNA · TEA ${fmt(+tamarTea.valor, 2)}%` : 'TNA'),
+      card('BADLAR', badlarTna ? fmt(+badlarTna.valor, 2) + '%' : '—',
+        badlarTea ? `TNA · TEA ${fmt(+badlarTea.valor, 2)}%` : 'TNA'),
+      card('caución · BAIBAR', baibar ? fmt(+baibar.valor, 2) + '%' : '—', 'interbancaria TNA'),
+      card('depósitos 30d', dep30 ? fmt(+dep30.valor, 2) + '%' : '—', 'TNA'),
+      card('préstamos personales', presPer ? fmt(+presPer.valor, 2) + '%' : '—', 'TNA'),
+      card('adelantos cta cte', adelCC ? fmt(+adelCC.valor, 2) + '%' : '—', 'TNA'),
+    ].join('');
+
+    // ─── Macro ───
+    const riesgo = (cot.riesgoPais && cot.riesgoPais.value) || null;
+    const inflMes = findVar('Inflación Mensual');
+    const inflYoY = findVar('Inflación Interanual');
+    const inflEsp = findVar('Inflación Esperada');
+    const reservas = findVar('Reservas Internacionales');
+    const reservasMUsd = reservas ? +reservas.valor : null; // unit = millones USD
+
+    $('#argy-macro').innerHTML = [
+      card('riesgo país', riesgo != null ? fmt(riesgo, 0) + ' bps' : '—', 'EMBI argentinadatos'),
+      card('inflación mensual', inflMes ? fmt(+inflMes.valor, 1) + '%' : '—',
+        inflMes ? 'IPC · ' + esc(inflMes.fecha || '') : 'IPC'),
+      card('inflación interanual', inflYoY ? fmt(+inflYoY.valor, 1) + '%' : '—',
+        inflYoY ? 'IPC · ' + esc(inflYoY.fecha || '') : 'IPC'),
+      card('expectativa 12m', inflEsp ? fmt(+inflEsp.valor, 1) + '%' : '—', 'REM BCRA'),
+      card('reservas brutas', reservasMUsd != null ? 'USD ' + fmt(reservasMUsd / 1000, 1) + ' MM' : '—',
+        reservas ? esc(reservas.fecha || '') : 'BCRA'),
+    ].join('');
+
+    // ─── Monetario ───
+    const baseMon = findVar('Base Monetaria');
+    const circMon = findVar('Circulación Monetaria');
+    const deps = findVar('Depósitos en EF');
+    const prestSP = findVar('Préstamos al Sector Privado');
+    const m2Yoy = findVar('M2 Privado');
+
+    const fmtARS = (v) => v >= 1e6 ? '$' + fmt(v / 1e6, 2) + ' B' : '$' + fmt(v / 1000, 1) + ' M';
+
+    $('#argy-mon').innerHTML = [
+      card('base monetaria', baseMon ? fmtARS(+baseMon.valor) : '—', baseMon ? esc(baseMon.fecha || '') : 'BCRA'),
+      card('circulación', circMon ? fmtARS(+circMon.valor) : '—', 'billetes + efectivo'),
+      card('depósitos totales', deps ? fmtARS(+deps.valor) : '—', 'entidades financieras'),
+      card('préstamos sector privado', prestSP ? fmtARS(+prestSP.valor) : '—', 'BCRA'),
+      card('M2 privado · YoY', m2Yoy ? fmt(+m2Yoy.valor, 1) + '%' : '—', 'var. interanual'),
+    ].join('');
+  } catch (e) {
+    $('#argy-fx').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
 }
 
 // ─── Stubs (overridable per phase) ────────────────────────────
@@ -3114,7 +3253,7 @@ async function screenMundial(main) {
 }
 
 const SCREENS = {
-  mundo: screenMundo,
+  monitor: screenMonitor,
   cedears: screenCedears,
   remesas: screenRemesas,
   cuotas: screenCuotas,
@@ -3130,7 +3269,7 @@ const SCREENS = {
 
 // ─── Keyboard ─────────────────────────────────────────────────
 let _gMode = false, _gTimer = null;
-const G_KEY = { m: 'mundo', c: 'cedears', s: 'remesas', q: 'cuotas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
+const G_KEY = { m: 'monitor', c: 'cedears', s: 'remesas', q: 'cuotas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial' };
 const G_EXT = { e: '/earnings' };
 
 function onKey(e) {
@@ -3368,7 +3507,8 @@ function renderFooter() {
       <div>
         <h4>más</h4>
         <ul>
-          <li><a href="#mundo">mundo</a></li>
+          <li><a href="#monitor.mundo">monitor · mundo</a></li>
+          <li><a href="#monitor.argy">monitor · argy</a></li>
           <li><a href="#hipotecarios">hipotecarios</a></li>
           <li><a href="#pix">pix</a></li>
           <li><a href="#bcra">bcra</a></li>

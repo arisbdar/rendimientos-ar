@@ -828,6 +828,11 @@ table.t td.cell-logo { padding-left: 0; }
   .dol-seg button { padding: 3px 8px; font-size: 10px; }
   .dol-24x7 { font-size: 10px; }
 
+  /* Argy monitor: 2 cards por fila en mobile */
+  .argy-grid { grid-template-columns: 1fr 1fr; }
+  .argy-card { padding: 10px 12px; }
+  .argy-card .val { font-size: 17px; }
+
   /* Cuotas calculator: comfortable on mobile */
   .cuotas-grid { grid-template-columns: 1fr; gap: 10px; }
   .cq-field > input { font-size: 14px; padding: 8px 10px; }
@@ -1256,6 +1261,42 @@ table.t td.cell-logo { padding-left: 0; }
   cursor: pointer;
 }
 .dol-24x7 input { accent-color: var(--fg); }
+
+/* ─── Monitor · Argy (dashboard Argentina) ────────────────── */
+.argy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--rule-hi);
+  border: 1px solid var(--rule-hi);
+  margin: 10px 0 0;
+}
+.argy-card {
+  background: var(--bg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.argy-card .lbl {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--fg-dim);
+}
+.argy-card .val {
+  font-size: 22px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+.argy-card .sub {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-faint);
+  margin-top: 2px;
+}
 
 /* ─── Cuotas vs Contado (calculadora tipo infleta) ─────────── */
 .cuotas-grid {
