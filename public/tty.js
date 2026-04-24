@@ -2315,8 +2315,11 @@ async function screenDolar(main) {
     const state = { coin: 'usd', sort: 'buy', only24x7: !marketOpen };
     $('#dol-24x7').checked = state.only24x7;
 
-    // Proveedores excluidos (por restricciones regulatorias / requests del equipo)
+    // Proveedores excluidos del listado completo (restricciones regulatorias)
     const EXCLUDED = new Set(['binance']);
+    // Bid poco confiable — publican compra muy alta pero no la honran en la práctica.
+    // Los escondemos del cálculo de 'mejor para vender' y del sort por venta.
+    const BID_UNRELIABLE = new Set(['banco-credicoop', 'banco-santander']);
     function getList() {
       if (state.coin === 'usd') {
         const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
@@ -2324,12 +2327,15 @@ async function screenDolar(main) {
       }
       return (exchanges[state.coin] || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
     }
+    // Lista para calcular "mejor para vender" / sort por bid. Filtramos BID_UNRELIABLE.
+    const sellList = () => getList().filter(e => !BID_UNRELIABLE.has(e.id));
 
     function renderBest() {
       const list = getList();
+      const sList = sellList();
       if (!list.length) { $('#dol-best').innerHTML = '<div class="empty-state">sin proveedores</div>'; return; }
       const bestBuy = list.reduce((a, b) => a.ask < b.ask ? a : b);
-      const bestSell = list.reduce((a, b) => a.bid > b.bid ? a : b);
+      const bestSell = (sList.length ? sList : list).reduce((a, b) => a.bid > b.bid ? a : b);
       const bestSp = list.reduce((a, b) => (a.spread < b.spread ? a : b));
       $('#dol-best').innerHTML = `
         <div class="dol-best-card">
@@ -2350,7 +2356,10 @@ async function screenDolar(main) {
     }
 
     function renderTable() {
-      const list = getList();
+      // Cuando sorteás por 'mejor venta' escondemos los bancos con bid irreal
+      // (credicoop/santander) del listado — si no aparecen #1 con un precio
+      // inflado que no van a honrar
+      const list = state.sort === 'sell' ? sellList() : getList();
       const sorted = [...list].sort((a, b) => state.sort === 'buy' ? a.ask - b.ask : b.bid - a.bid);
       $('#dol-tbl').innerHTML = sorted.length ? `<table class="t">
         <thead><tr>
