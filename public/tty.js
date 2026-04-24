@@ -2307,7 +2307,8 @@ async function screenDolar(main) {
         <div id="dol-tbl"><div class="loading-row"> cargando proveedores…</div></div>
       </section>`;
   try {
-    const { exchanges, updated } = await fetchCached('/api/dolar', 60_000);
+    // 30s cache — coincide con s-maxage del endpoint para evitar doble-cacheo
+    const { exchanges, updated } = await fetchCached('/api/dolar', 30_000);
     // market open Mon-Fri 10-17 ART
     const now = new Date();
     const artNow = new Date(now.getTime() + (now.getTimezoneOffset() - 180) * 60000);
