@@ -7,13 +7,8 @@ const CRIPTOYA_BASE = 'https://criptoya.com/api';
 const BLACKLIST = new Set(['brubank']);
 // Providers that only belong in crypto tabs, not USD billete
 const USD_EXCLUDE = new Set(['wallbit', 'global66', 'astropay']);
-// Criptoya exchange slugs que no queremos mostrar (P2P agregados poco confiables,
-// exchanges asiáticos con data de mala calidad, wallets sospechosas)
-const CRYPTO_EXCLUDE = new Set([
-  'binancep2p', 'okexp2p', 'huobip2p', 'paxfulp2p', 'bybitp2p',
-  'weexp2p', 'mexcp2p', 'bingxp2p', 'bitgetp2p', 'eldoradop2p',
-  'universalcoins', 'mexc', 'weex', 'bingx',
-]);
+// Criptoya exchange slugs que no queremos mostrar (P2P agregados, wallets raros, etc.)
+const CRYPTO_EXCLUDE = new Set(['binancep2p', 'okexp2p', 'huobip2p', 'paxfulp2p', 'bybitp2p', 'universalcoins']);
 
 // Pretty-name + logo map para criptoya (keyed by criptoya slug).
 // Los slugs que no estén acá caen al fallback basado en metadata de comparadolar.
@@ -75,10 +70,8 @@ function normalizeCriptoya(obj, fallbackMeta = {}) {
     const ask = parseFloat(v.ask) || 0;
     const bid = parseFloat(v.bid) || 0;
     if (ask <= 0 || bid <= 0) continue;
-    // Rechazar bid > ask (data rota) o spreads absurdos
-    if (bid >= ask) continue;
     const spread = ((ask - bid) / bid) * 100;
-    if (spread < 0 || spread > 8) continue;
+    if (spread > 12) continue;
     // Saltar entries stale (>30 min vs ahora)
     if (v.time && now - v.time > 1800) continue;
     const meta = CRYPTO_META[slug] || fallbackMeta[slug] || { name: slug, logo: null };
