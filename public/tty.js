@@ -301,6 +301,7 @@ const ENTITY_LOGOS = {
   "Delta": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCIgc3R5bGU9IndpZHRoOiA0MHB4OyBoZWlnaHQ6IDQwcHg7Ij48cmVjdCB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIGZpbGw9IiMwOTQxYTUiLz48cGF0aCBkPSJNMTcuODcsOS43M2MtMS4yMS4zLTIuNDMuNi0zLjY0LjktMi4zNC41OC00LjY5LDEuMTUtNy4wMiwxLjc2LS41My4xNC0uNzEuMDYtLjctLjUxLjAyLTEuNTkuMDItMy4xOCwwLTQuNzcsMC0uNS4xOC0uNjMuNjUtLjYyLDIuNDkuMDIsNC45OC0uMDIsNy40Ny4wMiwzLjQ0LjA1LDYuMywyLjY2LDYuNzgsNi4xMi4zNiwyLjY0LS4xOSw1LTIuMTIsNi45Mi0xLjI4LDEuMjgtMi44OCwxLjkxLTQuNjcsMS45NC0yLjQuMDQtNC44LjAxLTcuMTksMC0uMTksMC0uMzgtLjEtLjU2LS4xNS4xLS4xOS4xNy0uNDEuMzEtLjU2LDMuNDUtMy40Niw2LjkxLTYuOTIsMTAuMzYtMTAuMzguMTYtLjE2LjMtLjM1LjQ2LS41Mi0uMDMtLjA1LS4wNy0uMS0uMS0uMTZaIiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   "Carrefour Banco": "https://api.argentinadatos.com/static/logos/carrefour-banco.png",
   "Mercado Fondo": "https://api.argentinadatos.com/static/logos/mercado-pago.png",
+  "Global66": "https://api.argentinadatos.com/static/logos/global66.svg",
   "LB Finanzas": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTggMTgiPgogIDxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgc3R5bGU9ImZpbGw6ICM1MjIzOTg7Ii8+CiAgPGc+CiAgICA8cGF0aCBkPSJNNi43MSw3Ljc3bC4zOS40OWMuNTIuNjQsMS4xMS45NiwxLjc1Ljk2LDEuMTksMCwyLjI3LTEuMTIsMi4zOS0xLjMxLDAsLjAyLDAsMCwuMDMtLjA1LTEuNDUtLjkyLTIuODktMS44NC00LjMzLTIuNzctLjI0LS4xNS0uNDgtLjIzLS43Mi0uMDUtLjI0LjE5LS4yMi40My0uMTQuNy4yMi42OC40MywxLjM1LjYzLDIuMDNaIiBzdHlsZT0iZmlsbDogI2ZmZjsiLz4KICAgIDxwYXRoIGQ9Ik0xMiw5LjExYzAsLjM2LS4yLjctLjUxLjg4LTEuNDcuOTUtMi45NiwxLjg5LTQuNDMsMi44NC0uMDcuMDUtLjE0LjA5LS4yMi4xNC0uMTguMTQtLjQ0LjE0LS42MiwwLS4xOS0uMTQtLjI2LS4zOS0uMTgtLjYxLjExLS40LjIzLS43OS4zNi0xLjE5LjE4LS41Ny4zOC0xLjEyLjUtMS43LjA3LS4zLjA3LS42MSwwLS45MSwyLjExLDIuNTksNC42OS0uMzYsNC41OS0uNDMuMzQuMjIuNTEuNTMuNTEuOThaIiBzdHlsZT0iZmlsbDogI2ZmZjsiLz4KICA8L2c+Cjwvc3ZnPg==",
   "Pellegrini": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTggMTgiPgogIDxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgc3R5bGU9ImZpbGw6ICMwMDVmODY7Ii8+CiAgPGc+CiAgICA8cGF0aCBkPSJNOSw0Yy0yLjc2LDAtNSwyLjI0LTUsNXMyLjI0LDUsNSw1LDUtMi4yNCw1LTUtMi4yNC01LTUtNVpNMTEuODIsMTEuOXMwLC4wMS0uMDEuMDFoLTUuNnMtLjAxLDAtLjAxLS4wMXYtLjU2czAtLjAxLjAxLS4wMWg1LjZzLjAxLDAsLjAxLjAxdi41NmgwWk04LjA0LDEwLjQzdi0yLjg0aC42NHYyLjg0aC42M3YtMi44NGguNjR2Mi44NGguNjR2LTIuODRoLjY0djIuODRoLjI5di41OHMwLC4wMS0uMDEuMDFoLTUuMDJzLS4wMSwwLS4wMS0uMDF2LS41OGguMjh2LTIuODRoLjY0djIuODRoLjY0LDBaTTEyLjAxLDYuOTlsLS4xOC4zMXMtLjAyLjAyLS4wMy4wMmgtNS41OXMtLjAyLDAtLjAzLS4wMmwtLjE4LS4zMXMwLS4wMiwwLS4wM2wyLjk4LTEuNThzLjAzLDAsLjA0LDBsMi45OCwxLjU4cy4wMS4wMiwwLC4wM2gwWiIgc3R5bGU9ImZpbGw6ICNmZmY7Ii8+CiAgICA8cGF0aCBkPSJNMTAuNDQsNi43OGwtMS40LS42OHMtLjAyLS4wMS0uMDMtLjAxYzAsMC0uMDIsMC0uMDMsMGwtMS40Mi42OXMwLDAsMCwwaDIuODhzLjAxLDAsMCwwWiIgc3R5bGU9ImZpbGw6ICNmZmY7Ii8+CiAgPC9nPgo8L3N2Zz4=",
 };
@@ -325,6 +326,7 @@ function lookupLogoURL(name) {
   if (lower.includes('fiwind')) return ENTITY_LOGOS['Fiwind'];
   if (lower.includes('mercado')) return ENTITY_LOGOS['Mercado Fondo'];
   if (lower.includes('pellegrini') || /naci[oó]n/.test(lower)) return ENTITY_LOGOS['Pellegrini'];
+  if (lower.includes('global66')) return ENTITY_LOGOS['Global66'];
   return null;
 }
 
@@ -1400,6 +1402,20 @@ async function screenARS(main, sub) {
 
 const ARS_SUBS = {};
 
+/** ArgentinaDatos `/fci/variables/ultimo`: `nombre` entidad + `fondo` clase, o legado solo `fondo` entidad. */
+function fciVariableEntityKey(r) {
+  return String((r && (r.nombre || r.fondo)) || '').trim();
+}
+function fciVariableBarName(r) {
+  const key = fciVariableEntityKey(r);
+  if (!key) return '';
+  const u = key.toUpperCase();
+  const inst = u === 'GLOBAL66' ? 'Global66' : key;
+  const fund = String(r.fondo || '').trim();
+  if (r.nombre && fund && fund.toUpperCase() !== key.toUpperCase()) return `${inst} · ${fund}`;
+  return inst;
+}
+
 // 3a. Billeteras — cuentas remuneradas + FCIs curados (Cocos, MP, Ualá, etc.) + otros MM
 ARS_SUBS.billeteras = async function(main) {
   main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas (tasa fija) + FCIs money market de las fintechs más populares + ranking general de money market.')
@@ -1407,15 +1423,17 @@ ARS_SUBS.billeteras = async function(main) {
     + `<section class="s"><h2><span>money market · fintechs populares</span><span class="line"></span><span class="count" id="fci-curados-count">…</span></h2><div id="fci-curados-bars"><div class="loading-row"> cargando fcis…</div></div></section>`
     + `<section class="s"><h2><span>otros money market · cafci</span><span class="line"></span><span class="count" id="fci-otros-count">…</span></h2><div id="fci-otros-bars"><div class="loading-row"> cargando resto…</div></div></section>`;
   try {
-    const [cfg, fciRes] = await Promise.all([
+    const [cfg, fciRes, varUltimo] = await Promise.all([
       fetchCached('/api/config', 120_000),
       fetchCached('/api/cafci', 300_000).catch(() => ({ data: [] })),
+      fetch('https://api.argentinadatos.com/v1/finanzas/fci/variables/ultimo').then(r => (r.ok ? r.json() : [])).catch(() => []),
     ]);
 
     // Sección 1: cuentas remuneradas (garantizados)
     const billeteras = (cfg.garantizados || []).filter(g => g.activo !== false)
       .map(g => ({ name: g.nombre, tna: +g.tna || 0, tag: g.tipo || '', limit: g.limite || '' }))
       .sort((a, b) => b.tna - a.tna);
+    const varRows = Array.isArray(varUltimo) ? varUltimo : [];
     $('#bil-count').textContent = billeteras.length;
     if (billeteras.length) {
       renderBars($('#bil-bars'), billeteras, {
@@ -1469,6 +1487,18 @@ ARS_SUBS.billeteras = async function(main) {
       otros.push({ name: base, tna: +f.tna, tag: 'cafci · money market' });
       if (otros.length >= 10) break;
     }
+    for (const r of varRows) {
+      if (!r || r.tna == null || !Number.isFinite(Number(r.tna)) || Number(r.tna) <= 0) continue;
+      const name = fciVariableBarName(r);
+      if (!name || seen.has(name)) continue;
+      seen.add(name);
+      const cc = (r.condicionesCorto || '').trim();
+      const tipo = (r.tipo || '').toLowerCase() === 'billetera' ? 'billetera' : (r.tipo || 'variable');
+      const lim = r.tope != null && r.tope > 0 ? `límite ${r.tope}` : '';
+      const tag = ['argentinadatos · ' + tipo, lim, cc].filter(Boolean).join(' · ');
+      otros.push({ name, tna: Number(r.tna) * 100, tag });
+    }
+    otros.sort((a, b) => b.tna - a.tna);
     $('#fci-otros-count').textContent = otros.length;
     if (otros.length) {
       renderBars($('#fci-otros-bars'), otros, {
@@ -1701,10 +1731,11 @@ ARS_SUBS.comparador = async function(main) {
   main.innerHTML = pHd('ars · comparador', 'Comparador', 'Billeteras, FCIs money market y plazo fijo unificados por TNA descendente.')
     + `<div id="cmp-tbl"><div class="loading-row"> cargando…</div></div>`;
   try {
-    const [cfg, fciRes, pfRes] = await Promise.all([
+    const [cfg, fciRes, pfRes, varUltimo] = await Promise.all([
       fetchCached('/api/config', 120_000),
       fetchCached('/api/cafci', 300_000).catch(() => ({ data: [] })),
       fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo').then(r => r.json()).catch(() => []),
+      fetch('https://api.argentinadatos.com/v1/finanzas/fci/variables/ultimo').then(r => (r.ok ? r.json() : [])).catch(() => []),
     ]);
     const unified = [];
     for (const g of (cfg.garantizados || [])) {
@@ -1719,6 +1750,20 @@ ARS_SUBS.comparador = async function(main) {
     const pfTop = (pfRes || []).filter(p => p.tnaClientes > 0).sort((a, b) => b.tnaClientes - a.tnaClientes).slice(0, 5);
     for (const p of pfTop) {
       unified.push({ name: shortBank(p.entidad), type: 'Plazo fijo 30d', tna: p.tnaClientes * 100, tag: '' });
+    }
+    for (const row of (Array.isArray(varUltimo) ? varUltimo : [])) {
+      if (!row || row.tna == null || !Number.isFinite(Number(row.tna))) continue;
+      const name = fciVariableBarName(row);
+      if (!name) continue;
+      const tag = [row.tipo === 'billetera' ? 'billetera' : '', (row.condicionesCorto || '').trim()]
+        .filter(Boolean)
+        .join(' · ');
+      unified.push({
+        name,
+        type: 'Renta variable',
+        tna: Number(row.tna) * 100,
+        tag,
+      });
     }
     unified.sort((a, b) => b.tna - a.tna);
 
