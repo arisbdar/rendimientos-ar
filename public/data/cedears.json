@@ -3278,5 +3278,109 @@
     "ticker_d": "ZMD",
     "ticker_c": "ZMC",
     "ticker_usa": "ZM"
+  },
+  {
+    "ticker": "CRWD",
+    "name": "CrowdStrike",
+    "ratio": "79",
+    "ticker_d": "CRWDD",
+    "ticker_c": "CRWDC",
+    "ticker_usa": "CRWD"
+  },
+  {
+    "ticker": "ANET",
+    "name": "Arista Networks",
+    "ratio": "29",
+    "ticker_d": "ANETD",
+    "ticker_c": "ANETC",
+    "ticker_usa": "ANET"
+  },
+  {
+    "ticker": "O",
+    "name": "Realty Income",
+    "ratio": "13",
+    "ticker_d": "OD",
+    "ticker_c": "OC",
+    "ticker_usa": "O"
+  },
+  {
+    "ticker": "GLNG",
+    "name": "Golar LNG",
+    "ratio": "10",
+    "ticker_d": "GLNGD",
+    "ticker_c": "GLNGC",
+    "ticker_usa": "GLNG"
+  },
+  {
+    "ticker": "SNDK",
+    "name": "SanDisk",
+    "ratio": "170",
+    "ticker_d": "SNDKD",
+    "ticker_c": "SNDKC",
+    "ticker_usa": "SNDK"
+  },
+  {
+    "ticker": "NBIS",
+    "name": "Nebius Group",
+    "ratio": "27",
+    "ticker_d": "NBISD",
+    "ticker_c": "NBISC",
+    "ticker_usa": "NBIS"
+  },
+  {
+    "ticker": "HIMS",
+    "name": "Hims & Hers",
+    "ratio": "4",
+    "ticker_d": "HIMSD",
+    "ticker_c": "HIMSC",
+    "ticker_usa": "HIMS"
+  },
+  {
+    "ticker": "ONDS",
+    "name": "Ondas Holding",
+    "ratio": "2",
+    "ticker_d": "ONDSD",
+    "ticker_c": "ONDSC",
+    "ticker_usa": "ONDS"
+  },
+  {
+    "ticker": "COP",
+    "name": "Conoco Phillips",
+    "ratio": "25",
+    "ticker_d": "COPD",
+    "ticker_c": "COPC",
+    "ticker_usa": "COP"
+  },
+  {
+    "ticker": "NEE",
+    "name": "NextEra Energy",
+    "ratio": "19",
+    "ticker_d": "NEED",
+    "ticker_c": "NEEC",
+    "ticker_usa": "NEE"
+  },
+  {
+    "ticker": "MP",
+    "name": "MP Materials",
+    "ratio": "23",
+    "ticker_d": "MPD",
+    "ticker_c": "MPC",
+    "ticker_usa": "MP"
+  },
+  {
+    "ticker": "CCJ",
+    "name": "Cameco Co.",
+    "ratio": "23",
+    "ticker_d": "CCJD",
+    "ticker_c": "CCJC",
+    "ticker_usa": "CCJ"
+  },
+  {
+    "ticker": "FISV",
+    "name": "Fiserv",
+    "ratio": "11",
+    "ticker_d": "FISVD",
+    "ticker_c": "FISVC",
+    "ticker_usa": "FISV"
   }
 ]
