@@ -265,6 +265,7 @@ const ENTITY_LOGOS = {
   "Delta": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyOCAyOCIgc3R5bGU9IndpZHRoOiA0MHB4OyBoZWlnaHQ6IDQwcHg7Ij48cmVjdCB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIGZpbGw9IiMwOTQxYTUiLz48cGF0aCBkPSJNMTcuODcsOS43M2MtMS4yMS4zLTIuNDMuNi0zLjY0LjktMi4zNC41OC00LjY5LDEuMTUtNy4wMiwxLjc2LS41My4xNC0uNzEuMDYtLjctLjUxLjAyLTEuNTkuMDItMy4xOCwwLTQuNzcsMC0uNS4xOC0uNjMuNjUtLjYyLDIuNDkuMDIsNC45OC0uMDIsNy40Ny4wMiwzLjQ0LjA1LDYuMywyLjY2LDYuNzgsNi4xMi4zNiwyLjY0LS4xOSw1LTIuMTIsNi45Mi0xLjI4LDEuMjgtMi44OCwxLjkxLTQuNjcsMS45NC0yLjQuMDQtNC44LjAxLTcuMTksMC0uMTksMC0uMzgtLjEtLjU2LS4xNS4xLS4xOS4xNy0uNDEuMzEtLjU2LDMuNDUtMy40Niw2LjkxLTYuOTIsMTAuMzYtMTAuMzguMTYtLjE2LjMtLjM1LjQ2LS41Mi0uMDMtLjA1LS4wNy0uMS0uMS0uMTZaIiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   "Carrefour Banco": "https://api.argentinadatos.com/static/logos/carrefour-banco.png",
   "Mercado Fondo": "https://api.argentinadatos.com/static/logos/mercado-pago.png",
+  "Global66": "https://api.argentinadatos.com/static/logos/global66.svg",
   "LB Finanzas": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTggMTgiPgogIDxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgc3R5bGU9ImZpbGw6ICM1MjIzOTg7Ii8+CiAgPGc+CiAgICA8cGF0aCBkPSJNNi43MSw3Ljc3bC4zOS40OWMuNTIuNjQsMS4xMS45NiwxLjc1Ljk2LDEuMTksMCwyLjI3LTEuMTIsMi4zOS0xLjMxLDAsLjAyLDAsMCwuMDMtLjA1LTEuNDUtLjkyLTIuODktMS44NC00LjMzLTIuNzctLjI0LS4xNS0uNDgtLjIzLS43Mi0uMDUtLjI0LjE5LS4yMi40My0uMTQuNy4yMi42OC40MywxLjM1LjYzLDIuMDNaIiBzdHlsZT0iZmlsbDogI2ZmZjsiLz4KICAgIDxwYXRoIGQ9Ik0xMiw5LjExYzAsLjM2LS4yLjctLjUxLjg4LTEuNDcuOTUtMi45NiwxLjg5LTQuNDMsMi44NC0uMDcuMDUtLjE0LjA5LS4yMi4xNC0uMTguMTQtLjQ0LjE0LS42MiwwLS4xOS0uMTQtLjI2LS4zOS0uMTgtLjYxLjExLS40LjIzLS43OS4zNi0xLjE5LjE4LS41Ny4zOC0xLjEyLjUtMS43LjA3LS4zLjA3LS42MSwwLS45MSwyLjExLDIuNTksNC42OS0uMzYsNC41OS0uNDMuMzQuMjIuNTEuNTMuNTEuOThaIiBzdHlsZT0iZmlsbDogI2ZmZjsiLz4KICA8L2c+Cjwvc3ZnPg==",
   "Pellegrini": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB2aWV3Qm94PSIwIDAgMTggMTgiPgogIDxyZWN0IHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgc3R5bGU9ImZpbGw6ICMwMDVmODY7Ii8+CiAgPGc+CiAgICA8cGF0aCBkPSJNOSw0Yy0yLjc2LDAtNSwyLjI0LTUsNXMyLjI0LDUsNSw1LDUtMi4yNCw1LTUtMi4yNC01LTUtNVpNMTEuODIsMTEuOXMwLC4wMS0uMDEuMDFoLTUuNnMtLjAxLDAtLjAxLS4wMXYtLjU2czAtLjAxLjAxLS4wMWg1LjZzLjAxLDAsLjAxLjAxdi41NmgwWk04LjA0LDEwLjQzdi0yLjg0aC42NHYyLjg0aC42M3YtMi44NGguNjR2Mi44NGguNjR2LTIuODRoLjY0djIuODRoLjI5di41OHMwLC4wMS0uMDEuMDFoLTUuMDJzLS4wMSwwLS4wMS0uMDF2LS41OGguMjh2LTIuODRoLjY0djIuODRoLjY0LDBaTTEyLjAxLDYuOTlsLS4xOC4zMXMtLjAyLjAyLS4wMy4wMmgtNS41OXMtLjAyLDAtLjAzLS4wMmwtLjE4LS4zMXMwLS4wMiwwLS4wM2wyLjk4LTEuNThzLjAzLDAsLjA0LDBsMi45OCwxLjU4cy4wMS4wMiwwLC4wM2gwWiIgc3R5bGU9ImZpbGw6ICNmZmY7Ii8+CiAgICA8cGF0aCBkPSJNMTAuNDQsNi43OGwtMS40LS42OHMtLjAyLS4wMS0uMDMtLjAxYzAsMC0uMDIsMC0uMDMsMGwtMS40Mi42OXMwLDAsMCwwaDIuODhzLjAxLDAsMCwwWiIgc3R5bGU9ImZpbGw6ICNmZmY7Ii8+CiAgPC9nPgo8L3N2Zz4=",
 };
@@ -289,6 +290,7 @@ function getLogoForEntity(entidad) {
   if (lower.includes('fiwind')) return ENTITY_LOGOS['Fiwind'];
   if (lower.includes('mercado')) return ENTITY_LOGOS['Mercado Fondo'];
   if (lower.includes('pellegrini') || lower.includes('nacion') || lower.includes('nación')) return ENTITY_LOGOS['Pellegrini'];
+  if (lower.includes('global66')) return ENTITY_LOGOS['Global66'];
   return null;
 }
 
@@ -323,24 +325,43 @@ async function init() {
   }));
 
   // Build FCI cards data
-  const fciCards = fciResults.map((item, idx) => ({
-    tna: item.tna,
-    nombre: item.nombre,
-    logoSrc: getLogoForEntity(item.entidad),
-    logo: item.entidad.substring(0, 2).toUpperCase(),
-    logoBg: stringToColor(item.entidad),
-    card: createCard({
-      logo: item.entidad.substring(0, 2).toUpperCase(),
-      logoBg: stringToColor(item.entidad), logoSrc: getLogoForEntity(item.entidad),
-      name: item.nombre, entity: item.entidad,
-      tags: [
-        { text: item.categoria, type: 'category' },
-        { text: `Patrimonio: ${formatPatrimonio(item.patrimonio)}`, type: '' }
-      ],
-      rate: `${item.tna.toFixed(2)}%`, rateLabel: 'TNA',
-      rateDate: item.fechaDesde && item.fechaHasta ? `Entre ${item.fechaDesde} y ${item.fechaHasta}` : ''
-    })
-  }));
+  const fciCards = fciResults.map((item, idx) => {
+    const isVariable = item.source === 'variables';
+    const entidad = item.entidad || item.nombre;
+    const init = entidad.substring(0, 2).toUpperCase();
+    const tags = isVariable
+      ? [
+          { text: item.categoria, type: 'category' },
+          ...(item.condicionesCorto ? [{ text: item.condicionesCorto, type: '' }] : []),
+        ]
+      : [
+          { text: item.categoria, type: 'category' },
+          { text: `Patrimonio: ${formatPatrimonio(item.patrimonio)}`, type: '' },
+        ];
+    const rateDate = isVariable
+      ? (item.fechaHasta ? `Referencia ${item.fechaHasta} · ArgentinaDatos` : '')
+      : item.fechaDesde && item.fechaHasta
+        ? `Entre ${item.fechaDesde} y ${item.fechaHasta}`
+        : '';
+    return {
+      tna: item.tna,
+      nombre: item.nombre,
+      logoSrc: getLogoForEntity(entidad),
+      logo: init,
+      logoBg: stringToColor(entidad),
+      card: createCard({
+        logo: init,
+        logoBg: stringToColor(entidad),
+        logoSrc: getLogoForEntity(entidad),
+        name: item.nombre,
+        entity: entidad,
+        tags,
+        rate: `${item.tna.toFixed(2)}%`,
+        rateLabel: 'TNA',
+        rateDate,
+      }),
+    };
+  });
 
   // Merge and sort all by TNA descending
   const all = [...garantizadosCards, ...fciCards].sort((a, b) => b.tna - a.tna);
@@ -494,7 +515,7 @@ async function fetchFCIData(activeFcis) {
     if (!data) return [];
     // Match API results to our configured funds by name
     const activeNames = new Set(activeFcis.map(f => f.nombre));
-    return data
+    const fromConfig = data
       .filter(f => activeNames.has(f.nombre))
       .map(f => {
         const cfg = activeFcis.find(c => c.nombre === f.nombre);
@@ -506,6 +527,24 @@ async function fetchFCIData(activeFcis) {
           fechaHasta: f.fechaHasta,
         };
       });
+    const variableExtras = (data || [])
+      .filter(f => f.source === 'variables' && f.nombre && f.tna > 0)
+      .map(f => ({
+        id: `var-${String(f.nombre).replace(/\s+/g, '-').toLowerCase()}`,
+        fondo_id: null,
+        clase_id: null,
+        nombre: f.nombre,
+        entidad: f.entidad || f.nombre,
+        categoria: f.categoria || 'Renta variable',
+        activo: true,
+        tna: f.tna,
+        patrimonio: f.patrimonio,
+        fechaDesde: f.fechaDesde,
+        fechaHasta: f.fechaHasta,
+        source: 'variables',
+        condicionesCorto: f.condicionesCorto,
+      }));
+    return [...fromConfig, ...variableExtras].sort((a, b) => b.tna - a.tna);
   } catch (e) {
     console.error('Error fetching FCI data:', e);
     return [];
@@ -2496,6 +2535,22 @@ async function loadInflacion() {
         id: 'fci-' + cf.id, name: cf.nombre, tna: live.tna, monthly: tnaToMonthly(live.tna),
         category: 'fcis', logo: entidad.substring(0, 2).toUpperCase(),
         logoBg: stringToColor(entidad), logoSrc: getLogoForEntity(entidad)
+      });
+    }
+
+    for (const f of fciList) {
+      if (f.source !== 'variables' || !f.nombre || !(f.tna > 0)) continue;
+      const entidad = f.entidad || f.nombre;
+      const suffix = f.condicionesCorto ? ` · ${f.condicionesCorto}` : '';
+      products.push({
+        id: 'fci-var-' + String(f.nombre).replace(/\s+/g, '-').toLowerCase(),
+        name: `${f.nombre} (variable)${suffix}`,
+        tna: f.tna,
+        monthly: tnaToMonthly(f.tna),
+        category: 'fcis',
+        logo: entidad.substring(0, 2).toUpperCase(),
+        logoBg: stringToColor(entidad),
+        logoSrc: getLogoForEntity(entidad),
       });
     }
 

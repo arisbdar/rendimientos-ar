@@ -123,13 +123,34 @@ app.get('/api/usa-stocks', async (req, res) => {
 
 // --- FCI Data (via ArgentinaDatos) ---
 
+function fciVariableEntityKey(row) {
+  return String((row && (row.nombre || row.fondo)) || '').trim();
+}
+
+function fciVariableInstitutionLabel(row) {
+  const key = fciVariableEntityKey(row);
+  if (!key) return '—';
+  const u = key.toUpperCase();
+  if (u === 'GLOBAL66') return 'Global66';
+  return key;
+}
+
+function fciVariableProductNombre(row) {
+  const label = fciVariableInstitutionLabel(row);
+  const raw = fciVariableEntityKey(row);
+  const fund = String(row.fondo || '').trim();
+  if (row.nombre && fund && fund.toUpperCase() !== raw.toUpperCase()) return `${label} · ${fund}`;
+  return label;
+}
+
 app.get('/api/fci', async (req, res) => {
   try {
-    const [mmLatest, mmPrevious, rmLatest, rmPrevious] = await Promise.all([
+    const [mmLatest, mmPrevious, rmLatest, rmPrevious, variablesUltimo] = await Promise.all([
       fetch('https://api.argentinadatos.com/v1/finanzas/fci/mercadoDinero/ultimo').then(r => r.json()),
       fetch('https://api.argentinadatos.com/v1/finanzas/fci/mercadoDinero/penultimo').then(r => r.json()),
       fetch('https://api.argentinadatos.com/v1/finanzas/fci/rentaMixta/ultimo').then(r => r.json()),
       fetch('https://api.argentinadatos.com/v1/finanzas/fci/rentaMixta/penultimo').then(r => r.json()),
+      fetch('https://api.argentinadatos.com/v1/finanzas/fci/variables/ultimo').then(r => r.json()).catch(() => []),
     ]);
     const filterValid = d => d.filter(x => x.fecha && x.vcp);
     const allLatest = [...filterValid(mmLatest), ...filterValid(rmLatest)];
@@ -145,6 +166,27 @@ app.get('/api/fci', async (req, res) => {
       const tna = Math.round(((fund.vcp - prev.vcp) / prev.vcp / days) * 365 * 100 * 100) / 100;
       results.push({ nombre: fund.fondo, tna, patrimonio: fund.patrimonio, fechaDesde: prev.fecha, fechaHasta: fund.fecha });
     }
+
+    const variableRows = Array.isArray(variablesUltimo) ? variablesUltimo : [];
+    for (const row of variableRows) {
+      if (!row || row.tna == null || !Number.isFinite(Number(row.tna)) || !row.fecha) continue;
+      if (!fciVariableEntityKey(row)) continue;
+      const entidad = fciVariableInstitutionLabel(row);
+      const nombre = fciVariableProductNombre(row);
+      const tnaPct = Math.round(Number(row.tna) * 100 * 100) / 100;
+      results.push({
+        nombre,
+        tna: tnaPct,
+        patrimonio: null,
+        fechaDesde: row.fecha,
+        fechaHasta: row.fecha,
+        source: 'variables',
+        entidad,
+        categoria: row.tipo === 'billetera' ? 'Renta variable (billetera)' : 'Renta variable',
+        condicionesCorto: row.condicionesCorto || undefined,
+      });
+    }
+
     res.json({ data: results });
   } catch (err) {
     console.error('FCI proxy error:', err.message);
