@@ -246,7 +246,7 @@
         "pago_final": 105.178,
         "precio": 101.365,
         "fecha_vencimiento": "2026-05-15",
-        "activo": true
+        "activo": false
       },
       {
         "ticker": "S29Y6",
