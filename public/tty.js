@@ -1401,12 +1401,11 @@ async function screenARS(main, sub) {
 
 const ARS_SUBS = {};
 
-// 3a. Billeteras — cuentas remuneradas + FCIs curados (Cocos, MP, Ualá, etc.) + otros MM
+// 3a. Billeteras — cuentas remuneradas + FCIs curados (Cocos, MP, Ualá, etc.)
 ARS_SUBS.billeteras = async function(main) {
-  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas (tasa fija) + FCIs money market de las fintechs más populares + ranking general de money market.')
+  main.innerHTML = pHd('ars · billeteras', 'Billeteras', 'Cuentas remuneradas (tasa fija) + FCIs money market de las fintechs más populares.')
     + `<section class="s"><h2><span>cuentas remuneradas y billeteras</span><span class="line"></span><span class="count" id="bil-count">…</span></h2><div id="bil-bars"><div class="loading-row"> cargando…</div></div></section>`
-    + `<section class="s"><h2><span>money market · fintechs populares</span><span class="line"></span><span class="count" id="fci-curados-count">…</span></h2><div id="fci-curados-bars"><div class="loading-row"> cargando fcis…</div></div></section>`
-    + `<section class="s"><h2><span>otros money market · cafci</span><span class="line"></span><span class="count" id="fci-otros-count">…</span></h2><div id="fci-otros-bars"><div class="loading-row"> cargando resto…</div></div></section>`;
+    + `<section class="s"><h2><span>money market · fintechs populares</span><span class="line"></span><span class="count" id="fci-curados-count">…</span></h2><div id="fci-curados-bars"><div class="loading-row"> cargando fcis…</div></div></section>`;
   try {
     const [cfg, fciRes] = await Promise.all([
       fetchCached('/api/config', 120_000),
@@ -1445,7 +1444,6 @@ ARS_SUBS.billeteras = async function(main) {
         fullName: f.nombre,
       };
     }).filter(Boolean).sort((a, b) => b.tna - a.tna);
-    const curadosNames = new Set(curados.map(x => x.fullName));
     $('#fci-curados-count').textContent = curados.length;
     if (curados.length) {
       renderBars($('#fci-curados-bars'), curados, {
@@ -1455,30 +1453,6 @@ ARS_SUBS.billeteras = async function(main) {
       });
     } else {
       $('#fci-curados-bars').innerHTML = '<div class="empty-state">sin datos en cafci para los fondos curados</div>';
-    }
-
-    // Sección 3: resto de money market (top 10 excluyendo los ya listados en curados)
-    const otros = [];
-    const seen = new Set();
-    const mmSorted = (fciRes.data || [])
-      .filter(f => f.nombre && f.tna > 0 && f.tna < 40 && f.category === 'mm' && !curadosNames.has(f.nombre))
-      .sort((a, b) => b.tna - a.tna);
-    for (const f of mmSorted) {
-      const base = f.nombre.replace(/ - Clase [A-Z].*$/, '').trim();
-      if (seen.has(base)) continue;
-      seen.add(base);
-      otros.push({ name: base, tna: +f.tna, tag: 'cafci · money market' });
-      if (otros.length >= 10) break;
-    }
-    $('#fci-otros-count').textContent = otros.length;
-    if (otros.length) {
-      renderBars($('#fci-otros-bars'), otros, {
-        valFmt: v => v.toFixed(2) + '%',
-        valSub: 'tna',
-        subLabel: r => r.tag,
-      });
-    } else {
-      $('#fci-otros-bars').innerHTML = '<div class="empty-state">sin más fondos</div>';
     }
   } catch (e) {
     $('#bil-bars').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
