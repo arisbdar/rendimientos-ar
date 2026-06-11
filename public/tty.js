@@ -3368,7 +3368,7 @@ const PRODES = [
   {
     fintech: 'Cocos',
     moneda: 'ARS',
-    monto: 101_000_000,
+    monto: 102_000_000,
     note: 'Prode Cocos · Mundial 2026',
     logo: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOCAxOCI+PHJlY3Qgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjMDA2MmUxIi8+PGcgZmlsbD0iI2ZmZiI+PHBhdGggZD0iTTcuNDksMTEuNjJjLTEuMzYuMDEtMi42MS0uNjQtMy4xOC0xLjgyLS4yLS40My0uMzEtLjktLjMxLTEuMzdzLjEtLjk0LjMxLTEuMzdjLjQxLS45MSwxLjEzLTEuNjQsMi4wMy0yLjA3bC42Ni0uMzIuNjQsMS4zMy0uNjYuMzJjLS41OC4yNy0xLjA1Ljc1LTEuMzMsMS4zMy0uMjIuNDctLjIzLDEuMDItLjAxLDEuNS40Ny45NywxLjg1LDEuMjgsMy4wNy42OWwuNjYtLjMyLjY0LDEuMzMtLjY2LjMyYy0uNTguMjgtMS4yMS40NC0xLjg2LjQ0Ii8+PHBhdGggZD0iTTExLjA4LDEzLjM0bC0uNjctMS4zMS42NS0uMzRjMS4yLS42MiwxLjc4LTEuOTEsMS4yOC0yLjg3cy0xLjg4LTEuMjUtMy4wOC0uNjNsLS42NS4zNC0uNjctMS4zMS42NS0uMzRjMS45My0xLDQuMi0uNDIsNS4wNywxLjI2Ljg3LDEuNjksMCwzLjg3LTEuOTIsNC44N2wtLjY1LjM0aDBaIi8+PC9nPjwvc3ZnPg==',
   },
@@ -3378,6 +3378,13 @@ const PRODES = [
     monto: 50_000,
     note: 'Prode Mercado Libre · Mundial 2026',
     logo: '/logos/exchanges/mercadolibre.svg',
+  },
+  {
+    fintech: 'Ualá',
+    moneda: 'USD',
+    monto: 15_000,
+    note: 'Prode Ualá · Mundial 2026',
+    logo: '/logos/exchanges/uala.svg',
   },
   {
     fintech: 'Lemon',
