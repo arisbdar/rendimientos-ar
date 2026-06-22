@@ -1468,10 +1468,15 @@ ARS_SUBS.plazofijo = async function(main) {
     const rows = await res.json();
     const list = (rows || []).filter(p => p.tnaClientes > 0)
       .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), tna: p.tnaClientes * 100 }))
-      // Sort por TNA desc, con tiebreaker alfabético — sin esto, JS preserva
-      // el orden de la API (Array.sort es estable) y Voii queda 1º entre los
-      // empatados al tope porque la fuente lo lista antes.
-      .sort((a, b) => b.tna - a.tna || a.bank.localeCompare(b.bank, 'es'));
+      // Sort: TNA desc primero, después Voii arriba entre empatados, resto alfabético
+      .sort((a, b) => {
+        if (b.tna !== a.tna) return b.tna - a.tna;
+        const aVoii = /voii/i.test(a.bank);
+        const bVoii = /voii/i.test(b.bank);
+        if (aVoii && !bVoii) return -1;
+        if (bVoii && !aVoii) return 1;
+        return a.bank.localeCompare(b.bank, 'es');
+      });
     $('#pf-tbl').innerHTML = `<table class="t">
       <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
       <tbody>${list.map((r, i) => `<tr>
