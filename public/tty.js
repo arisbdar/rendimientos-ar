@@ -331,16 +331,31 @@ function lookupLogoURL(name) {
 
 function initials(name) {
   if (!name) return '·';
-  return name.replace(/^(Banco\s+)/i, '').split(/[\s-]+/).slice(0, 2).map(w => w[0] || '').join('').toUpperCase() || '·';
+  const words = name.replace(/^(Banco\s+)/i, '').split(/[\s-]+/).filter(Boolean);
+  if (words.length >= 2) return (words[0][0] + words[1][0]).toUpperCase();
+  const w = words[0] || name;
+  return w.slice(0, 2).toUpperCase() || '·';
 }
-function logoHTML(name, sm = false) {
+// Deterministic muted brand color for entities without a real logo,
+// so the initials render as an intentional "fake logo" chip instead of a
+// uniform gray box. Tuned to read on the dark terminal palette.
+function bankColor(name) {
+  let hash = 0;
+  const s = String(name || '');
+  for (let i = 0; i < s.length; i++) hash = s.charCodeAt(i) + ((hash << 5) - hash);
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 36%, 44%)`;
+}
+// `label`, when given, drives the initials + fallback color (use the short
+// display name) while `name` is still used to look up a real logo file.
+function logoHTML(name, sm = false, label = null) {
   const src = lookupLogoURL(name);
+  const disp = label || name;
   const cls = 'logo' + (sm ? ' sm' : '');
-  const init = esc(initials(name));
+  const init = esc(initials(disp));
   if (src) return `<span class="${cls}" data-initials="${init}"><img src="${esc(src)}" alt="${esc(name || '')}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
-  const bg = BILLETERA_BG[name];
-  if (bg) return `<span class="${cls}" style="background:${esc(bg)};color:#fff;border-color:${esc(bg)}">${init}</span>`;
-  return `<span class="${cls}">${init}</span>`;
+  const bg = BILLETERA_BG[name] || BILLETERA_BG[disp] || bankColor(disp);
+  return `<span class="${cls}" style="background:${esc(bg)};color:#fff;border-color:${esc(bg)}">${init}</span>`;
 }
 
 // ─── SVG helpers ───────────────────────────────────────────────
@@ -1467,20 +1482,19 @@ ARS_SUBS.plazofijo = async function(main) {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
     const rows = await res.json();
     const list = (rows || []).filter(p => p.tnaClientes > 0)
-      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), tna: p.tnaClientes * 100 }))
-      // Sort: TNA desc primero, después Voii arriba entre empatados, resto alfabético
+      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), short: shortBank(p.entidad), tna: p.tnaClientes * 100 }))
+      // Rate desc; on ties Banco Voii goes first (destacado), then alfabético.
       .sort((a, b) => {
         if (b.tna !== a.tna) return b.tna - a.tna;
-        const aVoii = /voii/i.test(a.bank);
-        const bVoii = /voii/i.test(b.bank);
-        if (aVoii && !bVoii) return -1;
-        if (bVoii && !aVoii) return 1;
-        return a.bank.localeCompare(b.bank, 'es');
+        const av = /voii/i.test(a.raw) ? 0 : 1;
+        const bv = /voii/i.test(b.raw) ? 0 : 1;
+        if (av !== bv) return av - bv;
+        return a.short.localeCompare(b.short);
       });
-    $('#pf-tbl').innerHTML = `<table class="t">
+    $('#pf-tbl').innerHTML = `<table class="t pf-slim">
       <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
       <tbody>${list.map((r, i) => `<tr>
-        <td>${logoHTML(r.bank, true)} <span class="${i===0?'hot':''}">${esc(r.bank)}</span></td>
+        <td>${logoHTML(r.bank, true, r.short)} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
         <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
       </tr>`).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
@@ -1736,15 +1750,71 @@ function renderBars(container, items, { valFmt = v => v.toFixed(2) + '%', valSub
 }
 
 // ─── Short bank name helper ───────────────────────────────────
+// Curated short labels (most-specific first). Matches the raw BCRA entidad
+// name (case-insensitive) so display stays tidy: "Banco de la Nación
+// Argentina" → "Nación", ICBC's legal name → "ICBC", etc.
+const BANK_SHORT_RULES = [
+  [/naci[oó]n/i, 'Nación'],
+  [/galicia/i, 'Galicia'],
+  [/santander/i, 'Santander'],
+  [/credicoop/i, 'Credicoop'],
+  [/\bbbva\b|frances/i, 'BBVA'],
+  [/macro/i, 'Macro'],
+  [/industrial and commercial|\bicbc\b/i, 'ICBC'],
+  [/c[oó]rdoba/i, 'Córdoba'],
+  [/corrientes/i, 'Corrientes'],
+  [/chubut/i, 'Chubut'],
+  [/tierra del fuego/i, 'Tierra del Fuego'],
+  [/formosa/i, 'Formosa'],
+  [/santa\s*(fe|cruz)/i, 'Santa Fe'],
+  [/santiago del estero/i, 'Santiago'],
+  [/la pampa/i, 'La Pampa'],
+  [/de la ciudad|\bciudad\b/i, 'Ciudad'],
+  [/provincia de buenos aires|de la provincia de buenos/i, 'Provincia'],
+  [/del sol/i, 'Del Sol'],
+  [/hipotecario/i, 'Hipotecario'],
+  [/supervielle/i, 'Supervielle'],
+  [/patagonia/i, 'Patagonia'],
+  [/comafi/i, 'Comafi'],
+  [/comercio/i, 'Comercio'],
+  [/\bbica\b/i, 'BICA'],
+  [/\bcmf\b/i, 'CMF'],
+  [/mariva/i, 'Mariva'],
+  [/masventas/i, 'Masventas'],
+  [/meridian/i, 'Meridian'],
+  [/\bdino\b/i, 'Dino'],
+  [/\bjulio\b/i, 'Julio'],
+  [/\bvoii\b/i, 'Voii'],
+  [/bibank/i, 'Bibank'],
+  [/cr[eé]dito regional/i, 'Crédito Regional'],
+  [/\breba\b/i, 'Reba'],
+  [/ual[aá]/i, 'Ualá'],
+  [/brubank/i, 'Brubank'],
+  [/ita[uú]/i, 'Itaú'],
+  [/roela/i, 'Roela'],
+  [/\bbind\b|industrial\s*$/i, 'BIND'],
+  [/del chaco/i, 'Chaco'],
+  [/servicios financieros|\bcompa/i, ''], // no-op guard so generic runs
+];
 function shortBank(name) {
   if (!name) return '';
-  return name
+  for (const [re, label] of BANK_SHORT_RULES) {
+    if (label && re.test(name)) return label;
+  }
+  // Generic fallback: strip "Banco de la", trailing "Argentina"/"S.A."/"(...)"
+  const g = name
     .replace(/^BANCO\s+(DE\s+)?(LA\s+)?/i, '')
-    .replace(/\s+ARGENTINA(\s+S\.?A\.?)?$/i, '')
-    .replace(/\s+S\.?A\.?$/i, '')
+    .replace(/\s+Y\s+BUENOS AIRES.*$/i, '')
+    .replace(/\s+ARGENTINA(\s+S\.?A\.?U?\.?)?$/i, '')
+    .replace(/\s+S\.?A\.?U?\.?$/i, '')
+    .replace(/\s+SOCIEDAD AN[OÓ]NIMA$/i, '')
+    .replace(/\s+COOPERATIVO LIMITADO$/i, '')
+    .replace(/\s+COMPA[NÑ][IÍ]A FINANCIERA.*$/i, '')
     .replace(/\s*\(.*\)\s*$/i, '')
+    .trim()
     .toLowerCase()
     .replace(/\b\w/g, c => c.toUpperCase());
+  return g.replace(/\bNacion\b/, 'Nación');
 }
 // ─── Calculator modals ────────────────────────────────────────
 function openCalcModal({ title, sub, render }) {
@@ -2093,6 +2163,14 @@ async function screenBonos(main) {
     ]);
     const soberanos = cfg.soberanos || {};
     const prices = sovRes.data || [];
+    // Inyectar bonos con precio hardcodeado (recién emitidos, todavía sin cotizar en el
+    // mercado secundario). El precio en vivo siempre gana: sólo se agrega si no llegó de la API.
+    const livePresent = new Set(prices.map(p => p.symbol));
+    for (const [symbol, bc] of Object.entries(soberanos)) {
+      if (bc.precio_hardcode && !livePresent.has(symbol)) {
+        prices.push({ symbol, price_usd: bc.precio_hardcode, ask: 0, volume: 0, hardcoded: true });
+      }
+    }
     const today = new Date();
     const items = [];
     for (const bp of prices) {
@@ -2105,7 +2183,7 @@ async function screenBonos(main) {
       const ytm = calcYTM(priceUsd, flows, today);
       if (isNaN(ytm) || !isFinite(ytm)) continue;
       const dur = calcDuration(priceUsd, flows, today, ytm);
-      const cpn = (bc.flujos.length >= 2) ? (bc.flujos[0].monto * 2 / 100) * 100 : 0;
+      const cpn = (bc.cupon != null) ? +bc.cupon : ((bc.flujos.length >= 2) ? (bc.flujos[0].monto * 2 / 100) * 100 : 0);
       items.push({
         sym: bp.symbol,
         ley: bc.ley || '',
@@ -2115,6 +2193,7 @@ async function screenBonos(main) {
         dur: +dur.toFixed(2),
         price: priceUsd,
         flujos: flows,
+        hardcoded: !!bp.hardcoded,
       });
     }
     items.sort((a, b) => a.dur - b.dur);
@@ -2142,10 +2221,10 @@ async function screenBonos(main) {
             <td class="num dim">${r.cpn}%</td>
             <td class="num hot">${r.ytm.toFixed(2)}%</td>
             <td class="num">${r.dur.toFixed(2)}</td>
-            <td class="num">${r.price.toFixed(2)}</td>
+            <td class="num">${r.price.toFixed(2)}${r.hardcoded ? '<span class="dim" title="precio estimado — el bono aún no cotiza en el mercado secundario"> est</span>' : ''}</td>
           </tr>`;
         }).join('')}</tbody></table>
-        <div class="hint" style="margin-top:8px">click para abrir calculadora con flujos</div>`;
+        <div class="hint" style="margin-top:8px">click para abrir calculadora con flujos${items.some(i => i.hardcoded) ? ' · <span class="dim">est</span> = precio estimado (aún no listado)' : ''}</div>`;
       $$('tr.clickable[data-sym]', $('#sov-table')).forEach(tr => {
         tr.addEventListener('click', () => {
           const sym = tr.getAttribute('data-sym');

@@ -5,8 +5,8 @@
       "nombre": "Banco Voii",
       "tipo": "Cuenta Remunerada",
       "limite": null,
-      "tna": 20,
-      "vigente_desde": "29/03/2026",
+      "tna": 21,
+      "vigente_desde": "05/07/2026",
       "logo": "VO",
       "logo_bg": "#6b21a8",
       "activo": true
@@ -222,7 +222,7 @@
   ],
   "lecaps": {
     "fuente": "BYMA",
-    "actualizado": "21/03/2026",
+    "actualizado": "04/07/2026",
     "letras": [
       {
         "ticker": "S17A6",
@@ -262,7 +262,7 @@
         "pago_final": 102.95,
         "precio": 100.495,
         "fecha_vencimiento": "2026-06-12",
-        "activo": true
+        "activo": false
       },
       {
         "ticker": "T30J6",
@@ -270,7 +270,7 @@
         "pago_final": 144.896,
         "precio": 134.85,
         "fecha_vencimiento": "2026-06-30",
-        "activo": true
+        "activo": false
       },
       {
         "ticker": "S31L6",
@@ -326,6 +326,14 @@
         "pago_final": 135.278,
         "precio": 114.865,
         "fecha_vencimiento": "2026-10-30",
+        "activo": true
+      },
+      {
+        "ticker": "S13N6",
+        "nombre": "LECAP Nov 13",
+        "pago_final": 109.65,
+        "precio": null,
+        "fecha_vencimiento": "2026-11-13",
         "activo": true
       },
       {
@@ -585,6 +593,53 @@
           "fecha": "2028-10-31",
           "monto": 100.53
         }
+      ]
+    },
+    "AO29": {
+      "ley": "local",
+      "vencimiento": "2029-10-31",
+      "cupon": 6,
+      "precio_hardcode": 93.71,
+      "flujos": [
+        { "fecha": "2026-08-31", "monto": 0.73 },
+        { "fecha": "2026-09-30", "monto": 0.5 },
+        { "fecha": "2026-10-30", "monto": 0.5 },
+        { "fecha": "2026-11-30", "monto": 0.5 },
+        { "fecha": "2026-12-30", "monto": 0.5 },
+        { "fecha": "2027-01-29", "monto": 0.48 },
+        { "fecha": "2027-02-26", "monto": 0.45 },
+        { "fecha": "2027-03-31", "monto": 0.58 },
+        { "fecha": "2027-04-30", "monto": 0.5 },
+        { "fecha": "2027-05-31", "monto": 0.5 },
+        { "fecha": "2027-06-30", "monto": 0.5 },
+        { "fecha": "2027-07-30", "monto": 0.5 },
+        { "fecha": "2027-08-31", "monto": 0.5 },
+        { "fecha": "2027-09-30", "monto": 0.5 },
+        { "fecha": "2027-10-29", "monto": 0.48 },
+        { "fecha": "2027-11-30", "monto": 0.52 },
+        { "fecha": "2027-12-30", "monto": 0.5 },
+        { "fecha": "2028-01-31", "monto": 0.5 },
+        { "fecha": "2028-02-29", "monto": 0.48 },
+        { "fecha": "2028-03-31", "monto": 0.53 },
+        { "fecha": "2028-04-28", "monto": 0.47 },
+        { "fecha": "2028-05-31", "monto": 0.55 },
+        { "fecha": "2028-06-30", "monto": 0.5 },
+        { "fecha": "2028-07-31", "monto": 0.5 },
+        { "fecha": "2028-08-31", "monto": 0.5 },
+        { "fecha": "2028-09-29", "monto": 0.48 },
+        { "fecha": "2028-10-31", "monto": 0.53 },
+        { "fecha": "2028-11-30", "monto": 0.5 },
+        { "fecha": "2028-12-29", "monto": 0.48 },
+        { "fecha": "2029-01-31", "monto": 0.53 },
+        { "fecha": "2029-02-28", "monto": 0.47 },
+        { "fecha": "2029-03-28", "monto": 0.5 },
+        { "fecha": "2029-04-30", "monto": 0.53 },
+        { "fecha": "2029-05-31", "monto": 0.5 },
+        { "fecha": "2029-06-29", "monto": 0.48 },
+        { "fecha": "2029-07-31", "monto": 0.53 },
+        { "fecha": "2029-08-31", "monto": 0.5 },
+        { "fecha": "2029-09-28", "monto": 0.47 },
+        { "fecha": "2029-10-31", "monto": 100.55 }
       ]
     },
     "AL30": {

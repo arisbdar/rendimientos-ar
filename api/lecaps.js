@@ -1,5 +1,5 @@
-const LECAP_TICKERS = ['S17A6', 'S30A6', 'S15Y6', 'S29Y6', 'S12J6', 'S17L6', 'S31L6', 'S14G6', 'S31G6', 'S30S6', 'S30O6', 'S30N6'];
-const BONCAP_TICKERS = ['T30J6', 'T15E7', 'T30A7', 'T31Y7', 'T30J7'];
+const LECAP_TICKERS = ['S17A6', 'S30A6', 'S17L6', 'S31L6', 'S14G6', 'S31G6', 'S30S6', 'S30O6', 'S13N6', 'S30N6'];
+const BONCAP_TICKERS = ['T15E7', 'T30A7', 'T31Y7', 'T30J7'];
 
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');

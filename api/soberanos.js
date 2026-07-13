@@ -1,4 +1,4 @@
-const TICKERS_USD = ['BPD7D','AO27D','AO28D','AN29D','AL29D','AL30D','AL35D','AE38D','AL41D','GD29D','GD30D','GD35D','GD38D','GD41D'];
+const TICKERS_USD = ['BPD7D','AO27D','AO28D','AO29D','AN29D','AL29D','AL30D','AL35D','AE38D','AL41D','GD29D','GD30D','GD35D','GD38D','GD41D'];
 
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');

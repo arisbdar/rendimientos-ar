@@ -324,6 +324,10 @@ table.t tr.cat td {
 }
 table.t tr.cat td .line { color: var(--rule-hi); }
 
+/* Plazo fijo: 2-col table — keep columns tight instead of stretched full-width */
+table.t.pf-slim { max-width: 440px; }
+table.t.pf-slim th, table.t.pf-slim td { padding-top: 6px; padding-bottom: 6px; }
+
 /* Sparkline */
 .spark {
   display: inline-block;
