@@ -2340,6 +2340,19 @@ h1 em, h2 em, h3 em, h4 em, h5 em {
   margin-left: 4px;
   vertical-align: middle;
 }
+.dolar-type-tag {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.dolar-best-card .dolar-type-tag {
+  font-size: 0.65rem;
+  margin-top: 4px;
+}
 .dolar-variation {
   font-size: 0.65rem;
   font-weight: 600;

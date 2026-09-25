@@ -3763,6 +3763,11 @@ function getDolarExchangeLogo(id, name, logoUrl) {
   return `<div class="dolar-tipo-icon" style="background:#6b7280">${(name || '').slice(0, 2).toUpperCase()}</div>`;
 }
 
+// Small label with the dollar type used for a price (e.g. Cocos "Dólar FX" / "MEP Overnight")
+function dolarTypeTag(type) {
+  return type ? `<span class="dolar-type-tag">${type}</span>` : '';
+}
+
 async function loadDolar() {
   const bestEl = document.getElementById('dolar-best');
   const tiposEl = document.getElementById('dolar-tipos');
@@ -3808,11 +3813,13 @@ async function loadDolar() {
           <div class="dolar-best-label">Mejor para vender</div>
           <div class="dolar-best-exchange">${getDolarExchangeLogo(bestSell.id, bestSell.name, bestSell.logoUrl)} ${bestSell.name}</div>
           <div class="dolar-best-price">$${bestSell.bid.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
+          ${dolarTypeTag(bestSell.bidType)}
         </div>
         <div class="dolar-best-card best-buy">
           <div class="dolar-best-label">Mejor para comprar</div>
           <div class="dolar-best-exchange">${getDolarExchangeLogo(bestBuy.id, bestBuy.name, bestBuy.logoUrl)} ${bestBuy.name}</div>
           <div class="dolar-best-price">$${bestBuy.ask.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
+          ${dolarTypeTag(bestBuy.askType)}
         </div>
         <div class="dolar-best-card dolar-spread-card">
           <div class="dolar-best-label" style="color:var(--yellow)">Menor spread</div>
@@ -3846,8 +3853,8 @@ async function loadDolar() {
         const varHtml = ex.pctVariation != null ? `<span class="dolar-variation ${ex.pctVariation >= 0 ? 'up' : 'down'}">${ex.pctVariation >= 0 ? '+' : ''}${ex.pctVariation.toFixed(2)}%</span>` : '';
         return `<tr>
           <td><span class="dolar-exchange-name"><span class="dolar-rank ${rankClass}">${rank}</span> ${logo} ${ex.name}${bankBadge}${closedBadge}</span></td>
-          <td class="col-right">${isBestSell ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${bidStr}</td>
-          <td class="col-right">${isBestBuy ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${askStr}${varHtml}</td>
+          <td class="col-right">${isBestSell ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${bidStr}${dolarTypeTag(ex.bidType)}</td>
+          <td class="col-right">${isBestBuy ? '<span class="dolar-best-tag">MEJOR</span> ' : ''}${askStr}${varHtml}${dolarTypeTag(ex.askType)}</td>
           <td class="col-right">${ex.spread}%</td>
         </tr>`;
       }).join('');
@@ -3932,7 +3939,7 @@ async function loadDolar() {
     // Source
     const updTime = new Date(updated);
     const timeStr = updTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-    sourceEl.innerHTML = `Fuente: <a href="https://comparadolar.ar" target="_blank" rel="noopener">comparadolar.ar</a> — Actualizado ${timeStr}`;
+    sourceEl.innerHTML = `Fuente: <a href="https://comparadolar.ar" target="_blank" rel="noopener">comparadolar.ar</a> y <a href="https://cocos.capital" target="_blank" rel="noopener">Cocos</a> — Actualizado ${timeStr}`;
 
   } catch (err) {
     console.error('Dolar load error:', err);
