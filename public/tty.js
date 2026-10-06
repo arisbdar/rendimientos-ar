@@ -2392,27 +2392,34 @@ async function screenDolar(main) {
     // Lista para calcular "mejor para vender" / sort por bid. Filtramos BID_UNRELIABLE.
     const sellList = () => getList().filter(e => !BID_UNRELIABLE.has(e.id));
 
+    // Banco Voii → se muestra como "COCOS BANK" (cambio de nombre pendiente de aprobación).
+    // Además, ante empate de precio, Voii/COCOS BANK va primero.
+    const isVoii = (ex) => /voii/i.test(ex && ex.id || '') || /voii/i.test(ex && ex.name || '');
+    const provName = (ex) => isVoii(ex) ? 'COCOS BANK' : ex.name;
+    const provNote = (ex) => isVoii(ex) ? ' <span class="voii-note">(sujeto a aprobación de cambio de nombre)</span>' : '';
+
     function renderBest() {
       const list = getList();
       const sList = sellList();
       if (!list.length) { $('#dol-best').innerHTML = '<div class="empty-state">sin proveedores</div>'; return; }
-      const bestBuy = list.reduce((a, b) => a.ask < b.ask ? a : b);
-      const bestSell = (sList.length ? sList : list).reduce((a, b) => a.bid > b.bid ? a : b);
+      // En empate de precio, Banco Voii (COCOS BANK) gana.
+      const bestBuy = list.reduce((a, b) => (b.ask < a.ask || (b.ask === a.ask && isVoii(b) && !isVoii(a))) ? b : a);
+      const bestSell = (sList.length ? sList : list).reduce((a, b) => (b.bid > a.bid || (b.bid === a.bid && isVoii(b) && !isVoii(a))) ? b : a);
       const bestSp = list.reduce((a, b) => (a.spread < b.spread ? a : b));
       $('#dol-best').innerHTML = `
         <div class="dol-best-card">
           <div class="lbl">mejor para vender</div>
-          <div class="with-logo">${logoImgHTML(bestSell.logoUrl, bestSell.name)}<div class="txt"><b>${esc(bestSell.name)}</b><small>vendés a</small></div></div>
+          <div class="with-logo">${logoImgHTML(bestSell.logoUrl, bestSell.name)}<div class="txt"><b>${esc(provName(bestSell))}</b>${provNote(bestSell)}<small>vendés a</small></div></div>
           <div class="val hot">$${fmt(bestSell.bid, 2)}</div>
         </div>
         <div class="dol-best-card">
           <div class="lbl">mejor para comprar</div>
-          <div class="with-logo">${logoImgHTML(bestBuy.logoUrl, bestBuy.name)}<div class="txt"><b>${esc(bestBuy.name)}</b><small>comprás a</small></div></div>
+          <div class="with-logo">${logoImgHTML(bestBuy.logoUrl, bestBuy.name)}<div class="txt"><b>${esc(provName(bestBuy))}</b>${provNote(bestBuy)}<small>comprás a</small></div></div>
           <div class="val hot">$${fmt(bestBuy.ask, 2)}</div>
         </div>
         <div class="dol-best-card">
           <div class="lbl">menor spread</div>
-          <div class="with-logo">${logoImgHTML(bestSp.logoUrl, bestSp.name)}<div class="txt"><b>${esc(bestSp.name)}</b><small>compra/venta</small></div></div>
+          <div class="with-logo">${logoImgHTML(bestSp.logoUrl, bestSp.name)}<div class="txt"><b>${esc(provName(bestSp))}</b>${provNote(bestSp)}<small>compra/venta</small></div></div>
           <div class="val hot">${fmt(bestSp.spread, 2)}%</div>
         </div>`;
     }
@@ -2422,7 +2429,12 @@ async function screenDolar(main) {
       // (credicoop/santander) del listado — si no aparecen #1 con un precio
       // inflado que no van a honrar
       const list = state.sort === 'sell' ? sellList() : getList();
-      const sorted = [...list].sort((a, b) => state.sort === 'buy' ? a.ask - b.ask : b.bid - a.bid);
+      const sorted = [...list].sort((a, b) => {
+        const primary = state.sort === 'buy' ? a.ask - b.ask : b.bid - a.bid;
+        if (primary !== 0) return primary;
+        // empate de precio → Banco Voii (COCOS BANK) primero
+        return (isVoii(a) ? 0 : 1) - (isVoii(b) ? 0 : 1);
+      });
       $('#dol-tbl').innerHTML = sorted.length ? `<table class="t">
         <thead><tr>
           <th style="text-align:left">#</th>
@@ -2441,7 +2453,7 @@ async function screenDolar(main) {
           const varTxt = ex.pctVariation != null ? fmtPct(ex.pctVariation, 2) : '—';
           return `<tr>
             <td class="dim">${String(i + 1).padStart(2, '0')}</td>
-            <td>${logoImgHTML(ex.logoUrl, ex.name, true)} <span class="${i===0?'hot':''}">${esc(ex.name)}</span>${tagBank}${tag24}</td>
+            <td>${logoImgHTML(ex.logoUrl, ex.name, true)} <span class="${i===0?'hot':''}">${esc(provName(ex))}</span>${provNote(ex)}${tagBank}${tag24}</td>
             <td class="num ${isBestSell?'hot':''}">$${fmt(ex.bid, 2)}</td>
             <td class="num ${isBestBuy?'hot':''}">$${fmt(ex.ask, 2)}</td>
             <td class="num dim">${fmt(ex.spread, 2)}%</td>

@@ -4,7 +4,7 @@
     {
       "name": "comparatasas",
       "runtimeExecutable": "node",
-      "runtimeArgs": ["/Users/arielsbdar/Desktop/test/comparatasas/server.js"],
+      "runtimeArgs": ["server.js"],
       "port": 3000
     }
   ]
