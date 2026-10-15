@@ -561,8 +561,8 @@ function wireScatterClicks(containerEl, onSelect) {
 }
 
 // ─── Page header ──────────────────────────────────────────────
-function pHd(tag, title, sub) {
-  return `<div class="phd">
+function pHd(tag, title, sub, opts = {}) {
+  return `<div class="phd${opts.compact ? ' phd-sm' : ''}">
     <div class="tag">${esc(tag)}</div>
     <h1>${title}</h1>
     ${sub ? `<p>${sub}</p>` : ''}
@@ -2349,7 +2349,7 @@ async function screenHipotecarios(main) {
 
 // ─── Screen: Dólar ────────────────────────────────────────────
 async function screenDolar(main) {
-  main.innerHTML = pHd('dólar · cotizaciones', 'Dólar', 'Mejor compra / venta / menor spread entre proveedores. Toggle 24/7 para filtrar los que operan fuera del horario de mercado.')
+  main.innerHTML = pHd('dólar · cotizaciones', 'Dólar', 'Mejor compra / venta / menor spread entre proveedores. Toggle 24/7 para filtrar los que operan fuera del horario de mercado.', { compact: true })
     + `<section class="s"><h2><span>mejor del momento</span><span class="line"></span></h2><div id="dol-best" class="dol-best-row"><div class="loading-row"> cargando…</div></div></section>`
     + `<section class="s"><h2><span>proveedores</span><span class="line"></span></h2>
         <div class="dol-controls">

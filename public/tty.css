@@ -277,6 +277,10 @@ nav.sub button.on::before { content: "› "; color: var(--fg); }
   max-width: 68ch;
 }
 
+/* Compact header (ej. dólar) */
+.phd.phd-sm { padding: 16px 0 10px; }
+.phd.phd-sm h1 { font-size: clamp(20px, 2.2vw, 24px); }
+
 /* Tables */
 table.t {
   width: 100%;
