@@ -84,6 +84,7 @@ function normalizeUsdProvider(entry) {
     pctVariation: entry.pct_variation ?? null,
     logoUrl: entry.logoUrl || null,
     url: entry.url || null,
+    conditions: entry.conditions || null,
   };
 }
 

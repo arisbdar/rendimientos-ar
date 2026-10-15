@@ -2367,6 +2367,10 @@ async function screenDolar(main) {
           </label>
         </div>
         <div id="dol-tbl"><div class="loading-row"> cargando proveedores…</div></div>
+      </section>`
+    + `<section class="s" id="dol-cond-sec" style="display:none"><h2><span>precios con condiciones especiales</span><span class="line"></span></h2>
+        <p class="hint" style="margin-bottom:10px">Estos precios no están disponibles para cualquier usuario, por eso no se comparan con la tabla de arriba.</p>
+        <div id="dol-cond"></div>
       </section>`;
   try {
     const { exchanges, updated } = await fetchCached('/api/dolar', 60_000);
@@ -2382,9 +2386,12 @@ async function screenDolar(main) {
     // Bid poco confiable — publican compra muy alta pero no la honran en la práctica.
     // Los escondemos del cálculo de 'mejor para vender' y del sort por venta.
     const BID_UNRELIABLE = new Set(['banco-credicoop', 'banco-santander']);
+    // Precios con condiciones (ej. Brubank solo clientes Ultra) no están abiertos a cualquiera:
+    // no compiten en el ranking principal ni en "mejor del momento", van en una tabla aparte.
+    const conditionedUsd = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id) && e.conditions);
     function getList() {
       if (state.coin === 'usd') {
-        const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
+        const all = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id) && !e.conditions);
         return state.only24x7 ? all.filter(e => e.is24x7) : all;
       }
       return (exchanges[state.coin] || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id));
@@ -2461,6 +2468,29 @@ async function screenDolar(main) {
           </tr>`;
         }).join('')}</tbody></table>
         <div class="hint" style="margin-top:8px">fuente: comparadolar.ar · ${updated ? new Date(updated).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}) : ''}</div>` : `<div class="empty-state">sin datos</div>`;
+      renderConditioned();
+    }
+
+    function renderConditioned() {
+      const sec = $('#dol-cond-sec');
+      if (state.coin !== 'usd' || !conditionedUsd.length) { sec.style.display = 'none'; return; }
+      sec.style.display = '';
+      const sorted = [...conditionedUsd].sort((a, b) => state.sort === 'buy' ? a.ask - b.ask : b.bid - a.bid);
+      $('#dol-cond').innerHTML = `<table class="t">
+        <thead><tr>
+          <th style="text-align:left">proveedor</th>
+          <th style="text-align:left">condición</th>
+          <th>vendés a</th>
+          <th>comprás a</th>
+          <th>spread</th>
+        </tr></thead>
+        <tbody>${sorted.map(ex => `<tr>
+          <td>${logoImgHTML(ex.logoUrl, ex.name, true)} ${esc(ex.name)}${ex.isBank ? '<span class="tag" style="margin-left:6px">banco</span>' : ''}</td>
+          <td class="dim">${esc(ex.conditions)}</td>
+          <td class="num">$${fmt(ex.bid, 2)}</td>
+          <td class="num">$${fmt(ex.ask, 2)}</td>
+          <td class="num dim">${fmt(ex.spread, 2)}%</td>
+        </tr>`).join('')}</tbody></table>`;
     }
 
     function show24x7() {
