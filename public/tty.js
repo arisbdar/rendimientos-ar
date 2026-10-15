@@ -4,7 +4,7 @@
 
 // ─── State ────────────────────────────────────────────────────
 const STATE = {
-  section: { main: 'monitor', sub: 'mundo' },
+  section: { main: 'dolar', sub: null },
   palette: 'white',
   scanlines: 'on',
   density: 'medium',
@@ -3988,13 +3988,7 @@ function bootPersistence() {
     if (sc && ['on', 'off'].includes(sc)) STATE.scanlines = sc;
     const den = localStorage.getItem(LS.density);
     if (den && ['compact', 'medium', 'comfortable'].includes(den)) STATE.density = den;
-    const sec = localStorage.getItem(LS.section);
-    if (sec) {
-      try {
-        const parsed = JSON.parse(sec);
-        if (parsed && parsed.main) STATE.section = parsed;
-      } catch (e) {}
-    }
+    // La última sección visitada no se restaura: sin hash, siempre se entra a dólar.
   } catch (e) {}
   document.body.dataset.palette = STATE.palette;
   document.body.dataset.scanlines = STATE.scanlines;
