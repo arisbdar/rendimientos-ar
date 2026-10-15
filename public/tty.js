@@ -2412,7 +2412,7 @@ async function screenDolar(main) {
       // En empate de precio, Banco Voii (COCOS BANK) gana.
       const bestBuy = list.reduce((a, b) => (b.ask < a.ask || (b.ask === a.ask && isVoii(b) && !isVoii(a))) ? b : a);
       const bestSell = (sList.length ? sList : list).reduce((a, b) => (b.bid > a.bid || (b.bid === a.bid && isVoii(b) && !isVoii(a))) ? b : a);
-      const bestSp = list.reduce((a, b) => (a.spread < b.spread ? a : b));
+      const bestSp = list.reduce((a, b) => (b.spread < a.spread || (b.spread === a.spread && isVoii(b) && !isVoii(a))) ? b : a);
       $('#dol-best').innerHTML = `
         <div class="dol-best-card">
           <div class="lbl">mejor para vender</div>
