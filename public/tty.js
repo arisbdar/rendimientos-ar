@@ -5,7 +5,7 @@
 // ─── State ────────────────────────────────────────────────────
 const STATE = {
   section: { main: 'dolar', sub: null },
-  palette: 'white',
+  palette: 'light',
   scanlines: 'on',
   density: 'medium',
 };
@@ -3808,6 +3808,7 @@ function buildPaletteItems() {
     }
   }
   items.push(
+    { k: 'theme light claro', label: 'THEME · claro', hint: '', act: () => setPalette('light') },
     { k: 'theme amber', label: 'THEME · amber', hint: '', act: () => setPalette('amber') },
     { k: 'theme green', label: 'THEME · green', hint: '', act: () => setPalette('green') },
     { k: 'theme white mono', label: 'THEME · white / mono', hint: '', act: () => setPalette('white') },
@@ -3913,7 +3914,7 @@ function refreshTweaksPanel() {
   div.innerHTML = `
     <div class="hd"><span>tweaks</span><button id="tw-close" style="color:var(--inv-fg)">✕</button></div>
     <div class="bd">
-      <div class="row"><span class="lbl">palette</span><div class="seg">${seg('palette', [['amber','amber'],['green','green'],['white','mono']], STATE.palette)}</div></div>
+      <div class="row"><span class="lbl">palette</span><div class="seg">${seg('palette', [['light','claro'],['amber','amber'],['green','green'],['white','mono']], STATE.palette)}</div></div>
       <div class="row"><span class="lbl">scanlines</span><div class="seg">${seg('scanlines', [['on','on'],['off','off']], STATE.scanlines)}</div></div>
       <div class="row"><span class="lbl">density</span><div class="seg">${seg('density', [['compact','compact'],['medium','medium'],['comfortable','comfortable']], STATE.density)}</div></div>
     </div>
@@ -3983,7 +3984,7 @@ function renderFooter() {
 function bootPersistence() {
   try {
     const pal = localStorage.getItem(LS.palette);
-    if (pal && ['amber', 'green', 'white'].includes(pal)) STATE.palette = pal;
+    if (pal && ['light', 'amber', 'green', 'white'].includes(pal)) STATE.palette = pal;
     const sc = localStorage.getItem(LS.scanlines);
     if (sc && ['on', 'off'].includes(sc)) STATE.scanlines = sc;
     const den = localStorage.getItem(LS.density);

@@ -52,6 +52,30 @@
   --down: #ff7a70;
 }
 
+/* Palette — Claro (default). Crema cálido, tinta oscura, acento terracota. */
+[data-palette="light"] {
+  --bg: #faf9f5;
+  --bg-1: #f3f1ea;
+  --bg-2: #ebe8de;
+  --fg: #1f1e1d;
+  --fg-dim: #5e5d59;
+  --fg-faint: #a3a198;
+  --muted: #87867f;
+  --rule: #e6e3d9;
+  --rule-hi: #d3cfc2;
+  --hot: #c96442;
+  --inv-bg: #1f1e1d;
+  --inv-fg: #faf9f5;
+  --up: #2f7d4f;
+  --down: #c0412b;
+}
+body[data-palette="light"] { color-scheme: light; }
+body[data-palette="light"]::before,
+body[data-palette="light"]::after { display: none; }
+body[data-palette="light"] .bars .meter .fill { background: var(--hot); opacity: 0.85; }
+body[data-palette="light"] .overlay,
+body[data-palette="light"] .tty-modal-overlay { background: rgba(31,30,29,0.28); }
+
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 html { color-scheme: dark; }
@@ -603,7 +627,7 @@ section.s .sub2 {
   position: fixed;
   right: 14px;
   bottom: 46px;
-  width: 240px;
+  width: 330px;
   z-index: 180;
   background: var(--bg-1);
   border: 1px solid var(--fg);
@@ -631,7 +655,7 @@ section.s .sub2 {
   gap: 6px;
   align-items: center;
 }
-.tweaks .seg { display: flex; }
+.tweaks .seg { display: flex; flex-wrap: wrap; justify-content: flex-end; }
 .tweaks .seg button {
   padding: 3px 8px;
   border: 1px solid var(--rule-hi);
@@ -900,7 +924,7 @@ table.t td.cell-logo { padding-left: 0; }
   .palette li { padding: 6px 10px; font-size: 11px; }
 
   /* Tweaks panel narrower */
-  .tweaks { right: 8px; bottom: 56px; width: calc(100vw - 16px); max-width: 280px; }
+  .tweaks { right: 8px; bottom: 56px; width: calc(100vw - 16px); max-width: 330px; }
 }
 
 /* Extra tight ≤400px (iPhone SE-ish) */
