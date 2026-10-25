@@ -47,9 +47,6 @@ const NAV = [
   { k: 'cedears',     label: 'cedears',      key: 'c', tier: 'sec' },
   { k: 'hipotecarios',label: 'hipotecarios', key: 'h', tier: 'sec' },
   { k: 'bcra',        label: 'bcra',         key: 'r', tier: 'sec' },
-  { k: 'mundial',      label: 'mundial',      key: 'w', tier: 'sec' },
-  { k: 'comparaprode', label: 'comparaprode', key: 'x', tier: 'sec' },
-  { k: 'cuotas',       label: 'cuotas',       key: 'q', tier: 'sec' },
 ];
 
 // ─── Helpers ───────────────────────────────────────────────────
@@ -3762,7 +3759,6 @@ const SCREENS = {
   monitor: screenMonitor,
   cedears: screenCedears,
   remesas: screenRemesas,
-  cuotas: screenCuotas,
   ars: screenARS,
   bonos: screenBonos,
   ons: screenONs,
@@ -3770,13 +3766,11 @@ const SCREENS = {
   dolar: screenDolar,
   pix: screenPix,
   bcra: screenBcra,
-  mundial: screenMundial,
-  comparaprode: screenComparaprode,
 };
 
 // ─── Keyboard ─────────────────────────────────────────────────
 let _gMode = false, _gTimer = null;
-const G_KEY = { m: 'monitor', c: 'cedears', s: 'remesas', q: 'cuotas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', w: 'mundial', x: 'comparaprode' };
+const G_KEY = { m: 'monitor', c: 'cedears', s: 'remesas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra' };
 const G_EXT = { e: '/earnings' };
 
 function onKey(e) {
@@ -4020,7 +4014,6 @@ function renderFooter() {
           <li><a href="#hipotecarios">hipotecarios</a></li>
           <li><a href="#pix">pix</a></li>
           <li><a href="#bcra">bcra</a></li>
-          <li><a href="#mundial">mundial</a></li>
         </ul>
       </div>
     </div>
