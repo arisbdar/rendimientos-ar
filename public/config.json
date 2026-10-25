@@ -222,104 +222,8 @@
   ],
   "lecaps": {
     "fuente": "BYMA",
-    "actualizado": "04/07/2026",
+    "actualizado": "2026-10-25",
     "letras": [
-      {
-        "ticker": "S17A6",
-        "nombre": "LECAP Abril 17",
-        "pago_final": 110.125,
-        "precio": 108.4,
-        "fecha_vencimiento": "2026-04-17",
-        "activo": false
-      },
-      {
-        "ticker": "S30A6",
-        "nombre": "LECAP Abril 30",
-        "pago_final": 127.486,
-        "precio": 124.5,
-        "fecha_vencimiento": "2026-04-30",
-        "activo": false
-      },
-      {
-        "ticker": "S15Y6",
-        "nombre": "LECAP Mayo 15",
-        "pago_final": 105.178,
-        "precio": 101.365,
-        "fecha_vencimiento": "2026-05-15",
-        "activo": false
-      },
-      {
-        "ticker": "S29Y6",
-        "nombre": "LECAP Mayo 29",
-        "pago_final": 132.044,
-        "precio": 126.099,
-        "fecha_vencimiento": "2026-05-29",
-        "activo": false
-      },
-      {
-        "ticker": "S12J6",
-        "nombre": "LECAP Junio 12",
-        "pago_final": 102.95,
-        "precio": 100.495,
-        "fecha_vencimiento": "2026-06-12",
-        "activo": false
-      },
-      {
-        "ticker": "T30J6",
-        "nombre": "BONCAP Junio 30",
-        "pago_final": 144.896,
-        "precio": 134.85,
-        "fecha_vencimiento": "2026-06-30",
-        "activo": false
-      },
-      {
-        "ticker": "S31L6",
-        "nombre": "LECAP Julio 31",
-        "pago_final": 117.677,
-        "precio": 107.279,
-        "fecha_vencimiento": "2026-07-31",
-        "activo": true
-      },
-      {
-        "ticker": "S14G6",
-        "nombre": "LECAP Agosto 14",
-        "pago_final": 108.03,
-        "precio": null,
-        "fecha_vencimiento": "2026-08-14",
-        "activo": true
-      },
-      {
-        "ticker": "S31G6",
-        "nombre": "LECAP Agosto 31",
-        "pago_final": 127.064,
-        "precio": 113.3,
-        "fecha_vencimiento": "2026-08-31",
-        "activo": true
-      },
-      {
-        "ticker": "S15S6",
-        "nombre": "LECAP Sept 15",
-        "pago_final": 107.21,
-        "precio": null,
-        "fecha_vencimiento": "2026-09-15",
-        "activo": true
-      },
-      {
-        "ticker": "S30S6",
-        "nombre": "LECAP Sept 30",
-        "pago_final": 117.536,
-        "precio": 101.9,
-        "fecha_vencimiento": "2026-09-30",
-        "activo": true
-      },
-      {
-        "ticker": "TO26",
-        "nombre": "BONCAP Oct 17",
-        "pago_final": 107.75,
-        "precio": 100.05,
-        "fecha_vencimiento": "2026-10-17",
-        "activo": false
-      },
       {
         "ticker": "S30O6",
         "nombre": "LECAP Oct 30",
@@ -382,14 +286,6 @@
         "pago_final": 156.037,
         "precio": 110.5,
         "fecha_vencimiento": "2027-06-30",
-        "activo": true
-      },
-      {
-        "ticker": "S17L6",
-        "nombre": "LECAP Julio 17",
-        "pago_final": 107.92,
-        "precio": null,
-        "fecha_vencimiento": "2026-07-17",
         "activo": true
       }
     ]
@@ -601,45 +497,162 @@
       "cupon": 6,
       "precio_hardcode": 93.71,
       "flujos": [
-        { "fecha": "2026-08-31", "monto": 0.73 },
-        { "fecha": "2026-09-30", "monto": 0.5 },
-        { "fecha": "2026-10-30", "monto": 0.5 },
-        { "fecha": "2026-11-30", "monto": 0.5 },
-        { "fecha": "2026-12-30", "monto": 0.5 },
-        { "fecha": "2027-01-29", "monto": 0.48 },
-        { "fecha": "2027-02-26", "monto": 0.45 },
-        { "fecha": "2027-03-31", "monto": 0.58 },
-        { "fecha": "2027-04-30", "monto": 0.5 },
-        { "fecha": "2027-05-31", "monto": 0.5 },
-        { "fecha": "2027-06-30", "monto": 0.5 },
-        { "fecha": "2027-07-30", "monto": 0.5 },
-        { "fecha": "2027-08-31", "monto": 0.5 },
-        { "fecha": "2027-09-30", "monto": 0.5 },
-        { "fecha": "2027-10-29", "monto": 0.48 },
-        { "fecha": "2027-11-30", "monto": 0.52 },
-        { "fecha": "2027-12-30", "monto": 0.5 },
-        { "fecha": "2028-01-31", "monto": 0.5 },
-        { "fecha": "2028-02-29", "monto": 0.48 },
-        { "fecha": "2028-03-31", "monto": 0.53 },
-        { "fecha": "2028-04-28", "monto": 0.47 },
-        { "fecha": "2028-05-31", "monto": 0.55 },
-        { "fecha": "2028-06-30", "monto": 0.5 },
-        { "fecha": "2028-07-31", "monto": 0.5 },
-        { "fecha": "2028-08-31", "monto": 0.5 },
-        { "fecha": "2028-09-29", "monto": 0.48 },
-        { "fecha": "2028-10-31", "monto": 0.53 },
-        { "fecha": "2028-11-30", "monto": 0.5 },
-        { "fecha": "2028-12-29", "monto": 0.48 },
-        { "fecha": "2029-01-31", "monto": 0.53 },
-        { "fecha": "2029-02-28", "monto": 0.47 },
-        { "fecha": "2029-03-28", "monto": 0.5 },
-        { "fecha": "2029-04-30", "monto": 0.53 },
-        { "fecha": "2029-05-31", "monto": 0.5 },
-        { "fecha": "2029-06-29", "monto": 0.48 },
-        { "fecha": "2029-07-31", "monto": 0.53 },
-        { "fecha": "2029-08-31", "monto": 0.5 },
-        { "fecha": "2029-09-28", "monto": 0.47 },
-        { "fecha": "2029-10-31", "monto": 100.55 }
+        {
+          "fecha": "2026-08-31",
+          "monto": 0.73
+        },
+        {
+          "fecha": "2026-09-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2026-10-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2026-11-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2026-12-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-01-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2027-02-26",
+          "monto": 0.45
+        },
+        {
+          "fecha": "2027-03-31",
+          "monto": 0.58
+        },
+        {
+          "fecha": "2027-04-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-05-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-06-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-07-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-08-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-09-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2027-10-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2027-11-30",
+          "monto": 0.52
+        },
+        {
+          "fecha": "2027-12-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-01-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-02-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2028-03-31",
+          "monto": 0.53
+        },
+        {
+          "fecha": "2028-04-28",
+          "monto": 0.47
+        },
+        {
+          "fecha": "2028-05-31",
+          "monto": 0.55
+        },
+        {
+          "fecha": "2028-06-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-07-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-08-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-09-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2028-10-31",
+          "monto": 0.53
+        },
+        {
+          "fecha": "2028-11-30",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2028-12-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2029-01-31",
+          "monto": 0.53
+        },
+        {
+          "fecha": "2029-02-28",
+          "monto": 0.47
+        },
+        {
+          "fecha": "2029-03-28",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2029-04-30",
+          "monto": 0.53
+        },
+        {
+          "fecha": "2029-05-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2029-06-29",
+          "monto": 0.48
+        },
+        {
+          "fecha": "2029-07-31",
+          "monto": 0.53
+        },
+        {
+          "fecha": "2029-08-31",
+          "monto": 0.5
+        },
+        {
+          "fecha": "2029-09-28",
+          "monto": 0.47
+        },
+        {
+          "fecha": "2029-10-31",
+          "monto": 100.55
+        }
       ]
     },
     "AL30": {
@@ -1623,21 +1636,6 @@
       ],
       "nombre": "AA2000"
     },
-    "AFCI": {
-      "ticker_d912": "AFCID",
-      "vencimiento": "2026-11-09",
-      "flujos": [
-        {
-          "fecha": "2026-05-07",
-          "monto": 0.0322
-        },
-        {
-          "fecha": "2026-11-09",
-          "monto": 1.0331
-        }
-      ],
-      "nombre": "Banco Comafi"
-    },
     "BACG": {
       "ticker_d912": "BACGD",
       "vencimiento": "2029-06-25",
@@ -1731,25 +1729,6 @@
       ],
       "nombre": "Banco BBVA"
     },
-    "BF40": {
-      "ticker_d912": "BF40D",
-      "vencimiento": "2027-08-27",
-      "flujos": [
-        {
-          "fecha": "2026-08-27",
-          "monto": 0.024795
-        },
-        {
-          "fecha": "2027-03-01",
-          "monto": 0.025205
-        },
-        {
-          "fecha": "2027-08-27",
-          "monto": 1.024795
-        }
-      ],
-      "nombre": "Banco BBVA"
-    },
     "BYCH": {
       "ticker_d912": "BYCHD",
       "vencimiento": "2028-10-10",
@@ -1788,21 +1767,6 @@
         {
           "fecha": "2026-08-31",
           "monto": 1.033904
-        }
-      ],
-      "nombre": "Banco Galicia"
-    },
-    "BYCW": {
-      "ticker_d912": "BYCWD",
-      "vencimiento": "2026-11-30",
-      "flujos": [
-        {
-          "fecha": "2026-05-14",
-          "monto": 0.0298
-        },
-        {
-          "fecha": "2026-11-30",
-          "monto": 1.0329
         }
       ],
       "nombre": "Banco Galicia"
@@ -2089,21 +2053,6 @@
       ],
       "nombre": "Banco Hipotecario"
     },
-    "HBC": {
-      "ticker_d912": "HBCDD",
-      "vencimiento": "2026-11-23",
-      "flujos": [
-        {
-          "fecha": "2026-05-20",
-          "monto": 0.029753
-        },
-        {
-          "fecha": "2026-11-23",
-          "monto": 1.03074
-        }
-      ],
-      "nombre": "Banco Hipotecario"
-    },
     "HJCF": {
       "ticker_d912": "HJCFD",
       "vencimiento": "2026-10-21",
@@ -2274,29 +2223,6 @@
         {
           "fecha": "2028-10-13",
           "monto": 0.0852
-        }
-      ],
-      "nombre": "Aluar"
-    },
-    "LMS8": {
-      "ticker_d912": "LMS8D",
-      "vencimiento": "2027-03-22",
-      "flujos": [
-        {
-          "fecha": "2026-06-22",
-          "monto": 0.265972
-        },
-        {
-          "fecha": "2026-09-21",
-          "monto": 0.261979
-        },
-        {
-          "fecha": "2026-12-21",
-          "monto": 0.257899
-        },
-        {
-          "fecha": "2027-03-22",
-          "monto": 0.25395
         }
       ],
       "nombre": "Aluar"

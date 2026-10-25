@@ -1679,9 +1679,22 @@ ARS_SUBS.cer = async function(main) {
       const priceLive = livePrices[sym] || null;
       const price = priceLive || bond.precio || null;
       if (!price || !cerActual || !bond.cer_emision) return { sym, days, dur, price };
-      // Adjusted real flows: each flujo amount is expressed per 100 VN pre-CER. Real flow = amount * (cer_actual / cer_emision)
+      // Compute monto per 100 VN pre-CER desde el spec del bono {base, tasa_interes, amortizacion}.
+      // Interés = base * tasa * outstanding, Principal = amortizacion. Trackeamos outstanding
+      // iterando TODOS los flujos (incluyendo pasados) para no sobre-contar el face si ya hubo amorts.
       const cerRatio = cerActual / bond.cer_emision;
-      const flows = (bond.flujos || []).map(f => ({ fecha: parseLocalDate(f.fecha), monto: f.monto * cerRatio })).filter(f => f.fecha > today);
+      let outstanding = 1.0;
+      const flows = [];
+      for (const f of (bond.flujos || [])) {
+        const amortiz = +f.amortizacion || 0;
+        const interes = (+f.base || 0) * (+f.tasa_interes || 0) * outstanding;
+        const fecha = parseLocalDate(f.fecha);
+        if (fecha && fecha > today) {
+          // Flujo ajustado por CER: monto pre-CER * CER_actual / CER_emision
+          flows.push({ fecha, monto: (interes + amortiz) * 100 * cerRatio });
+        }
+        outstanding = Math.max(0, outstanding - amortiz);
+      }
       if (!flows.length) return { sym, days, dur, price };
       const ytm = calcYTM(price, flows, today);
       // Approximate real TIR = nominal TIR adjusted by CER drift rate of the flows themselves;
@@ -2305,6 +2318,9 @@ async function screenONs(main) {
       const ytm = calcYTM(priceRaw / 100, flows, today);
       if (isNaN(ytm) || !isFinite(ytm)) continue;
       const dur = calcDuration(priceRaw / 100, flows, today, ytm);
+      // YTM < -1% suele indicar precio stale (bono casi a vencimiento con último
+      // flujo mal reflejado en data912). Lo filtramos como safety net.
+      if (ytm < -0.01) continue;
       items.push({
         sym: key,
         name: bond.nombre || '',
