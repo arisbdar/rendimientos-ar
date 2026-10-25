@@ -52,7 +52,7 @@
   <header class="top" id="topbar"></header>
   <main class="wrap" id="main" style="padding-top:8px;padding-bottom:40px"></main>
   <footer class="site" id="site-footer"></footer>
-  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+  <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' });</script>
   <script src="/tty.js"></script>
 </body>
 </html>

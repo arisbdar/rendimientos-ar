@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rendimientos-tty-v8';
+const CACHE_NAME = 'rendimientos-tty-v9';
 const STATIC_ASSETS = [
   '/',
   '/tty.css',
@@ -9,8 +9,12 @@ const STATIC_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
+  // cache: 'reload' bypassea el HTTP cache del browser durante el pre-cache,
+  // asi el SW nuevo guarda assets frescos aunque la red tenga una copia vieja.
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(STATIC_ASSETS)).catch(() => {})
+    caches.open(CACHE_NAME).then(cache =>
+      cache.addAll(STATIC_ASSETS.map(url => new Request(url, { cache: 'reload' })))
+    ).catch(() => {})
   );
   self.skipWaiting();
 });
