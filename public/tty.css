@@ -283,48 +283,52 @@ a { color: inherit; text-decoration: none; }
   .ticker-track { animation: none; }
 }
 
-/* Primary nav */
+/* Primary nav — chips con padding real para que se lean como botones.
+   Hover: bg sutil. Activo: fill mint sólido para que siempre sepas dónde estás. */
 nav.primary {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
-  padding-bottom: 6px;
-  font-size: 12px;
+  gap: 3px;
+  padding: 6px 0 10px;
+  font-size: 13px;
 }
 nav.primary button {
-  padding: 4px 10px 4px 0;
+  padding: 7px 12px;
   color: var(--fg-dim);
   text-transform: lowercase;
-  letter-spacing: 0.02em;
-  position: relative;
+  letter-spacing: 0.01em;
+  border-radius: 5px;
+  transition: color .12s ease, background .12s ease;
 }
-nav.primary button:hover { color: var(--hot); }
-nav.primary button.on { color: var(--fg); }
-nav.primary button.on::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 10px;
-  bottom: -7px;
-  height: 1px;
-  background: var(--fg);
+nav.primary button:hover {
+  color: var(--fg);
+  background: var(--bg-1);
 }
-/* Items secundarios: más tenues, font más chico, menos padding */
+nav.primary button.on {
+  color: var(--inv-fg);
+  background: var(--hot);
+}
+/* Items secundarios: mismo shape pero más tenues y un pelo más chicos */
 nav.primary button.sec,
 nav.primary .tty-nav-ext.sec button {
   color: var(--fg-faint);
-  font-size: 11px;
-  opacity: 0.85;
-  padding-right: 8px;
+  font-size: 12px;
+  padding: 6px 10px;
 }
 nav.primary button.sec:hover,
-nav.primary .tty-nav-ext.sec button:hover { color: var(--hot); opacity: 1; }
-nav.primary button.sec.on { color: var(--fg); opacity: 1; }
+nav.primary .tty-nav-ext.sec button:hover {
+  color: var(--fg);
+  background: var(--bg-1);
+}
+nav.primary button.sec.on {
+  color: var(--inv-fg);
+  background: var(--hot);
+}
 /* Separador visual entre tier primario y secundario */
 nav.primary .nav-sep {
   color: var(--rule-hi);
-  padding: 0 8px 0 4px;
-  font-size: 13px;
+  padding: 0 6px;
+  font-size: 14px;
   user-select: none;
   align-self: center;
 }
