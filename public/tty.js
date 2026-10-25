@@ -586,6 +586,9 @@ function renderTopBar() {
           <span class="live">LIVE</span>
         </div>
       </div>
+    </div>
+    <div class="ticker-strip" id="tty-ticker" aria-label="Cotizaciones principales"></div>
+    <div class="wrap">
       <nav class="primary" id="tty-nav-primary"></nav>
     </div>
     <div id="tty-subnav-wrap"></div>
@@ -593,6 +596,44 @@ function renderTopBar() {
   renderNav();
   tickClock();
   setInterval(tickClock, 1000);
+  renderTicker();
+  // Refresh ticker cada 60s — mismo cache que /api/cotizaciones.
+  setInterval(renderTicker, 60_000);
+}
+
+async function renderTicker() {
+  const strip = $('#tty-ticker');
+  if (!strip) return;
+  let data;
+  try {
+    data = await fetchCached('/api/cotizaciones', 60_000);
+  } catch (e) {
+    strip.innerHTML = '';
+    return;
+  }
+  const items = [];
+  const sgn = (c) => c >= 0 ? 'up' : 'down';
+  const arr = (c) => c >= 0 ? '▲' : '▼';
+  const tk = (label, val, chg) => {
+    const chgHtml = chg != null && !isNaN(chg)
+      ? ` <span class="${sgn(chg)}">${arr(chg)} ${fmt(Math.abs(chg), 2)}%</span>` : '';
+    return `<span class="tk"><span class="s">${label}</span><span class="v">${val}</span>${chgHtml}</span>`;
+  };
+  if (data.oficial?.price) {
+    const chg = data.oficial.prevClose ? ((data.oficial.price - data.oficial.prevClose) / data.oficial.prevClose) * 100 : null;
+    items.push(tk('USD OFICIAL', '$' + fmt(data.oficial.price, 2), chg));
+  }
+  if (data.mep?.price)  items.push(tk('MEP', '$' + fmt(data.mep.price, 2)));
+  if (data.ccl?.price)  items.push(tk('CCL', '$' + fmt(data.ccl.price, 2)));
+  if (data.oficial?.price && data.mep?.price) {
+    const brecha = ((data.mep.price / data.oficial.price) - 1) * 100;
+    items.push(tk('BRECHA MEP', fmt(brecha, 1) + '%'));
+  }
+  if (data.riesgoPais?.value != null) items.push(tk('RIESGO PAÍS', data.riesgoPais.value + ' pb'));
+  if (!items.length) { strip.innerHTML = ''; return; }
+  // Duplicamos el contenido para que el loop CSS sea seamless (translateX -50%).
+  const content = items.join('<span class="sep">·</span>') + '<span class="sep">·</span>';
+  strip.innerHTML = `<div class="ticker-track">${content}${content}</div>`;
 }
 
 function renderNav() {
@@ -2386,6 +2427,9 @@ async function screenDolar(main) {
     // Bid poco confiable — publican compra muy alta pero no la honran en la práctica.
     // Los escondemos del cálculo de 'mejor para vender' y del sort por venta.
     const BID_UNRELIABLE = new Set(['banco-credicoop', 'banco-santander']);
+    // Exchanges cripto para taggear visualmente en la tabla USD. Los coins usdt/usdc
+    // ya son todos cripto, así que ahí tagueamos todos.
+    const CRYPTO_IDS = new Set(['fiwind', 'ripio', 'nexo', 'buenbit', 'lemon-cash', 'satoshitango', 'belo', 'bitso', 'letsbit', 'decrypto']);
     // Precios con condiciones (ej. Brubank solo clientes Ultra) no están abiertos a cualquiera:
     // no compiten en el ranking principal ni en "mejor del momento", van en una tabla aparte.
     const conditionedUsd = (exchanges.usd || []).filter(e => e.ask > 0 && e.bid > 0 && !EXCLUDED.has(e.id) && e.conditions);
@@ -2455,15 +2499,22 @@ async function screenDolar(main) {
           const isBestBuy = state.sort === 'buy' && i === 0;
           const isBestSell = state.sort === 'sell' && i === 0;
           const tag24 = ex.is24x7 === false ? '<span class="tag neutral" style="margin-left:6px">closed</span>' : '';
-          const tagBank = ex.isBank ? '<span class="tag" style="margin-left:6px">banco</span>' : '';
+          const tagBank = ex.isBank ? '<span class="tag bank" style="margin-left:6px">banco</span>' : '';
+          const isCrypto = !ex.isBank && (state.coin !== 'usd' || CRYPTO_IDS.has(ex.id));
+          const tagCrypto = isCrypto ? '<span class="tag crypto" style="margin-left:6px">cripto</span>' : '';
           const varCls = ex.pctVariation != null ? signClass(ex.pctVariation) : 'dim';
           const varTxt = ex.pctVariation != null ? fmtPct(ex.pctVariation, 2) : '—';
+          // Spread bar: ancho proporcional al spread, color según severidad.
+          // ≤2% ok (mint) · 2-5% medio (amber) · >5% alto (rose)
+          const spBarW = Math.max(4, Math.min(80, Math.round(ex.spread * 8)));
+          const spBarCls = ex.spread > 5 ? 'high' : ex.spread > 2 ? 'mid' : '';
+          const spBar = `<span class="spread-bar ${spBarCls}" style="width:${spBarW}px"></span>`;
           return `<tr>
             <td class="dim">${String(i + 1).padStart(2, '0')}</td>
-            <td>${logoImgHTML(ex.logoUrl, ex.name, true)} <span class="${i===0?'hot':''}">${esc(provName(ex))}</span>${provNote(ex)}${tagBank}${tag24}</td>
+            <td>${logoImgHTML(ex.logoUrl, ex.name, true)} <span class="${i===0?'hot':''}">${esc(provName(ex))}</span>${provNote(ex)}${tagBank}${tagCrypto}${tag24}</td>
             <td class="num ${isBestSell?'hot':''}">$${fmt(ex.bid, 2)}</td>
             <td class="num ${isBestBuy?'hot':''}">$${fmt(ex.ask, 2)}</td>
-            <td class="num dim">${fmt(ex.spread, 2)}%</td>
+            <td class="num dim">${spBar}${fmt(ex.spread, 2)}%</td>
             <td class="num ${varCls}">${varTxt}</td>
           </tr>`;
         }).join('')}</tbody></table>
@@ -4007,14 +4058,23 @@ function renderStatusbar() {
   sb.innerHTML = `<div class="wrap"><div class="inner">
     <span class="live">live</span>
     <span>section: <b id="sb-section">${esc(STATE.section.main)}${STATE.section.sub ? ' · ' + esc(STATE.section.sub) : ''}</b></span>
+    <span class="kb-group">
+      <button class="kb" data-nav="dolar"><kbd>D</kbd>dólar</button>
+      <button class="kb" data-nav="bonos"><kbd>B</kbd>bonos</button>
+      <button class="kb" data-nav="cedears"><kbd>C</kbd>cedears</button>
+      <button class="kb" data-nav="monitor"><kbd>M</kbd>monitor</button>
+    </span>
     <span class="sp"></span>
-    <button id="sb-palette">/ palette</button>
-    <button id="sb-help">? help</button>
-    <button id="sb-tweaks">⚙ tweaks</button>
+    <button class="kb" id="sb-palette"><kbd>/</kbd>palette</button>
+    <button class="kb" id="sb-help"><kbd>?</kbd>help</button>
+    <button class="kb" id="sb-tweaks"><kbd>⚙</kbd>tweaks</button>
   </div></div>`;
   $('#sb-palette', sb).addEventListener('click', openCommandPalette);
   $('#sb-help', sb).addEventListener('click', toggleHelp);
   $('#sb-tweaks', sb).addEventListener('click', toggleTweaksPanel);
+  $$('button[data-nav]', sb).forEach(b => {
+    b.addEventListener('click', () => goTo(b.getAttribute('data-nav'), null));
+  });
 }
 
 function updateStatusbarSection() {

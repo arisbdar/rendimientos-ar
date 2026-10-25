@@ -237,6 +237,52 @@ a { color: inherit; text-decoration: none; }
   animation: blink 1.5s steps(2, start) infinite;
 }
 
+/* Ticker — strip de cotizaciones scrolling en el topbar.
+   Loop seamless duplicando contenido + translateX -50% animado. */
+.ticker-strip {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+  background: var(--bg-1);
+  position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+.ticker-track {
+  display: inline-flex;
+  gap: 24px;
+  padding: 7px 24px;
+  white-space: nowrap;
+  animation: tty-ticker-slide 80s linear infinite;
+  will-change: transform;
+}
+.ticker-strip:hover .ticker-track { animation-play-state: paused; }
+@keyframes tty-ticker-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.ticker-strip .tk {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+.ticker-strip .tk .s {
+  color: var(--fg-faint);
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+.ticker-strip .tk .v { color: var(--fg-dim); }
+.ticker-strip .tk .up { color: var(--up); font-size: 10px; }
+.ticker-strip .tk .down { color: var(--down); font-size: 10px; }
+.ticker-strip .sep { color: var(--fg-faint); opacity: 0.35; align-self: center; }
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track { animation: none; }
+}
+
 /* Primary nav */
 nav.primary {
   display: flex;
@@ -789,6 +835,72 @@ footer.site .fine {
   border: 1px solid var(--rule-hi);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+/* Tipo de proveedor — codificación semántica de color.
+   bank = cyan (confianza institucional) · crypto = violet (digital/alt). */
+.tag.bank {
+  color: #4db8ff;
+  border-color: rgba(77, 184, 255, 0.3);
+  background: rgba(77, 184, 255, 0.08);
+}
+.tag.crypto {
+  color: #a78bfa;
+  border-color: rgba(167, 139, 250, 0.3);
+  background: rgba(167, 139, 250, 0.08);
+}
+/* Light palette overrides para que los tags no griten */
+[data-palette="light"] .tag.bank {
+  color: #1e5faa; border-color: rgba(30, 95, 170, 0.25); background: rgba(30, 95, 170, 0.06);
+}
+[data-palette="light"] .tag.crypto {
+  color: #6d4bc4; border-color: rgba(109, 75, 196, 0.25); background: rgba(109, 75, 196, 0.06);
+}
+
+/* Barra inline de spread en la tabla — grading visual de qué tan ajustado es.
+   Mint = spread chico (ok) · amber = mediano · rose = grande. */
+.spread-bar {
+  display: inline-block;
+  height: 3px;
+  border-radius: 2px;
+  vertical-align: 2px;
+  margin-right: 6px;
+  background: var(--up);
+  opacity: 0.65;
+  min-width: 4px;
+  max-width: 80px;
+}
+.spread-bar.mid  { background: #ffc24d; }
+.spread-bar.high { background: var(--down); }
+
+/* Keyboard shortcut hints en el statusbar */
+.statusbar .kb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--fg-faint);
+}
+.statusbar .kb kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid var(--rule-hi);
+  background: var(--bg-1);
+  color: var(--fg-dim);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.statusbar .kb:hover { color: var(--fg); }
+.statusbar .kb:hover kbd { color: var(--hot); border-color: var(--hot); }
+.statusbar .kb-group {
+  display: inline-flex;
+  gap: 10px;
+  padding-left: 10px;
+  margin-left: 4px;
+  border-left: 1px solid var(--rule);
+}
+@media (max-width: 700px) {
+  .statusbar .kb-group { display: none; }
 }
 
 /* Table cell tweaks for mixed data */
