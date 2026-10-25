@@ -1,6 +1,7 @@
 {
   "framework": null,
   "outputDirectory": "public",
+  "buildCommand": "node scripts/stamp-sw.js",
   "rewrites": [
     { "source": "/dolar", "destination": "/index.html" },
     { "source": "/cedears", "destination": "/cedears/index.html" },

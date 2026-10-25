@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rendimientos-tty-v9';
+const CACHE_NAME = 'rendimientos-tty-v10';
 const STATIC_ASSETS = [
   '/',
   '/tty.css',
@@ -20,12 +20,18 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    const stale = keys.filter(k => k !== CACHE_NAME);
+    await Promise.all(stale.map(k => caches.delete(k)));
+    await self.clients.claim();
+    // Si había caches viejos borrados, esto es un UPDATE (no primera instalación).
+    // Avisamos a todos los tabs abiertos para que se recarguen y vean los assets nuevos.
+    if (stale.length > 0) {
+      const clients = await self.clients.matchAll({ type: 'window' });
+      for (const c of clients) c.postMessage({ type: 'sw-updated' });
+    }
+  })());
 });
 
 self.addEventListener('fetch', (event) => {
