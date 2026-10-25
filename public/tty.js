@@ -5,8 +5,8 @@
 // ─── State ────────────────────────────────────────────────────
 const STATE = {
   section: { main: 'dolar', sub: null },
-  palette: 'light',
-  scanlines: 'on',
+  palette: 'noche',
+  scanlines: 'off',
   density: 'medium',
 };
 
@@ -3914,7 +3914,7 @@ function refreshTweaksPanel() {
   div.innerHTML = `
     <div class="hd"><span>tweaks</span><button id="tw-close" style="color:var(--inv-fg)">✕</button></div>
     <div class="bd">
-      <div class="row"><span class="lbl">palette</span><div class="seg">${seg('palette', [['light','claro'],['amber','amber'],['green','green'],['white','mono']], STATE.palette)}</div></div>
+      <div class="row"><span class="lbl">palette</span><div class="seg">${seg('palette', [['noche','noche'],['light','claro'],['amber','amber'],['green','green'],['white','mono']], STATE.palette)}</div></div>
       <div class="row"><span class="lbl">scanlines</span><div class="seg">${seg('scanlines', [['on','on'],['off','off']], STATE.scanlines)}</div></div>
       <div class="row"><span class="lbl">density</span><div class="seg">${seg('density', [['compact','compact'],['medium','medium'],['comfortable','comfortable']], STATE.density)}</div></div>
     </div>
@@ -3984,7 +3984,7 @@ function renderFooter() {
 function bootPersistence() {
   try {
     const pal = localStorage.getItem(LS.palette);
-    if (pal && ['light', 'amber', 'green', 'white'].includes(pal)) STATE.palette = pal;
+    if (pal && ['noche', 'light', 'amber', 'green', 'white'].includes(pal)) STATE.palette = pal;
     const sc = localStorage.getItem(LS.scanlines);
     if (sc && ['on', 'off'].includes(sc)) STATE.scanlines = sc;
     const den = localStorage.getItem(LS.density);

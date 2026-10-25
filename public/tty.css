@@ -52,7 +52,7 @@
   --down: #ff7a70;
 }
 
-/* Palette — Claro (default). Crema cálido, tinta oscura, acento terracota. */
+/* Palette — Claro. Crema cálido, tinta oscura, acento terracota. */
 [data-palette="light"] {
   --bg: #faf9f5;
   --bg-1: #f3f1ea;
@@ -75,6 +75,30 @@ body[data-palette="light"]::after { display: none; }
 body[data-palette="light"] .bars .meter .fill { background: var(--hot); opacity: 0.85; }
 body[data-palette="light"] .overlay,
 body[data-palette="light"] .tty-modal-overlay { background: rgba(31,30,29,0.28); }
+
+/* Palette — Noche Pro (default). Near-black con mint eléctrico. */
+[data-palette="noche"] {
+  --bg: #0a0a0c;
+  --bg-1: #121216;
+  --bg-2: #17171d;
+  --fg: #ececf0;
+  --fg-dim: #b4b4be;
+  --fg-faint: #7a7a85;
+  --muted: #4a4a52;
+  --rule: #1a1a20;
+  --rule-hi: #22222a;
+  --hot: #00e5a0;
+  --inv-bg: #00e5a0;
+  --inv-fg: #0a0a0c;
+  --up: #00e5a0;
+  --down: #ff4f6b;
+}
+body[data-palette="noche"] { color-scheme: dark; }
+body[data-palette="noche"]::before,
+body[data-palette="noche"]::after { display: none; }
+body[data-palette="noche"] .bars .meter .fill { background: var(--hot); opacity: 0.9; }
+body[data-palette="noche"] .overlay,
+body[data-palette="noche"] .tty-modal-overlay { background: rgba(10,10,12,0.72); }
 
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
