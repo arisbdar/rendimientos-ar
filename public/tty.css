@@ -981,17 +981,6 @@ table.t td.cell-logo { padding-left: 0; }
   }
   .chart .hd .big { font-size: 13px; }
 
-  /* Mundial countdown stacked */
-  .tty-countdown { padding: 14px; margin: 12px 0 16px; }
-  .tty-countdown-summary { font-size: 18px; }
-  .tty-countdown-date { font-size: 10px; }
-  .tty-countdown-stats { min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-  .tty-countdown-stat { padding: 10px 12px; gap: 6px; }
-  .tty-countdown-value { font-size: 20px; }
-
-  /* Mundial group cards: partidos table with smaller city column */
-  .mundial-matches table.t td { padding: 4px 6px; font-size: 11px; }
-  .mundial-matches table.t td:first-child { width: 44px; font-size: 10px; }
 
   /* Dolar controls wrap cleanly */
   .dol-controls { gap: 8px 10px; }
@@ -1004,13 +993,6 @@ table.t td.cell-logo { padding-left: 0; }
   .argy-hero-card .val { font-size: 24px; }
   .argy-hero-card .val small { font-size: 12px; }
 
-  /* Cuotas calculator: comfortable on mobile */
-  .cuotas-grid { grid-template-columns: 1fr; gap: 10px; }
-  .cq-field > input { font-size: 14px; padding: 8px 10px; }
-  .cq-big { padding: 14px 14px; }
-  .cq-big-val { font-size: 26px; }
-  .cq-stats { grid-template-columns: 1fr 1fr; }
-  .cq-stat .val { font-size: 15px; }
 
   /* Best cards stack */
   .dol-best-row { gap: 8px; }
@@ -1067,7 +1049,6 @@ table.t td.cell-logo { padding-left: 0; }
 @media (max-width: 400px) {
   .wrap { padding: 0 10px; }
   .phd h1 { font-size: 22px; }
-  .tty-countdown-value { font-size: 18px; }
   nav.primary { font-size: 10px; }
   .tty-calc-inputs { grid-template-columns: 1fr; }
   .tty-calc-inputs .out.big { font-size: 16px; }
@@ -1083,170 +1064,6 @@ table.t td.cell-logo { padding-left: 0; }
 [data-density="comfortable"] table.t td { padding: 10px 12px; }
 [data-density="comfortable"] .phd { padding: 36px 0 24px; }
 
-/* Mundial group card tweaks */
-.mundial-group {
-  padding-bottom: 14px !important;
-  border-bottom: 1px dashed var(--rule-hi);
-}
-.mundial-matches {
-  margin-top: 14px;
-}
-.mundial-matches-head {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  padding: 8px 0 2px;
-  border-top: 1px dashed var(--rule);
-}
-.mundial-matches table.t { margin-top: 0; }
-.mundial-matches table.t td { padding: 5px 8px; font-size: 12px; }
-.mundial-matches table.t td:first-child { padding-left: 0; width: 56px; }
-
-/* Countdown card (Mundial 2026) */
-.tty-countdown {
-  border: 1px solid var(--rule-hi);
-  padding: 22px;
-  margin: 18px 0 24px;
-  background: var(--bg-1);
-}
-.tty-countdown-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 28px;
-  align-items: stretch;
-  flex-wrap: wrap;
-}
-.tty-countdown-kicker {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--fg-faint);
-  margin-bottom: 10px;
-}
-.tty-countdown-summary {
-  font-family: var(--font-mono);
-  font-size: 26px;
-  color: var(--hot);
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-  margin-bottom: 6px;
-}
-.tty-countdown-date {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--fg-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.tty-countdown-stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(92px, 1fr));
-  gap: 8px;
-  min-width: min(100%, 360px);
-}
-.tty-countdown-stat {
-  border: 1px solid var(--rule);
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: left;
-  background: var(--bg);
-}
-.tty-countdown-value {
-  font-family: var(--font-mono);
-  font-size: 28px;
-  font-weight: 500;
-  color: var(--fg);
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.tty-countdown-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-@media (max-width: 700px) {
-  .tty-countdown-head { flex-direction: column; }
-  .tty-countdown-stats { min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .tty-countdown-summary { font-size: 20px; }
-  .tty-countdown-value { font-size: 22px; }
-}
-
-/* Comparaprode banner — cancha de fútbol en line art + overlay text */
-.cprode-banner {
-  position: relative;
-  border: 1px solid var(--rule-hi);
-  background: var(--bg-1);
-  margin: 18px 0 0;
-  height: 220px;
-  overflow: hidden;
-  isolation: isolate;
-}
-.cprode-banner svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  color: var(--rule-hi);
-  opacity: 0.55;
-  z-index: 0;
-}
-.cprode-banner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, transparent 0%, var(--bg-1) 85%);
-  z-index: 1;
-  pointer-events: none;
-}
-.cprode-banner-overlay {
-  position: relative;
-  z-index: 2;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 32px 40px;
-  gap: 4px;
-}
-.cprode-banner-kicker {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: var(--fg-faint);
-}
-.cprode-banner-title {
-  font-family: var(--font-mono);
-  font-size: 48px;
-  color: var(--hot);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  margin: 6px 0 4px;
-}
-.cprode-banner-sub {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--fg-faint);
-  letter-spacing: 0.04em;
-  max-width: 60ch;
-  line-height: 1.5;
-}
-@media (max-width: 700px) {
-  .cprode-banner { height: 160px; }
-  .cprode-banner-overlay { padding: 18px 22px; }
-  .cprode-banner-title { font-size: 30px; }
-  .cprode-banner-kicker { font-size: 9px; letter-spacing: 0.12em; }
-  .cprode-banner-sub { font-size: 10px; }
-}
 
 /* Calculator modal (clickable rows in LECAPs/CER/Bonos/ONs) */
 .tty-modal-overlay {
@@ -1548,115 +1365,6 @@ table.t td.cell-logo { padding-left: 0; }
   color: var(--fg-faint);
 }
 
-/* ─── Cuotas vs Contado (calculadora tipo infleta) ─────────── */
-.cuotas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 14px;
-  margin: 10px 0 12px;
-}
-.cq-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.cq-field > span {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--fg-dim);
-}
-.cq-field > input {
-  background: var(--bg-1);
-  border: 1px solid var(--rule-hi);
-  color: var(--fg);
-  font-family: var(--font-mono);
-  font-size: 15px;
-  padding: 9px 12px;
-  outline: 0;
-  font-variant-numeric: tabular-nums;
-}
-.cq-field > input:focus { border-color: var(--hot); }
-.cq-presets {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 6px 0;
-  flex-wrap: wrap;
-}
-.cq-presets-lbl {
-  font-size: 10px;
-  color: var(--fg-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-.cq-verdict { margin: 10px 0 18px; }
-.cq-big {
-  padding: 18px 20px;
-  border: 1px solid var(--rule-hi);
-  border-left-width: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  background: var(--bg-1);
-}
-.cq-big.up { border-left-color: var(--up); }
-.cq-big.down { border-left-color: var(--down); }
-.cq-big-lbl {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--fg-dim);
-}
-.cq-big-val {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-.cq-big.up .cq-big-val { color: var(--up); }
-.cq-big.down .cq-big-val { color: var(--down); }
-.cq-big-sub {
-  font-size: 12px;
-  color: var(--fg-dim);
-}
-.cq-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1px;
-  background: var(--rule-hi);
-  border: 1px solid var(--rule-hi);
-}
-.cq-stat {
-  background: var(--bg);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.cq-stat .lbl {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--fg-dim);
-}
-.cq-stat .val {
-  font-size: 17px;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-details.cq-flow {
-  margin-top: 14px;
-}
-details.cq-flow summary {
-  cursor: pointer;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--fg-dim);
-  padding: 6px 0;
-}
-details.cq-flow summary:hover { color: var(--hot); }
-details.cq-flow[open] summary { color: var(--fg); }
 
 /* Search input (CEDEARs) */
 .ced-search {
