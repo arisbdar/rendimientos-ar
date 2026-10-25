@@ -334,24 +334,30 @@ nav.primary .nav-sep {
 }
 
 /* Subnav */
+/* Subnav — mismo lenguaje de chips que el primary, un notch más chico. */
 nav.sub {
   border-bottom: 1px solid var(--rule);
-  padding: 8px 0;
+  padding: 8px 0 10px;
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
+  gap: 3px;
   font-size: 12px;
 }
 nav.sub button {
-  padding: 2px 10px;
+  padding: 5px 10px;
   color: var(--fg-faint);
-  border-left: 1px solid var(--rule);
   text-transform: lowercase;
+  border-radius: 4px;
+  transition: color .12s ease, background .12s ease;
 }
-nav.sub button:first-child { border-left: 0; padding-left: 0; }
-nav.sub button:hover { color: var(--hot); }
-nav.sub button.on { color: var(--hot); }
-nav.sub button.on::before { content: "› "; color: var(--fg); }
+nav.sub button:hover {
+  color: var(--fg);
+  background: var(--bg-1);
+}
+nav.sub button.on {
+  color: var(--inv-fg);
+  background: var(--hot);
+}
 
 /* Page header */
 .phd { padding: 28px 0 20px; }
@@ -960,8 +966,8 @@ table.t td.cell-logo { padding-left: 0; }
   nav.primary button.sec,
   nav.primary .tty-nav-ext.sec button { font-size: 10px; padding-right: 6px; }
   nav.primary .nav-sep { padding: 0 4px; font-size: 11px; }
-  nav.sub { padding: 6px 0; font-size: 11px; }
-  nav.sub button { padding: 2px 8px; }
+  nav.sub { padding: 6px 0 8px; font-size: 11px; }
+  nav.sub button { padding: 4px 8px; }
 
   /* Page header tighter */
   .phd { padding: 18px 0 14px; }
