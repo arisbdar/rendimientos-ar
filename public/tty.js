@@ -1585,11 +1585,11 @@ ARS_SUBS.plazofijo = async function(main) {
           rawLogo: PF_RAW_LOGOS[p.entidad],
         };
       })
-      // Rate desc; on ties Banco Voii goes first (destacado), then alfabético.
+      // Rate desc; on ties, Voii/Cocos (misma entidad en re-branding) van primero, después alfabético.
       .sort((a, b) => {
         if (b.tna !== a.tna) return b.tna - a.tna;
-        const av = /voii/i.test(a.raw) ? 0 : 1;
-        const bv = /voii/i.test(b.raw) ? 0 : 1;
+        const av = /voii|cocos/i.test(a.raw) ? 0 : 1;
+        const bv = /voii|cocos/i.test(b.raw) ? 0 : 1;
         if (av !== bv) return av - bv;
         return a.short.localeCompare(b.short);
       });
