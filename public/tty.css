@@ -474,14 +474,17 @@ section.s .sub2 {
   max-width: 60ch;
 }
 
-/* Logo monogram */
+/* Logo monogram. Chip blanco para que los PNGs con fondo transparente de los bancos
+   (diseñados pensando en fondo blanco) no queden "flotando" contra el near-black del
+   Noche Pro. Los SVGs con fill propio (Ualá, Cocos, Fiwind, etc.) tapan el blanco igual.
+   object-fit: contain para que logos no cuadrados entren enteros, sin clipping. */
 .logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px; height: 28px;
   border: 1px solid var(--rule-hi);
-  background: var(--bg-1);
+  background: #fff;
   color: var(--fg);
   font-family: var(--font-mono);
   font-weight: 600;
@@ -490,9 +493,10 @@ section.s .sub2 {
   text-transform: uppercase;
   line-height: 1;
   overflow: hidden;
+  border-radius: 4px;
 }
-.logo img { width: 100%; height: 100%; object-fit: cover; }
-.logo.sm { width: 22px; height: 22px; font-size: 9px; }
+.logo img { width: 100%; height: 100%; object-fit: contain; }
+.logo.sm { width: 22px; height: 22px; font-size: 9px; border-radius: 3px; }
 .with-logo {
   display: flex;
   align-items: center;
