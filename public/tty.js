@@ -1566,13 +1566,17 @@ ARS_SUBS.billeteras = async function(main) {
   }
 };
 
-// 3b. Plazo Fijo 30d — simple, only TNA
+// 3b. Plazo Fijo — tasas 30/60/90 días por entidad.
 ARS_SUBS.plazofijo = async function(main) {
-  main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas a 30 días por entidad bancaria. Fuente BCRA.')
+  main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas por entidad bancaria a 30, 60 y 90 días. Fuente BCRA.')
     + `<div id="pf-tbl"><div class="loading-row"> cargando bancos…</div></div>`;
   try {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
     const rows = await res.json();
+    const pickTasa = (tasas, plazo) => {
+      const m = (tasas || []).find(t => +t.plazoMinDias === plazo && +t.plazoMaxDias === plazo);
+      return m && m.tna != null ? m.tna * 100 : null;
+    };
     const list = (rows || []).filter(p => p.tnaClientes > 0)
       .map(p => {
         const isVoii = /voii/i.test(p.entidad);
@@ -1581,20 +1585,23 @@ ARS_SUBS.plazofijo = async function(main) {
           bank: formatBankNameTTY(p.entidad),
           // Banco Voii se re-marca a COCOS BANK — igual que en la sección Dólar.
           short: isVoii ? 'COCOS BANK (ex VOII)' : shortBank(p.entidad),
-          tna: p.tnaClientes * 100,
+          tna30: p.tnaClientes * 100,     // tnaClientes IS la tasa de 30d (default).
+          tna60: pickTasa(p.tasas, 60),
+          tna90: pickTasa(p.tasas, 90),
           rawLogo: PF_RAW_LOGOS[p.entidad],
         };
       })
-      // Rate desc; on ties, Voii/Cocos (misma entidad en re-branding) van primero, después alfabético.
+      // Rate desc por 30d; on ties, Voii/Cocos (misma entidad en re-branding) van primero, después alfabético.
       .sort((a, b) => {
-        if (b.tna !== a.tna) return b.tna - a.tna;
+        if (b.tna30 !== a.tna30) return b.tna30 - a.tna30;
         const av = /voii|cocos/i.test(a.raw) ? 0 : 1;
         const bv = /voii|cocos/i.test(b.raw) ? 0 : 1;
         if (av !== bv) return av - bv;
         return a.short.localeCompare(b.short);
       });
+    const fmtTna = (v) => v == null ? '<span class="dim">—</span>' : v.toFixed(2) + '%';
     $('#pf-tbl').innerHTML = `<table class="t pf-slim">
-      <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
+      <thead><tr><th style="text-align:left">banco</th><th>30d</th><th>60d</th><th>90d</th></tr></thead>
       <tbody>${list.map((r, i) => {
         // Si tenemos un logo del PF_RAW_LOGOS, lo usamos directo (bypass del formatter).
         // Los chips SVG generados (brandChipSVG) traen un data: URI y tienen su propio
@@ -1608,7 +1615,9 @@ ARS_SUBS.plazofijo = async function(main) {
         }
         return `<tr>
         <td>${logo} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
-        <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
+        <td class="num ${i===0?'hot':''}">${r.tna30.toFixed(2)}%</td>
+        <td class="num">${fmtTna(r.tna60)}</td>
+        <td class="num">${fmtTna(r.tna90)}</td>
       </tr>`;
       }).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
