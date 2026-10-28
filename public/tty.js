@@ -1572,7 +1572,17 @@ ARS_SUBS.plazofijo = async function(main) {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
     const rows = await res.json();
     const list = (rows || []).filter(p => p.tnaClientes > 0)
-      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), short: shortBank(p.entidad), tna: p.tnaClientes * 100, rawLogo: PF_RAW_LOGOS[p.entidad] }))
+      .map(p => {
+        const isVoii = /voii/i.test(p.entidad);
+        return {
+          raw: p.entidad,
+          bank: formatBankNameTTY(p.entidad),
+          // Banco Voii se re-marca a COCOS BANK — igual que en la sección Dólar.
+          short: isVoii ? 'COCOS BANK (ex VOII)' : shortBank(p.entidad),
+          tna: p.tnaClientes * 100,
+          rawLogo: PF_RAW_LOGOS[p.entidad],
+        };
+      })
       // Rate desc; on ties Banco Voii goes first (destacado), then alfabético.
       .sort((a, b) => {
         if (b.tna !== a.tna) return b.tna - a.tna;
