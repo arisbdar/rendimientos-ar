@@ -212,6 +212,24 @@ const BILLETERA_BG = {
 
 // Logos. Only paths that actually exist in public/logos/ are listed —
 // others fall through to initials (which is fine on the terminal aesthetic).
+// Mapeo DIRECTO de los nombres RAW que devuelve la API BCRA/argentinadatos
+// (en MAYÚSCULAS con sufijos corporativos tipo S.A., SOCIEDAD ANONIMA, etc).
+// Esto bypassea el formatBankNameTTY que no estaba cubriendo todos los casos
+// y dejaba varios bancos sin logo.
+const PF_RAW_LOGOS = {
+  'BANCO DE GALICIA Y BUENOS AIRES S.A.':                            '/logos/Banco_Galicia.png',
+  'BANCO DE LA PROVINCIA DE BUENOS AIRES':                           '/logos/Banco_de_la_Prov__de_Buenos_Aires.png',
+  'INDUSTRIAL AND COMMERCIAL BANK OF CHINA (ARGENTINA) S.A.U.':      '/logos/ICBC_Argentina.png',
+  'BANCO CREDICOOP COOPERATIVO LIMITADO':                            '/logos/Banco_Credicoop.png',
+  'BANCO COMAFI SOCIEDAD ANONIMA':                                   '/logos/Banco_Comafi.png',
+  'BANCO DE LA PROVINCIA DE CORDOBA S.A.':                           '/logos/BANCOR.svg',
+  'BANCO JULIO SOCIEDAD ANONIMA':                                    '/logos/Banco_Julio.png',
+  'BANCO PROVINCIA DE TIERRA DEL FUEGO':                             '/logos/Banco_Prov__Tierra_del_Fuego.png',
+  'CRÉDITO REGIONAL COMPAÑÍA FINANCIERA S.A.U.':                     '/logos/Crédito_Regional.png',
+  'REBA COMPAÑIA FINANCIERA S.A.':                                   '/logos/Reba_Compañía_Financiera.png',
+  'Banco Piano':                                                     '/logos/Banco_Piano.svg',
+};
+
 const PLAZO_FIJO_LOGOS = {
   'Banco Nación': '/logos/Banco_Nación.png',
   'Banco De La Nación Argentina': '/logos/Banco_Nación.png',
@@ -1524,7 +1542,7 @@ ARS_SUBS.plazofijo = async function(main) {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
     const rows = await res.json();
     const list = (rows || []).filter(p => p.tnaClientes > 0)
-      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), short: shortBank(p.entidad), tna: p.tnaClientes * 100 }))
+      .map(p => ({ raw: p.entidad, bank: formatBankNameTTY(p.entidad), short: shortBank(p.entidad), tna: p.tnaClientes * 100, rawLogo: PF_RAW_LOGOS[p.entidad] }))
       // Rate desc; on ties Banco Voii goes first (destacado), then alfabético.
       .sort((a, b) => {
         if (b.tna !== a.tna) return b.tna - a.tna;
@@ -1535,10 +1553,16 @@ ARS_SUBS.plazofijo = async function(main) {
       });
     $('#pf-tbl').innerHTML = `<table class="t pf-slim">
       <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
-      <tbody>${list.map((r, i) => `<tr>
-        <td>${logoHTML(r.bank, true, r.short)} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
+      <tbody>${list.map((r, i) => {
+        // Si tenemos un logo del PF_RAW_LOGOS, lo usamos directo (bypass del formatter).
+        const logo = r.rawLogo
+          ? `<span class="logo sm" data-initials="${esc(initials(r.short))}"><img src="${esc(r.rawLogo)}" alt="${esc(r.short)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`
+          : logoHTML(r.bank, true, r.short);
+        return `<tr>
+        <td>${logo} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
         <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
-      </tr>`).join('')}</tbody></table>
+      </tr>`;
+      }).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
   } catch (e) {
     $('#pf-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
