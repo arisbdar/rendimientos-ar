@@ -9,7 +9,9 @@
       "vigente_desde": "05/07/2026",
       "logo": "VO",
       "logo_bg": "#6b21a8",
-      "activo": true
+      "activo": false,
+      "desactivado_desde": "2026-10-28",
+      "nota": "Dejó de pagar cuenta remunerada tras el re-brand a COCOS BANK."
     },
     {
       "id": "carrefour-banco",

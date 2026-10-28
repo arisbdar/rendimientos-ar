@@ -33,8 +33,8 @@ const NAV = [
   },
   { k: 'ars',         label: 'ars',         key: 'a',
     subs: [
-      { k: 'billeteras',       label: 'billeteras' },
       { k: 'plazofijo',        label: 'plazofijo' },
+      { k: 'billeteras',       label: 'billeteras' },
       { k: 'plazofijoperiod',  label: 'plazofijo periódico' },
       { k: 'lecaps',           label: 'lecaps' },
       { k: 'cer',              label: 'cer' },
@@ -1500,7 +1500,7 @@ async function screenCedears(main) {
 
 // ─── Screen: ARS (router into 6 subs) ─────────────────────────
 async function screenARS(main, sub) {
-  const current = sub || 'billeteras';
+  const current = sub || 'plazofijo';
   const renderer = ARS_SUBS[current];
   if (!renderer) return stubScreen(main, { tag: `ars · ${current}`, title: 'ARS', message: 'sub desconocida' });
   return renderer(main);
