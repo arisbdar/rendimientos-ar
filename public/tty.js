@@ -12,8 +12,12 @@ const STATE = {
 
 const LS = {
   section: 'rndmt_section',
-  palette: 'rndmt_palette',
-  scanlines: 'rndmt_scanlines',
+  // _v2 sufijo: cuando migramos a Noche Pro como default (oct 2026), los usuarios
+  // que habían elegido manualmente amber/green/white/light tenían ese valor
+  // guardado y seguían viendo el look viejo aunque el default del HTML era noche.
+  // Bumpear la key fuerza a todos a arrancar con el nuevo default.
+  palette: 'rndmt_palette_v2',
+  scanlines: 'rndmt_scanlines_v2',
   density: 'rndmt_density',
 };
 
