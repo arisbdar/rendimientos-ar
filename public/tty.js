@@ -212,22 +212,52 @@ const BILLETERA_BG = {
 
 // Logos. Only paths that actually exist in public/logos/ are listed —
 // others fall through to initials (which is fine on the terminal aesthetic).
+// Genera un chip SVG tipo CMF/BICA: bloque de color sólido con letras blancas
+// centradas. Devuelve un data URI listo para usar como src de img. Los PNGs
+// originales de muchos bancos son "texto oscuro sobre fondo blanco" y quedan
+// como stickers sobre el Noche Pro, así que los reemplazamos por estos chips.
+function brandChipSVG(label, bg) {
+  const n = String(label).length;
+  const sz = n <= 2 ? 9 : n === 3 ? 6.5 : 5.2;
+  const y = 9 + sz * 0.37;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><rect width="18" height="18" fill="${bg}"/><text x="9" y="${y}" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="${sz}" letter-spacing="-0.3" fill="#fff">${label}</text></svg>`;
+  return 'data:image/svg+xml;base64,' + btoa(svg);
+}
+
 // Mapeo DIRECTO de los nombres RAW que devuelve la API BCRA/argentinadatos
 // (en MAYÚSCULAS con sufijos corporativos tipo S.A., SOCIEDAD ANONIMA, etc).
-// Esto bypassea el formatBankNameTTY que no estaba cubriendo todos los casos
-// y dejaba varios bancos sin logo.
+// Esto bypassea el formatBankNameTTY que no estaba cubriendo todos los casos.
+// Los bancos cuyos PNGs son "dark text on white bg" se reemplazan con chips
+// generados (brandChipSVG) para que combinen con el Noche Pro.
 const PF_RAW_LOGOS = {
   'BANCO DE GALICIA Y BUENOS AIRES S.A.':                            '/logos/Banco_Galicia.png',
-  'BANCO DE LA PROVINCIA DE BUENOS AIRES':                           '/logos/Banco_de_la_Prov__de_Buenos_Aires.png',
+  'BANCO DE LA PROVINCIA DE BUENOS AIRES':                           brandChipSVG('BP',  '#004A94'),
   'INDUSTRIAL AND COMMERCIAL BANK OF CHINA (ARGENTINA) S.A.U.':      '/logos/ICBC_Argentina.png',
-  'BANCO CREDICOOP COOPERATIVO LIMITADO':                            '/logos/Banco_Credicoop.png',
-  'BANCO COMAFI SOCIEDAD ANONIMA':                                   '/logos/Banco_Comafi.png',
-  'BANCO DE LA PROVINCIA DE CORDOBA S.A.':                           '/logos/BANCOR.svg',
-  'BANCO JULIO SOCIEDAD ANONIMA':                                    '/logos/Banco_Julio.png',
-  'BANCO PROVINCIA DE TIERRA DEL FUEGO':                             '/logos/Banco_Prov__Tierra_del_Fuego.png',
-  'CRÉDITO REGIONAL COMPAÑÍA FINANCIERA S.A.U.':                     '/logos/Crédito_Regional.png',
-  'REBA COMPAÑIA FINANCIERA S.A.':                                   '/logos/Reba_Compañía_Financiera.png',
+  'BANCO CREDICOOP COOPERATIVO LIMITADO':                            brandChipSVG('CRE', '#AF3B2A'),
+  'BANCO COMAFI SOCIEDAD ANONIMA':                                   brandChipSVG('CMF', '#1F6B4F'),
+  'BANCO DE LA PROVINCIA DE CORDOBA S.A.':                           brandChipSVG('CBA', '#00843D'),
+  'BANCO JULIO SOCIEDAD ANONIMA':                                    brandChipSVG('JUL', '#D4A017'),
+  'BANCO PROVINCIA DE TIERRA DEL FUEGO':                             brandChipSVG('TDF', '#1C4C93'),
+  'CRÉDITO REGIONAL COMPAÑÍA FINANCIERA S.A.U.':                     brandChipSVG('CR',  '#2F7D4F'),
+  'REBA COMPAÑIA FINANCIERA S.A.':                                   brandChipSVG('RE',  '#E8A33C'),
+  'BANCO MERIDIAN S.A.':                                             brandChipSVG('ME',  '#0A5B4C'),
+  'BANCO MARIVA S.A.':                                               brandChipSVG('MA',  '#1E3A8A'),
+  'BANCO DEL SOL S.A.':                                              brandChipSVG('SOL', '#F39200'),
+  'BANCO DE COMERCIO S.A.':                                          brandChipSVG('COM', '#B91C1C'),
+  'BANCO DINO S.A.':                                                 brandChipSVG('DI',  '#CB3F1F'),
+  'BANCO DEL CHUBUT S.A.':                                           brandChipSVG('CHU', '#1E88E5'),
+  'BANCO DE FORMOSA S.A.':                                           brandChipSVG('FOR', '#0E6B50'),
+  'BANCO MASVENTAS S.A.':                                            brandChipSVG('MV',  '#0E52A6'),
+  'BIBANK S.A.':                                                     brandChipSVG('BI',  '#4A2D7A'),
+  'BANCO DE LA CIUDAD DE BUENOS AIRES':                              brandChipSVG('CBA', '#C5A020'),
+  'BANCO HIPOTECARIO S.A.':                                          brandChipSVG('BH',  '#E85D28'),
+  'BANCO MACRO S.A.':                                                brandChipSVG('MC',  '#004A98'),
+  'BANCO SANTANDER ARGENTINA S.A.':                                  brandChipSVG('SAN', '#EC0000'),
+  'BANCO DE LA NACION ARGENTINA':                                    brandChipSVG('BNA', '#00843D'),
+  'BANCO BBVA ARGENTINA S.A.':                                       brandChipSVG('BBV', '#004A98'),
+  'BANCO PATAGONIA S.A.':                                            brandChipSVG('PAT', '#F39200'),
   'Banco Piano':                                                     '/logos/Banco_Piano.svg',
+  'Brubank':                                                         brandChipSVG('BRU', '#1F3BB3'),
 };
 
 const PLAZO_FIJO_LOGOS = {
