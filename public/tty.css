@@ -496,6 +496,10 @@ section.s .sub2 {
 }
 .logo img { width: 100%; height: 100%; object-fit: contain; }
 .logo.sm { width: 22px; height: 22px; font-size: 9px; border-radius: 3px; }
+/* Chip blanco para PNGs reales de bancos diseñados pensando en fondo claro
+   (Macro, Galicia, BBVA, Nación, ICBC, etc). Los chips SVG generados con
+   brandChipSVG tienen su propio fill, así que usan .logo default (oscuro). */
+.logo.light { background: #fff; border-color: rgba(0, 0, 0, 0.08); }
 .with-logo {
   display: flex;
   align-items: center;

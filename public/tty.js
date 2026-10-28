@@ -230,12 +230,23 @@ function brandChipSVG(label, bg) {
 // Los bancos cuyos PNGs son "dark text on white bg" se reemplazan con chips
 // generados (brandChipSVG) para que combinen con el Noche Pro.
 const PF_RAW_LOGOS = {
+  // --- Grupo 1: logos reales (PNGs/SVGs oficiales). Van con chip "light" (fondo blanco). ---
   'BANCO DE GALICIA Y BUENOS AIRES S.A.':                            '/logos/Banco_Galicia.png',
-  'BANCO DE LA PROVINCIA DE BUENOS AIRES':                           brandChipSVG('BP',  '#004A94'),
   'INDUSTRIAL AND COMMERCIAL BANK OF CHINA (ARGENTINA) S.A.U.':      '/logos/ICBC_Argentina.png',
-  'BANCO CREDICOOP COOPERATIVO LIMITADO':                            brandChipSVG('CRE', '#AF3B2A'),
-  'BANCO COMAFI SOCIEDAD ANONIMA':                                   brandChipSVG('CMA', '#1F6B4F'),
-  'BANCO DE LA PROVINCIA DE CORDOBA S.A.':                           brandChipSVG('COR', '#00843D'),
+  'BANCO MACRO S.A.':                                                '/logos/Banco_Macro.png',
+  'BANCO BBVA ARGENTINA S.A.':                                       '/logos/BBVA_Argentina.png',
+  'BANCO SANTANDER ARGENTINA S.A.':                                  '/logos/Banco_Santander.png',
+  'BANCO DE LA NACION ARGENTINA':                                    '/logos/Banco_Nación.png',
+  'BANCO PATAGONIA S.A.':                                            '/logos/Banco_Patagonia.svg',
+  'BANCO HIPOTECARIO S.A.':                                          '/logos/Banco_Hipotecario.png',
+  'BANCO CREDICOOP COOPERATIVO LIMITADO':                            '/logos/Banco_Credicoop.png',
+  'BANCO COMAFI SOCIEDAD ANONIMA':                                   '/logos/Banco_Comafi.png',
+  'BANCO DE LA CIUDAD DE BUENOS AIRES':                              '/logos/Banco_Ciudad.png',
+  'BANCO DE LA PROVINCIA DE BUENOS AIRES':                           '/logos/Banco_de_la_Prov__de_Buenos_Aires.png',
+  'BANCO DE LA PROVINCIA DE CORDOBA S.A.':                           '/logos/BANCOR.svg',
+  'Brubank':                                                         '/logos/Brubank.svg',
+  'Banco Piano':                                                     '/logos/Banco_Piano.svg',
+  // --- Grupo 2: sin logo decente → chips SVG generados (bloque color + letras blancas). ---
   'BANCO JULIO SOCIEDAD ANONIMA':                                    brandChipSVG('JUL', '#D4A017'),
   'BANCO PROVINCIA DE TIERRA DEL FUEGO':                             brandChipSVG('TDF', '#1C4C93'),
   'CRÉDITO REGIONAL COMPAÑÍA FINANCIERA S.A.U.':                     brandChipSVG('CR',  '#2F7D4F'),
@@ -249,15 +260,6 @@ const PF_RAW_LOGOS = {
   'BANCO DE FORMOSA S.A.':                                           brandChipSVG('FOR', '#0E6B50'),
   'BANCO MASVENTAS S.A.':                                            brandChipSVG('MV',  '#0E52A6'),
   'BIBANK S.A.':                                                     brandChipSVG('BI',  '#4A2D7A'),
-  'BANCO DE LA CIUDAD DE BUENOS AIRES':                              brandChipSVG('BC',  '#C5A020'),
-  'BANCO HIPOTECARIO S.A.':                                          brandChipSVG('BH',  '#E85D28'),
-  'BANCO MACRO S.A.':                                                brandChipSVG('MC',  '#004A98'),
-  'BANCO SANTANDER ARGENTINA S.A.':                                  brandChipSVG('SAN', '#EC0000'),
-  'BANCO DE LA NACION ARGENTINA':                                    brandChipSVG('BNA', '#00843D'),
-  'BANCO BBVA ARGENTINA S.A.':                                       brandChipSVG('BBV', '#004A98'),
-  'BANCO PATAGONIA S.A.':                                            brandChipSVG('PAT', '#F39200'),
-  'Banco Piano':                                                     '/logos/Banco_Piano.svg',
-  'Brubank':                                                         brandChipSVG('BRU', '#1F3BB3'),
 };
 
 const PLAZO_FIJO_LOGOS = {
@@ -1595,9 +1597,15 @@ ARS_SUBS.plazofijo = async function(main) {
       <thead><tr><th style="text-align:left">banco</th><th>tna</th></tr></thead>
       <tbody>${list.map((r, i) => {
         // Si tenemos un logo del PF_RAW_LOGOS, lo usamos directo (bypass del formatter).
-        const logo = r.rawLogo
-          ? `<span class="logo sm" data-initials="${esc(initials(r.short))}"><img src="${esc(r.rawLogo)}" alt="${esc(r.short)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`
-          : logoHTML(r.bank, true, r.short);
+        // Los chips SVG generados (brandChipSVG) traen un data: URI y tienen su propio
+        // bg; los PNGs reales son dark-on-white y necesitan chip blanco (.logo.light).
+        let logo;
+        if (r.rawLogo) {
+          const cls = r.rawLogo.startsWith('data:') ? 'logo sm' : 'logo sm light';
+          logo = `<span class="${cls}" data-initials="${esc(initials(r.short))}"><img src="${esc(r.rawLogo)}" alt="${esc(r.short)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
+        } else {
+          logo = logoHTML(r.bank, true, r.short);
+        }
         return `<tr>
         <td>${logo} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
         <td class="num ${i===0?'hot':''}">${r.tna.toFixed(2)}%</td>
