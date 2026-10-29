@@ -1570,6 +1570,7 @@ ARS_SUBS.billeteras = async function(main) {
 // 3b. Plazo Fijo — tasas 30/60/90 días por entidad.
 ARS_SUBS.plazofijo = async function(main) {
   main.innerHTML = pHd('ars · plazo fijo', 'Plazo Fijo', 'Tasas por entidad bancaria a 30, 60 y 90 días. Fuente BCRA.')
+    + `<div class="dol-controls"><button type="button" id="pf-share" class="ced-csv" disabled>↗ compartir en x</button></div>`
     + `<div id="pf-tbl"><div class="loading-row"> cargando bancos…</div></div>`;
   try {
     const res = await fetch('https://api.argentinadatos.com/v1/finanzas/tasas/plazoFijo');
@@ -1622,10 +1623,273 @@ ARS_SUBS.plazofijo = async function(main) {
       </tr>`;
       }).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
+    const shareBtn = $('#pf-share');
+    if (shareBtn && list.length) {
+      shareBtn.disabled = false;
+      shareBtn.addEventListener('click', async () => {
+        shareBtn.disabled = true;
+        try {
+          const canvas = await renderPlazoFijoCard(list);
+          await openShareModal({ title: 'compartir en x · plazo fijo', canvas, text: plazoFijoTweetText(list), filename: `plazo-fijo-${_shareDate().short.split('/').reverse().join('-')}.png` });
+        } finally {
+          shareBtn.disabled = false;
+        }
+      });
+    }
   } catch (e) {
     $('#pf-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
 };
+
+// ─── Compartir en X: placa PNG con el ranking de plazo fijo ───
+// Canvas 1200×1500 (4:5, X lo muestra sin recortar en el timeline). Paleta fija "noche" para que la
+// imagen se vea igual sin importar la paleta que tenga elegida quien la genera.
+const SHARE_C = {
+  bg: '#0a0a0c', bg1: '#121216', fg: '#ececf0', dim: '#b4b4be', faint: '#7a7a85',
+  rule: '#22222a', hot: '#00e5a0', font: '"JetBrains Mono", ui-monospace, Menlo, monospace',
+};
+
+function _shareLoadImg(src) {
+  return new Promise((resolve) => {
+    if (!src) return resolve(null);
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+function _shareRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function _shareFit(ctx, text, maxW) {
+  if (ctx.measureText(text).width <= maxW) return text;
+  let t = text;
+  while (t.length > 1 && ctx.measureText(t + '…').width > maxW) t = t.slice(0, -1);
+  return t + '…';
+}
+
+function _shareDate() {
+  const now = new Date();
+  const ar = new Date(now.getTime() + now.getTimezoneOffset() * 60000 - 3 * 3600000);
+  const MES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+  return {
+    long: `${String(ar.getDate()).padStart(2, '0')} ${MES[ar.getMonth()].toUpperCase()} ${ar.getFullYear()}`,
+    short: `${String(ar.getDate()).padStart(2, '0')}/${String(ar.getMonth() + 1).padStart(2, '0')}/${ar.getFullYear()}`,
+  };
+}
+
+async function renderPlazoFijoCard(list) {
+  const W = 1200, H = 1500, PX = 72;
+  const C = SHARE_C;
+  const top = list.slice(0, 10);
+  await Promise.all(['400', '600', '700'].map(w => document.fonts.load(`${w} 32px "JetBrains Mono"`).catch(() => {})));
+  // Mismo criterio que la tabla: PF_RAW_LOGOS (PNG real → chip blanco; chip SVG generado → su propio fondo)
+  // y si no, lookupLogoURL sobre fondo oscuro; sin logo, iniciales sobre el color de marca.
+  const logoSpec = top.map(r => {
+    if (r.rawLogo) return { src: r.rawLogo, light: !r.rawLogo.startsWith('data:') };
+    return { src: lookupLogoURL(r.bank), light: false, bg: BILLETERA_BG[r.bank] || BILLETERA_BG[r.short] || bankColor(r.short) };
+  });
+  const logos = await Promise.all(logoSpec.map(l => _shareLoadImg(l.src)));
+
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const font = (w, px) => { ctx.font = `${w} ${px}px ${C.font}`; };
+
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = C.rule;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(28, 28, W - 56, H - 56);
+
+  // Encabezado: marca + fecha
+  ctx.textBaseline = 'alphabetic';
+  font(600, 34);
+  let x = PX;
+  for (const [txt, col] of [['rendimientos', C.fg], ['*', C.hot], ['.co', C.fg]]) {
+    ctx.fillStyle = col; ctx.fillText(txt, x, 112); x += ctx.measureText(txt).width;
+  }
+  const date = _shareDate();
+  font(500, 24);
+  ctx.fillStyle = C.faint;
+  ctx.textAlign = 'right';
+  ctx.fillText(date.long, W - PX, 110);
+  ctx.textAlign = 'left';
+
+  // Título
+  font(500, 22);
+  ctx.fillStyle = C.faint;
+  ctx.fillText('ARS · PLAZO FIJO · TNA', PX, 200);
+  font(700, 66);
+  ctx.fillStyle = C.fg;
+  ctx.fillText('Ranking plazo fijo', PX, 278);
+  font(500, 28);
+  ctx.fillStyle = C.hot;
+  ctx.fillText(`Top ${top.length} entidades por tasa a 30 días`, PX, 326);
+
+  // Columnas
+  const COL = { rank: PX, logo: PX + 58, name: PX + 128, c30: 860, c60: 1000, c90: W - PX };
+  const headY = 404;
+  font(600, 20);
+  ctx.fillStyle = C.faint;
+  ctx.fillText('#', COL.rank, headY);
+  ctx.fillText('ENTIDAD', COL.name, headY);
+  ctx.textAlign = 'right';
+  ctx.fillText('30D', COL.c30, headY);
+  ctx.fillText('60D', COL.c60, headY);
+  ctx.fillText('90D', COL.c90, headY);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = C.rule;
+  ctx.fillRect(PX, headY + 20, W - 2 * PX, 2);
+
+  // Filas
+  const rowH = 90, y0 = headY + 24;
+  const pct = (v) => v == null ? '—' : v.toFixed(2) + '%';
+  top.forEach((r, i) => {
+    const y = y0 + i * rowH, mid = y + rowH / 2;
+    if (i === 0) {
+      ctx.fillStyle = 'rgba(0,229,160,0.08)';
+      ctx.fillRect(PX - 16, y, W - 2 * PX + 32, rowH);
+      ctx.fillStyle = C.hot;
+      ctx.fillRect(PX - 16, y, 5, rowH);
+    }
+    ctx.textBaseline = 'middle';
+    font(600, 26);
+    ctx.fillStyle = i === 0 ? C.hot : C.faint;
+    ctx.fillText(String(i + 1).padStart(2, '0'), COL.rank, mid);
+
+    // Logo: PNG/SVG real sobre chip blanco; los chips generados (data:) ya traen su fondo.
+    const ls = 50, lx = COL.logo, ly = mid - ls / 2;
+    const img = logos[i];
+    ctx.save();
+    _shareRoundRect(ctx, lx, ly, ls, ls, 8);
+    ctx.clip();
+    const spec = logoSpec[i];
+    if (img) {
+      ctx.fillStyle = spec.light ? '#fff' : C.bg1;
+      ctx.fillRect(lx, ly, ls, ls);
+      const pad = spec.light ? 6 : 0, box = ls - 2 * pad;
+      const k = Math.min(box / img.width, box / img.height);
+      const iw = img.width * k, ih = img.height * k;
+      ctx.drawImage(img, lx + (ls - iw) / 2, ly + (ls - ih) / 2, iw, ih);
+    } else {
+      ctx.fillStyle = spec.bg || C.bg1;
+      ctx.fillRect(lx, ly, ls, ls);
+      font(700, 18);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.fillText(initials(r.short), lx + ls / 2, mid + 1);
+      ctx.textAlign = 'left';
+    }
+    ctx.restore();
+    ctx.strokeStyle = C.rule;
+    ctx.lineWidth = 1;
+    _shareRoundRect(ctx, lx, ly, ls, ls, 8);
+    ctx.stroke();
+
+    font(600, 29);
+    ctx.fillStyle = i === 0 ? C.hot : C.fg;
+    ctx.fillText(_shareFit(ctx, r.short, COL.c30 - 190 - COL.name), COL.name, mid);
+
+    ctx.textAlign = 'right';
+    font(700, 34);
+    ctx.fillStyle = i === 0 ? C.hot : C.fg;
+    ctx.fillText(pct(r.tna30), COL.c30, mid);
+    font(500, 26);
+    ctx.fillStyle = C.dim;
+    ctx.fillText(pct(r.tna60), COL.c60, mid);
+    ctx.fillText(pct(r.tna90), COL.c90, mid);
+    ctx.textAlign = 'left';
+
+    if (i < top.length - 1) {
+      ctx.fillStyle = C.rule;
+      ctx.fillRect(PX, y + rowH - 1, W - 2 * PX, 1);
+    }
+  });
+
+  // Pie
+  const fy = y0 + top.length * rowH + 64;
+  ctx.fillStyle = C.rule;
+  ctx.fillRect(PX, fy - 34, W - 2 * PX, 2);
+  ctx.textBaseline = 'alphabetic';
+  font(500, 21);
+  ctx.fillStyle = C.faint;
+  ctx.fillText(`Fuente: BCRA · argentinadatos.com · ${date.short}`, PX, fy + 4);
+  ctx.fillText(`Ranking completo de ${list.length} entidades en`, PX, fy + 40);
+  font(700, 30);
+  ctx.fillStyle = C.hot;
+  ctx.textAlign = 'right';
+  ctx.fillText('rendimientos.co', W - PX, fy + 40);
+  ctx.textAlign = 'left';
+  return cv;
+}
+
+function plazoFijoTweetText(list) {
+  const top3 = list.slice(0, 3).map((r, i) => `${i + 1}. ${r.short} ${r.tna30.toFixed(2)}%`).join('\n');
+  return `Ranking de plazo fijo a 30 días (TNA) al ${_shareDate().short}:\n\n${top3}\n\nRanking completo: https://rendimientos.co/#ars.plazofijo`;
+}
+
+// Modal con preview + acciones. X no permite adjuntar imágenes por URL, así que el flujo es:
+// copiar/descargar la imagen (o compartirla directo en mobile) y abrir el tweet con el texto.
+async function openShareModal({ title, canvas, text, filename }) {
+  const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+  // data: y no blob: — el CSP del sitio (img-src) no permite blob:.
+  const url = canvas.toDataURL('image/png');
+  const file = new File([blob], filename, { type: 'image/png' });
+  const canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+  const canCopy = !!(navigator.clipboard && window.ClipboardItem);
+  openCalcModal({
+    title,
+    sub: 'imagen 1200×1500 · lista para pegar en el tweet',
+    render: (body) => {
+      body.innerHTML = `<div class="share-wrap">
+        <img class="share-preview" src="${url}" alt="${esc(title)}">
+        <div class="share-side">
+          <label class="share-lbl" for="share-text">texto del tweet</label>
+          <textarea id="share-text" class="share-text" rows="8">${esc(text)}</textarea>
+          <div class="share-actions">
+            ${canShareFile ? '<button class="ced-csv share-main" data-act="share">compartir imagen</button>' : ''}
+            ${canCopy ? `<button class="ced-csv${canShareFile ? '' : ' share-main'}" data-act="copy">copiar imagen</button>` : ''}
+            <button class="ced-csv" data-act="download">descargar png</button>
+            <button class="ced-csv" data-act="tweet">abrir x con el texto</button>
+          </div>
+          <div class="hint" id="share-msg">X no deja adjuntar la imagen desde un link: copiala o descargala y pegala en el tweet.</div>
+        </div>
+      </div>`;
+      const msg = (t) => { $('#share-msg', body).textContent = t; };
+      const txt = () => $('#share-text', body).value;
+      $$('button[data-act]', body).forEach(b => b.addEventListener('click', async () => {
+        const act = b.getAttribute('data-act');
+        try {
+          if (act === 'share') {
+            await navigator.share({ files: [file], text: txt() });
+          } else if (act === 'copy') {
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            msg('imagen copiada · pegala en el tweet con ctrl/cmd + v');
+          } else if (act === 'download') {
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click(); a.remove();
+            msg('imagen descargada');
+          } else if (act === 'tweet') {
+            window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(txt())}`, '_blank', 'noopener');
+          }
+        } catch (e) {
+          if (e && e.name === 'AbortError') return;
+          msg(`no se pudo: ${e.message || e}`);
+        }
+      }));
+    },
+  });
+}
 
 // Format bank name to match logo map keys (Banco Santander, Banco Nación, etc.)
 function formatBankNameTTY(raw) {
