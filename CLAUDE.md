@@ -33,6 +33,7 @@ Rendimientos AR - Sitio para comparar rendimientos de productos financieros en A
 - `mundo.js` - Monitor global via Yahoo Finance
 - `news.js` - Noticias financieras via Google News RSS
 - `hipotecarios.js` - Créditos hipotecarios UVA via Google Sheets CSV export
+- `intradiario.js` - Intradiario BYMA via open.bymadata (datos con demora): sin `symbol` lista los activos operados hoy; con `symbol` + `plazo` (24hs|ci) devuelve velas de 1 minuto del día. Solo trae la rueda actual, no historia.
 - `auth-config.js` - Devuelve Supabase URL + anon key desde env vars
 
 ### Supabase (DB)
