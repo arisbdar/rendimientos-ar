@@ -43,6 +43,7 @@ const NAV = [
   },
   { k: 'bonos',        label: 'bonos',        key: 'b' },
   { k: 'ons',          label: 'ons',          key: 'o' },
+  { k: 'intradiario',  label: 'intradiario',  key: 'i' },
   { k: 'dolar',        label: 'dólar',        key: 'd' },
   { k: 'pix',          label: 'pix',          key: 'p' },
   { k: 'remesas',      label: 'remesas',      key: 's' },
@@ -3093,6 +3094,252 @@ async function screenRemesas(main) {
   </table>`;
 }
 
+// ─── Screen: Intradiario — gráfico del día de cualquier activo de BYMA ───
+// Fuente: open.bymadata (datos públicos con demora). El sub de la ruta es el ticker: #intradiario.GGAL
+const INTRA_DEFAULT = 'GGAL';
+const INTRA_W = 900, INTRA_H = 340, INTRA_VOL_H = 56;
+const INTRA_P = { l: 8, r: 78, t: 16, b: 26 };
+
+function _hhmmToMin(hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+}
+function _minToHhmm(min) {
+  return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+}
+
+// Escalas compartidas entre el SVG y el hover.
+function intradayLayout(d, prevClose) {
+  const pts = d.candles.map(c => ({ t: c[0].slice(11, 16), m: _hhmmToMin(c[0].slice(11, 16)), o: c[1], h: c[2], l: c[3], c: c[4], v: c[5] }));
+  const P = INTRA_P;
+  const priceBottom = INTRA_H - P.b - INTRA_VOL_H - 10;
+  // Eje X por hora real: los activos ilíquidos muestran los huecos sin operaciones.
+  const xMin = Math.min(pts[0].m, _hhmmToMin('11:00'));
+  const xMax = Math.max(pts[pts.length - 1].m, _hhmmToMin('17:00'));
+  const ref = prevClose || pts[0].o;
+  let yMin = Math.min(...pts.map(p => p.l), ref), yMax = Math.max(...pts.map(p => p.h), ref);
+  const pad = (yMax - yMin) * 0.06 || yMax * 0.01;
+  yMin -= pad; yMax += pad;
+  return {
+    pts, ref, xMin, xMax, yMin, yMax, priceBottom,
+    x: (m) => P.l + ((m - xMin) / (xMax - xMin)) * (INTRA_W - P.l - P.r),
+    y: (v) => P.t + (1 - (v - yMin) / (yMax - yMin)) * (priceBottom - P.t),
+  };
+}
+
+function intradayChartHTML(d, { prevClose = null } = {}) {
+  if (!d.candles || d.candles.length < 2) {
+    return `<div class="chart chart-intra"><div class="empty-state">sin operaciones en ${d.plazo === 'ci' ? 'CI' : '24hs'} para ${esc(d.symbol)} hoy</div></div>`;
+  }
+  const W = INTRA_W, H = INTRA_H, P = INTRA_P;
+  const { pts, ref, xMin, xMax, yMin, yMax, priceBottom, x, y } = intradayLayout(d, prevClose);
+  const vMax = Math.max(...pts.map(p => p.v));
+  const last = pts[pts.length - 1].c;
+  const up = last >= ref;
+  const color = up ? 'var(--up)' : 'var(--down)';
+
+  let grid = '';
+  for (let i = 0; i < 5; i++) {
+    const v = yMin + (i * (yMax - yMin)) / 4;
+    grid += `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>`;
+    // Ocultamos la etiqueta del eje si queda tapada por la del último precio.
+    if (Math.abs(y(v) - y(last)) < 22) continue;
+    grid += `<text x="${W - P.r + 8}" y="${y(v).toFixed(1)}" dominant-baseline="middle" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${esc(fmt(v))}</text>`;
+  }
+  for (let m = Math.ceil(xMin / 60) * 60; m <= xMax; m += 60) {
+    grid += `<line class="grid-line" x1="${x(m).toFixed(1)}" x2="${x(m).toFixed(1)}" y1="${P.t}" y2="${H - P.b}"/>
+      <text x="${x(m).toFixed(1)}" y="${H - 8}" text-anchor="${m === xMin ? 'start' : 'middle'}" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${_minToHhmm(m)}</text>`;
+  }
+  const refLine = `<line x1="${P.l}" x2="${W - P.r}" y1="${y(ref).toFixed(1)}" y2="${y(ref).toFixed(1)}" stroke="var(--fg-faint)" stroke-dasharray="4 4"/>
+    <text x="${P.l + 4}" y="${(y(ref) - 6).toFixed(1)}" fill="var(--fg-faint)" font-size="11" font-family="var(--font-mono)">${prevClose ? 'cierre ant.' : 'apertura'} ${esc(fmt(ref))}</text>`;
+  // Línea escalonada: el precio se mantiene hasta el próximo trade.
+  let line = `M${x(pts[0].m).toFixed(1)},${y(pts[0].c).toFixed(1)}`;
+  for (let i = 1; i < pts.length; i++) line += ` H${x(pts[i].m).toFixed(1)} V${y(pts[i].c).toFixed(1)}`;
+  const fill = `${line} V${priceBottom} H${x(pts[0].m).toFixed(1)} Z`;
+  const bw = Math.max(1, ((W - P.l - P.r) / (xMax - xMin)) * 0.7);
+  const vols = pts.map(p => {
+    const h = Math.max(1, (p.v / vMax) * INTRA_VOL_H);
+    return `<rect x="${(x(p.m) - bw / 2).toFixed(1)}" y="${(H - P.b - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--fg-faint)"/>`;
+  }).join('');
+  const lastTag = `<rect x="${W - P.r + 2}" y="${(y(last) - 9).toFixed(1)}" width="${P.r - 4}" height="18" fill="${color}"/>
+    <text x="${W - P.r + 8}" y="${y(last).toFixed(1)}" dominant-baseline="middle" fill="var(--inv-fg)" font-size="12" font-weight="600" font-family="var(--font-mono)">${esc(fmt(last))}</text>`;
+
+  return `<div class="chart chart-intra">
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      ${grid}${refLine}
+      <path d="${fill}" fill="${up ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)'}" stroke="none"/>
+      <path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>
+      ${vols}${lastTag}
+      <line class="intra-cross" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="var(--fg-dim)" stroke-dasharray="2 3" visibility="hidden"/>
+      <circle class="intra-dot" r="4" fill="${color}" stroke="var(--bg)" stroke-width="2" visibility="hidden"/>
+      <rect class="intra-hit" x="${P.l}" y="${P.t}" width="${W - P.l - P.r}" height="${H - P.t - P.b}" fill="transparent"/>
+    </svg>
+    <div class="intra-tip" hidden></div>
+  </div>`;
+}
+
+function wireIntradayHover(chartEl, d, prevClose) {
+  const svg = $('svg', chartEl), hit = $('.intra-hit', chartEl);
+  if (!svg || !hit) return;
+  const cross = $('.intra-cross', chartEl), dot = $('.intra-dot', chartEl), tip = $('.intra-tip', chartEl);
+  const { pts, xMin, xMax, x, y } = intradayLayout(d, prevClose);
+  const show = (evt) => {
+    const pt = svg.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    const sx = pt.matrixTransform(svg.getScreenCTM().inverse()).x;
+    const m = xMin + ((sx - INTRA_P.l) / (INTRA_W - INTRA_P.l - INTRA_P.r)) * (xMax - xMin);
+    // Último minuto operado hasta la posición del cursor.
+    let i = pts.length - 1;
+    while (i > 0 && pts[i].m > m) i--;
+    const c = pts[i];
+    cross.setAttribute('x1', x(c.m)); cross.setAttribute('x2', x(c.m)); cross.setAttribute('visibility', 'visible');
+    dot.setAttribute('cx', x(c.m)); dot.setAttribute('cy', y(c.c)); dot.setAttribute('visibility', 'visible');
+    tip.hidden = false;
+    tip.innerHTML = `<b>${c.t}</b> · <span class="hot">${fmt(c.c)}</span><br><span class="dim">a</span> ${fmt(c.o)} <span class="dim">máx</span> ${fmt(c.h)} <span class="dim">mín</span> ${fmt(c.l)}<br><span class="dim">vol</span> ${fmt(c.v, 0)}`;
+    const rect = chartEl.getBoundingClientRect();
+    const left = evt.clientX - rect.left + 14;
+    tip.style.left = `${Math.max(8, Math.min(left, rect.width - tip.offsetWidth - 8))}px`;
+  };
+  const hide = () => {
+    cross.setAttribute('visibility', 'hidden');
+    dot.setAttribute('visibility', 'hidden');
+    tip.hidden = true;
+  };
+  hit.addEventListener('mousemove', show);
+  hit.addEventListener('mouseleave', hide);
+  hit.addEventListener('touchmove', (e) => { if (e.touches[0]) show(e.touches[0]); }, { passive: true });
+  hit.addEventListener('touchend', hide);
+}
+
+async function screenIntradiario(main, sub) {
+  const state = {
+    symbol: (sub || INTRA_DEFAULT).toUpperCase(),
+    plazo: '24hs',
+    panel: 'lideres',
+    list: [],
+    panels: [],
+  };
+  main.innerHTML = pHd('intradiario · byma', 'Intradiario', 'Gráfico del día de cualquier activo que opera en BYMA: acciones, CEDEARs, bonos, ONs y letras. Datos con demora.')
+    + `<div class="dol-controls">
+        <input id="intra-search" class="ced-search" list="intra-symbols" placeholder="ticker: GGAL, AL30, AAPL…" autocomplete="off" spellcheck="false" value="${esc(state.symbol)}"/>
+        <datalist id="intra-symbols"></datalist>
+        <div class="dol-seg" id="intra-plazo">
+          <button data-plazo="ci">ci</button><button data-plazo="24hs" class="on">24hs</button>
+        </div>
+      </div>
+      <div id="intra-kline" class="kline"></div>
+      <div id="intra-chart"><div class="loading-row"> cargando intradiario…</div></div>
+      <div class="hint" style="margin-top:6px">fuente: BYMA (open.bymadata) · datos con demora · velas de 1 minuto</div>
+      <section class="s">
+        <h2><span>más operados hoy · 24hs</span><span class="line"></span><span class="count" id="intra-count">…</span></h2>
+        <div class="dol-controls"><div class="dol-seg" id="intra-panels"></div></div>
+        <div id="intra-tbl"><div class="loading-row"> cargando paneles…</div></div>
+      </section>`;
+
+  const listItem = (sym) => state.list.find(r => r.symbol === sym);
+
+  async function loadChart() {
+    const chartWrap = $('#intra-chart');
+    if (!chartWrap) return;
+    chartWrap.innerHTML = '<div class="loading-row"> cargando intradiario…</div>';
+    let d;
+    try {
+      d = await fetchCached(`/api/intradiario?symbol=${encodeURIComponent(state.symbol)}&plazo=${state.plazo}`, 60_000);
+    } catch (e) {
+      chartWrap.innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+      $('#intra-kline').innerHTML = '';
+      return;
+    }
+    // Si el usuario cambió de ticker mientras cargaba, descartamos esta respuesta.
+    if (d.symbol !== state.symbol || d.plazo !== state.plazo) return;
+    const prevClose = listItem(state.symbol)?.prevClose || null;
+    const ref = prevClose || d.open;
+    const chg = ref && d.last != null ? ((d.last - ref) / ref) * 100 : null;
+    const k = (lbl, val, sub, cls) => `<div class="k"><div class="lbl">${esc(lbl)}</div><div class="val">${val}</div><div class="chg ${cls || 'dim'}">${sub}</div></div>`;
+    $('#intra-kline').innerHTML = d.candles.length
+      ? k(`${d.symbol} · ${d.plazo}`, fmt(d.last), `${arrow(chg)} ${fmtPct(chg, 2)} vs ${prevClose ? 'cierre ant.' : 'apertura'}`, signClass(chg))
+        + k('apertura', fmt(d.open), d.date ? d.date.split('-').reverse().join('/') : '')
+        + k('máximo', fmt(d.high), '')
+        + k('mínimo', fmt(d.low), '')
+        + k('volumen', fmt(d.volume, 0), 'nominales')
+        + k('operaciones', fmt(d.trades, 0), '')
+      : '';
+    chartWrap.innerHTML = intradayChartHTML(d, { prevClose });
+    wireIntradayHover($('.chart-intra', chartWrap), d, prevClose);
+  }
+
+  function setSymbol(sym) {
+    sym = String(sym || '').trim().toUpperCase();
+    if (!/^[A-Z0-9]{1,12}$/.test(sym)) return;
+    state.symbol = sym;
+    $('#intra-search').value = sym;
+    STATE.section = { main: 'intradiario', sub: sym };
+    history.replaceState(null, '', `#intradiario.${sym}`);
+    document.title = `rendimientos*.co // intradiario · ${sym}`;
+    loadChart();
+    renderTable();
+  }
+
+  function renderTable() {
+    const tbl = $('#intra-tbl');
+    if (!tbl || !state.list.length) return;
+    const rows = state.list
+      .filter(r => r.panel === state.panel)
+      .sort((a, b) => (b.volumeAmount || 0) - (a.volumeAmount || 0))
+      .slice(0, 25);
+    $('#intra-count').textContent = `${state.list.length} activos`;
+    tbl.innerHTML = `<table class="t">
+      <thead><tr><th style="text-align:left">ticker</th><th>último</th><th>var</th><th>monto operado</th></tr></thead>
+      <tbody>${rows.map(r => `<tr class="clickable${r.symbol === state.symbol ? ' sel' : ''}" data-sym="${esc(r.symbol)}">
+        <td><span class="hot">${esc(r.symbol)}</span> <span class="dim">${esc(r.ccy || '')}</span></td>
+        <td class="num">${fmt(r.last)}</td>
+        <td class="num ${signClass(r.chg)}">${arrow(r.chg)} ${fmtPct(r.chg, 2)}</td>
+        <td class="num dim">${fmt(r.volumeAmount, 0)}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+    $$('tr[data-sym]', tbl).forEach(tr => tr.addEventListener('click', () => {
+      setSymbol(tr.getAttribute('data-sym'));
+      $('#intra-search').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }));
+  }
+
+  // Controles
+  const search = $('#intra-search');
+  search.addEventListener('change', () => setSymbol(search.value));
+  search.addEventListener('keydown', (e) => { if (e.key === 'Enter') setSymbol(search.value); });
+  $$('#intra-plazo button').forEach(b => b.addEventListener('click', () => {
+    state.plazo = b.getAttribute('data-plazo');
+    $$('#intra-plazo button').forEach(x => x.classList.toggle('on', x === b));
+    loadChart();
+  }));
+
+  loadChart();
+
+  try {
+    const res = await fetchCached('/api/intradiario', 300_000);
+    state.list = res.data || [];
+    state.panels = res.panels || [];
+  } catch (e) {
+    $('#intra-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+    return;
+  }
+  if (!$('#intra-tbl')) return; // el usuario ya navegó a otra sección
+  $('#intra-symbols').innerHTML = state.list.map(r => `<option value="${esc(r.symbol)}">${esc(intraPanelLabel(r.panel))}</option>`).join('');
+  $('#intra-panels').innerHTML = state.panels.map(p => `<button data-panel="${esc(p.id)}" class="${p.id === state.panel ? 'on' : ''}">${esc(p.label)}</button>`).join('');
+  $$('#intra-panels button').forEach(b => b.addEventListener('click', () => {
+    state.panel = b.getAttribute('data-panel');
+    $$('#intra-panels button').forEach(x => x.classList.toggle('on', x === b));
+    renderTable();
+  }));
+  renderTable();
+  // Con el cierre anterior disponible, redibujamos para que la variación sea vs cierre anterior.
+  if (listItem(state.symbol)) loadChart();
+}
+
+function intraPanelLabel(id) {
+  return { lideres: 'líderes', general: 'panel general', cedears: 'cedear', bonos: 'bono', ons: 'on', letras: 'letra' }[id] || id;
+}
+
 const SCREENS = {
   monitor: screenMonitor,
   cedears: screenCedears,
@@ -3104,11 +3351,12 @@ const SCREENS = {
   dolar: screenDolar,
   pix: screenPix,
   bcra: screenBcra,
+  intradiario: screenIntradiario,
 };
 
 // ─── Keyboard ─────────────────────────────────────────────────
 let _gMode = false, _gTimer = null;
-const G_KEY = { m: 'monitor', c: 'cedears', s: 'remesas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra' };
+const G_KEY = { m: 'monitor', c: 'cedears', s: 'remesas', a: 'ars', b: 'bonos', o: 'ons', h: 'hipotecarios', d: 'dolar', p: 'pix', r: 'bcra', i: 'intradiario' };
 const G_EXT = { e: '/earnings' };
 
 function onKey(e) {

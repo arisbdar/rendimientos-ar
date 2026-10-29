@@ -602,6 +602,91 @@ app.get('/api/earnings', async (req, res) => {
   }
 });
 
+// --- Intradiario BYMA (open.bymadata, datos con demora) — espejo de api/intradiario.js ---
+
+const BYMA_FREE = 'https://open.bymadata.com.ar/vanoms-be-core/rest/api/bymadata/free';
+const BYMA_PANELS = [
+  { id: 'lideres',  path: 'leading-equity',         label: 'líderes' },
+  { id: 'general',  path: 'general-equity',         label: 'general' },
+  { id: 'cedears',  path: 'cedears',                label: 'cedears' },
+  { id: 'bonos',    path: 'public-bonds',           label: 'bonos' },
+  { id: 'ons',      path: 'negociable-obligations', label: 'ons' },
+  { id: 'letras',   path: 'lebacs',                 label: 'letras' },
+];
+
+async function bymaPost(p, body) {
+  const r = await fetch(`${BYMA_FREE}/${p}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' },
+    body: JSON.stringify(body),
+  });
+  if (!r.ok) throw new Error(`BYMA ${p} → ${r.status}`);
+  return r.json();
+}
+
+app.get('/api/intradiario', async (req, res) => {
+  const symbol = String(req.query.symbol || '').trim().toUpperCase();
+  const plazo = String(req.query.plazo || '24hs').toLowerCase() === 'ci' ? 'ci' : '24hs';
+  try {
+    if (!symbol) {
+      const results = await Promise.all(BYMA_PANELS.map(async (p) => {
+        const r = await bymaPost(p.path, { excludeZeroPxAndQty: true, T0: false, T1: true, T2: false, page_size: 5000 });
+        return (Array.isArray(r) ? r : (Array.isArray(r?.data) ? r.data : [])).map(x => ({
+          symbol: x.symbol,
+          panel: p.id,
+          last: x.trade,
+          prevClose: x.previousClosingPrice,
+          chg: x.previousClosingPrice ? ((x.trade - x.previousClosingPrice) / x.previousClosingPrice) * 100 : null,
+          volumeAmount: x.volumeAmount,
+          ccy: x.denominationCcy,
+        }));
+      }));
+      const seen = new Set();
+      const data = results.flat().filter(x => x.symbol && !seen.has(x.symbol) && seen.add(x.symbol));
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      return res.json({ data, panels: BYMA_PANELS.map(({ id, label }) => ({ id, label })), source: 'byma' });
+    }
+    if (!/^[A-Z0-9]{1,12}$/.test(symbol)) return res.status(400).json({ error: 'Símbolo inválido' });
+
+    const rows = await bymaPost('chart/historical-series-intra-day/intraday', {
+      symbol, settlementType: plazo === 'ci' ? '1' : '2', quantity: '100000',
+    });
+    const sorted = (Array.isArray(rows) ? rows : []).slice().sort((a, b) => a.time.localeCompare(b.time));
+    const candles = [];
+    let prevVol = 0, trades = 0;
+    for (const r of sorted) {
+      const qty = r.volume - prevVol;
+      if (!r.volume || qty <= 0) continue;
+      prevVol = r.volume;
+      trades++;
+      const minute = r.time.slice(0, 16);
+      const c = candles[candles.length - 1];
+      if (c && c[0] === minute) {
+        c[2] = Math.max(c[2], r.trade); c[3] = Math.min(c[3], r.trade); c[4] = r.trade; c[5] += qty;
+      } else {
+        candles.push([minute, r.trade, r.trade, r.trade, r.trade, qty]);
+      }
+    }
+    const last = sorted[sorted.length - 1];
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    res.json({
+      symbol, plazo,
+      date: last ? last.time.slice(0, 10) : null,
+      candles,
+      open: candles[0]?.[1] ?? null,
+      high: candles.length ? Math.max(...candles.map(c => c[2])) : null,
+      low: candles.length ? Math.min(...candles.map(c => c[3])) : null,
+      last: candles.length ? candles[candles.length - 1][4] : null,
+      volume: prevVol,
+      trades,
+      source: 'byma',
+    });
+  } catch (err) {
+    console.error('Intradiario proxy error:', err.message);
+    res.status(502).json({ error: 'Failed to fetch BYMA intraday data' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
