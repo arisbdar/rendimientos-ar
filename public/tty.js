@@ -1602,26 +1602,33 @@ ARS_SUBS.plazofijo = async function(main) {
         return a.short.localeCompare(b.short);
       });
     const fmtTna = (v) => v == null ? '<span class="dim">—</span>' : v.toFixed(2) + '%';
-    $('#pf-tbl').innerHTML = `<table class="t pf-slim">
-      <thead><tr><th style="text-align:left">banco</th><th>30d</th><th>60d</th><th>90d</th></tr></thead>
-      <tbody>${list.map((r, i) => {
-        // Si tenemos un logo del PF_RAW_LOGOS, lo usamos directo (bypass del formatter).
-        // Los chips SVG generados (brandChipSVG) traen un data: URI y tienen su propio
-        // bg; los PNGs reales son dark-on-white y necesitan chip blanco (.logo.light).
-        let logo;
-        if (r.rawLogo) {
-          const cls = r.rawLogo.startsWith('data:') ? 'logo sm' : 'logo sm light';
-          logo = `<span class="${cls}" data-initials="${esc(initials(r.short))}"><img src="${esc(r.rawLogo)}" alt="${esc(r.short)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
-        } else {
-          logo = logoHTML(r.bank, true, r.short);
-        }
-        return `<tr>
-        <td>${logo} <span class="${i===0?'hot':''}">${esc(r.short)}</span></td>
-        <td class="num ${i===0?'hot':''}">${r.tna30.toFixed(2)}%</td>
+    const rowHTML = (r, i) => {
+      // Si tenemos un logo del PF_RAW_LOGOS, lo usamos directo (bypass del formatter).
+      // Los chips SVG generados (brandChipSVG) traen un data: URI y tienen su propio
+      // bg; los PNGs reales son dark-on-white y necesitan chip blanco (.logo.light).
+      let logo;
+      if (r.rawLogo) {
+        const cls = r.rawLogo.startsWith('data:') ? 'logo sm' : 'logo sm light';
+        logo = `<span class="${cls}" data-initials="${esc(initials(r.short))}"><img src="${esc(r.rawLogo)}" alt="${esc(r.short)}" onerror="this.remove(); this.parentNode.textContent=this.parentNode.dataset.initials||'·'"></span>`;
+      } else {
+        logo = logoHTML(r.bank, true, r.short);
+      }
+      return `<tr class="${i === 0 ? 'pf-top' : ''}">
+        <td class="pf-rk">${String(i + 1).padStart(2, '0')}</td>
+        <td class="pf-ent">${logo} <span class="${i === 0 ? 'hot' : ''}">${esc(r.short)}</span></td>
+        <td class="num pf-30 ${i === 0 ? 'hot' : ''}">${r.tna30.toFixed(2)}%</td>
         <td class="num">${fmtTna(r.tna60)}</td>
         <td class="num">${fmtTna(r.tna90)}</td>
       </tr>`;
-      }).join('')}</tbody></table>
+    };
+    // Mismo layout que la placa para X: dos columnas en pantallas anchas, una sola en mobile
+    // (las mitades se apilan en orden, así que el ranking sigue corrido).
+    const half = Math.ceil(list.length / 2);
+    const tableHTML = (rows, offset) => `<table class="t pf-slim">
+      <thead><tr><th>#</th><th style="text-align:left">entidad</th><th>30d</th><th>60d</th><th>90d</th></tr></thead>
+      <tbody>${rows.map((r, j) => rowHTML(r, offset + j)).join('')}</tbody>
+    </table>`;
+    $('#pf-tbl').innerHTML = `<div class="pf-grid">${tableHTML(list.slice(0, half), 0)}${tableHTML(list.slice(half), half)}</div>
       <div class="hint" style="margin-top:8px">fuente: BCRA · argentinadatos.com</div>`;
     const shareBtn = $('#pf-share');
     if (shareBtn && list.length) {

@@ -436,7 +436,20 @@ table.t tr.cat td {
 table.t tr.cat td .line { color: var(--rule-hi); }
 
 /* Plazo fijo: 2-col table — keep columns tight instead of stretched full-width */
-table.t.pf-slim { max-width: 440px; }
+/* Plazo fijo: dos tablas lado a lado (mismo layout que la placa para X) */
+.pf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; align-items: start; }
+table.t.pf-slim td.pf-rk, table.t.pf-slim th:first-child { width: 34px; color: var(--fg-faint); font-variant-numeric: tabular-nums; }
+table.t.pf-slim th:nth-child(2), table.t.pf-slim td.pf-ent { text-align: left; }
+table.t.pf-slim td.pf-ent { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 0; width: 100%; }
+table.t.pf-slim td.pf-ent .logo { vertical-align: middle; margin-right: 4px; }
+table.t.pf-slim td.pf-30 { font-weight: 600; color: var(--fg); }
+table.t.pf-slim td.pf-30.hot { color: var(--hot); }
+table.t.pf-slim tr.pf-top td { background: color-mix(in srgb, var(--hot) 8%, transparent); }
+table.t.pf-slim tr.pf-top td.pf-rk { color: var(--hot); box-shadow: inset 3px 0 0 var(--hot); padding-left: 8px; }
+@media (max-width: 900px) {
+  .pf-grid { grid-template-columns: 1fr; }
+  .pf-grid table + table thead { display: none; }
+}
 table.t.pf-slim th, table.t.pf-slim td { padding-top: 6px; padding-bottom: 6px; }
 
 /* Sparkline */
