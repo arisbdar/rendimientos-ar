@@ -3108,31 +3108,54 @@ function _minToHhmm(min) {
   return `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
 }
 
+// Agrupa las velas de 1 minuto de la API en velas de `tf` minutos.
+function intradayResample(d, tf) {
+  if (tf <= 1) return { ...d, tf: 1 };
+  const candles = [];
+  for (const [t, o, h, l, c, v] of d.candles) {
+    const m = _hhmmToMin(t.slice(11, 16));
+    const bucket = t.slice(0, 11) + _minToHhmm(m - (m % tf));
+    const last = candles[candles.length - 1];
+    if (last && last[0] === bucket) {
+      last[2] = Math.max(last[2], h); last[3] = Math.min(last[3], l); last[4] = c; last[5] += v;
+    } else {
+      candles.push([bucket, o, h, l, c, v]);
+    }
+  }
+  return { ...d, candles, tf };
+}
+
 // Escalas compartidas entre el SVG y el hover.
 function intradayLayout(d, prevClose) {
+  const tf = d.tf || 1;
   const pts = d.candles.map(c => ({ t: c[0].slice(11, 16), m: _hhmmToMin(c[0].slice(11, 16)), o: c[1], h: c[2], l: c[3], c: c[4], v: c[5] }));
   const P = INTRA_P;
   const priceBottom = INTRA_H - P.b - INTRA_VOL_H - 10;
   // Eje X por hora real: los activos ilíquidos muestran los huecos sin operaciones.
   const xMin = Math.min(pts[0].m, _hhmmToMin('11:00'));
-  const xMax = Math.max(pts[pts.length - 1].m, _hhmmToMin('17:00'));
+  const xMax = Math.max(pts[pts.length - 1].m + tf, _hhmmToMin('17:00'));
   const ref = prevClose || pts[0].o;
   let yMin = Math.min(...pts.map(p => p.l), ref), yMax = Math.max(...pts.map(p => p.h), ref);
   const pad = (yMax - yMin) * 0.06 || yMax * 0.01;
   yMin -= pad; yMax += pad;
+  const x = (m) => P.l + ((m - xMin) / (xMax - xMin)) * (INTRA_W - P.l - P.r);
+  // Cada vela se dibuja centrada en su intervalo [m, m + tf).
+  for (const p of pts) p.xc = x(p.m + tf / 2);
   return {
-    pts, ref, xMin, xMax, yMin, yMax, priceBottom,
-    x: (m) => P.l + ((m - xMin) / (xMax - xMin)) * (INTRA_W - P.l - P.r),
+    pts, ref, tf, xMin, xMax, yMin, yMax, priceBottom, x,
     y: (v) => P.t + (1 - (v - yMin) / (yMax - yMin)) * (priceBottom - P.t),
+    // Ancho de cada vela/barra de volumen: 70% del intervalo.
+    bw: Math.max(1, ((INTRA_W - P.l - P.r) / (xMax - xMin)) * tf * 0.7),
   };
 }
 
-function intradayChartHTML(d, { prevClose = null } = {}) {
-  if (!d.candles || d.candles.length < 2) {
+function intradayChartHTML(d, { prevClose = null, type = 'velas' } = {}) {
+  // Con velas de 15m un activo poco operado puede quedar en una sola vela: igual se dibuja.
+  if (!d.candles || !d.candles.length) {
     return `<div class="chart chart-intra"><div class="empty-state">sin operaciones en ${d.plazo === 'ci' ? 'CI' : '24hs'} para ${esc(d.symbol)} hoy</div></div>`;
   }
   const W = INTRA_W, H = INTRA_H, P = INTRA_P;
-  const { pts, ref, xMin, xMax, yMin, yMax, priceBottom, x, y } = intradayLayout(d, prevClose);
+  const { pts, ref, xMin, xMax, yMin, yMax, priceBottom, x, y, bw } = intradayLayout(d, prevClose);
   const vMax = Math.max(...pts.map(p => p.v));
   const last = pts[pts.length - 1].c;
   const up = last >= ref;
@@ -3152,23 +3175,32 @@ function intradayChartHTML(d, { prevClose = null } = {}) {
   }
   const refLine = `<line x1="${P.l}" x2="${W - P.r}" y1="${y(ref).toFixed(1)}" y2="${y(ref).toFixed(1)}" stroke="var(--fg-faint)" stroke-dasharray="4 4"/>
     <text x="${P.l + 4}" y="${(y(ref) - 6).toFixed(1)}" fill="var(--fg-faint)" font-size="11" font-family="var(--font-mono)">${prevClose ? 'cierre ant.' : 'apertura'} ${esc(fmt(ref))}</text>`;
-  // Línea escalonada: el precio se mantiene hasta el próximo trade.
-  let line = `M${x(pts[0].m).toFixed(1)},${y(pts[0].c).toFixed(1)}`;
-  for (let i = 1; i < pts.length; i++) line += ` H${x(pts[i].m).toFixed(1)} V${y(pts[i].c).toFixed(1)}`;
-  const fill = `${line} V${priceBottom} H${x(pts[0].m).toFixed(1)} Z`;
-  const bw = Math.max(1, ((W - P.l - P.r) / (xMax - xMin)) * 0.7);
+  let price;
+  if (type === 'velas') {
+    price = pts.map(p => {
+      const col = p.c >= p.o ? 'var(--up)' : 'var(--down)';
+      const top = y(Math.max(p.o, p.c)), bot = y(Math.min(p.o, p.c));
+      return `<line x1="${p.xc.toFixed(1)}" x2="${p.xc.toFixed(1)}" y1="${y(p.h).toFixed(1)}" y2="${y(p.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>
+        <rect x="${(p.xc - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1, bot - top).toFixed(1)}" fill="${col}"/>`;
+    }).join('');
+  } else {
+    // Línea escalonada: el precio se mantiene hasta el próximo trade.
+    let line = `M${pts[0].xc.toFixed(1)},${y(pts[0].c).toFixed(1)}`;
+    for (let i = 1; i < pts.length; i++) line += ` H${pts[i].xc.toFixed(1)} V${y(pts[i].c).toFixed(1)}`;
+    const fill = `${line} V${priceBottom} H${pts[0].xc.toFixed(1)} Z`;
+    price = `<path d="${fill}" fill="${up ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)'}" stroke="none"/>
+      <path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>`;
+  }
   const vols = pts.map(p => {
     const h = Math.max(1, (p.v / vMax) * INTRA_VOL_H);
-    return `<rect x="${(x(p.m) - bw / 2).toFixed(1)}" y="${(H - P.b - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--fg-faint)"/>`;
+    return `<rect x="${(p.xc - bw / 2).toFixed(1)}" y="${(H - P.b - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--fg-faint)"/>`;
   }).join('');
   const lastTag = `<rect x="${W - P.r + 2}" y="${(y(last) - 9).toFixed(1)}" width="${P.r - 4}" height="18" fill="${color}"/>
     <text x="${W - P.r + 8}" y="${y(last).toFixed(1)}" dominant-baseline="middle" fill="var(--inv-fg)" font-size="12" font-weight="600" font-family="var(--font-mono)">${esc(fmt(last))}</text>`;
 
   return `<div class="chart chart-intra">
     <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
-      ${grid}${refLine}
-      <path d="${fill}" fill="${up ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)'}" stroke="none"/>
-      <path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>
+      ${grid}${refLine}${price}
       ${vols}${lastTag}
       <line class="intra-cross" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="var(--fg-dim)" stroke-dasharray="2 3" visibility="hidden"/>
       <circle class="intra-dot" r="4" fill="${color}" stroke="var(--bg)" stroke-width="2" visibility="hidden"/>
@@ -3182,20 +3214,20 @@ function wireIntradayHover(chartEl, d, prevClose) {
   const svg = $('svg', chartEl), hit = $('.intra-hit', chartEl);
   if (!svg || !hit) return;
   const cross = $('.intra-cross', chartEl), dot = $('.intra-dot', chartEl), tip = $('.intra-tip', chartEl);
-  const { pts, xMin, xMax, x, y } = intradayLayout(d, prevClose);
+  const { pts, tf, xMin, xMax, y } = intradayLayout(d, prevClose);
   const show = (evt) => {
     const pt = svg.createSVGPoint();
     pt.x = evt.clientX; pt.y = evt.clientY;
     const sx = pt.matrixTransform(svg.getScreenCTM().inverse()).x;
     const m = xMin + ((sx - INTRA_P.l) / (INTRA_W - INTRA_P.l - INTRA_P.r)) * (xMax - xMin);
-    // Último minuto operado hasta la posición del cursor.
+    // Última vela operada hasta la posición del cursor.
     let i = pts.length - 1;
     while (i > 0 && pts[i].m > m) i--;
     const c = pts[i];
-    cross.setAttribute('x1', x(c.m)); cross.setAttribute('x2', x(c.m)); cross.setAttribute('visibility', 'visible');
-    dot.setAttribute('cx', x(c.m)); dot.setAttribute('cy', y(c.c)); dot.setAttribute('visibility', 'visible');
+    cross.setAttribute('x1', c.xc); cross.setAttribute('x2', c.xc); cross.setAttribute('visibility', 'visible');
+    dot.setAttribute('cx', c.xc); dot.setAttribute('cy', y(c.c)); dot.setAttribute('visibility', 'visible');
     tip.hidden = false;
-    tip.innerHTML = `<b>${c.t}</b> · <span class="hot">${fmt(c.c)}</span><br><span class="dim">a</span> ${fmt(c.o)} <span class="dim">máx</span> ${fmt(c.h)} <span class="dim">mín</span> ${fmt(c.l)}<br><span class="dim">vol</span> ${fmt(c.v, 0)}`;
+    tip.innerHTML = `<b>${c.t}${tf > 1 ? '–' + _minToHhmm(c.m + tf) : ''}</b> · <span class="hot">${fmt(c.c)}</span><br><span class="dim">a</span> ${fmt(c.o)} <span class="dim">máx</span> ${fmt(c.h)} <span class="dim">mín</span> ${fmt(c.l)}<br><span class="dim">vol</span> ${fmt(c.v, 0)}`;
     const rect = chartEl.getBoundingClientRect();
     const left = evt.clientX - rect.left + 14;
     tip.style.left = `${Math.max(8, Math.min(left, rect.width - tip.offsetWidth - 8))}px`;
@@ -3215,6 +3247,9 @@ async function screenIntradiario(main, sub) {
   const state = {
     symbol: (sub || INTRA_DEFAULT).toUpperCase(),
     plazo: '24hs',
+    type: 'velas',
+    tf: 5,
+    data: null,
     panel: 'lideres',
     list: [],
     panels: [],
@@ -3226,10 +3261,16 @@ async function screenIntradiario(main, sub) {
         <div class="dol-seg" id="intra-plazo">
           <button data-plazo="ci">ci</button><button data-plazo="24hs" class="on">24hs</button>
         </div>
+        <div class="dol-seg" id="intra-type">
+          <button data-type="velas" class="on">velas</button><button data-type="linea">línea</button>
+        </div>
+        <div class="dol-seg" id="intra-tf">
+          <button data-tf="1">1m</button><button data-tf="5" class="on">5m</button><button data-tf="15">15m</button>
+        </div>
       </div>
       <div id="intra-kline" class="kline"></div>
       <div id="intra-chart"><div class="loading-row"> cargando intradiario…</div></div>
-      <div class="hint" style="margin-top:6px">fuente: BYMA (open.bymadata) · datos con demora · velas de 1 minuto</div>
+      <div class="hint" style="margin-top:6px">fuente: BYMA (open.bymadata) · datos con demora</div>
       <section class="s">
         <h2><span>más operados hoy · 24hs</span><span class="line"></span><span class="count" id="intra-count">…</span></h2>
         <div class="dol-controls"><div class="dol-seg" id="intra-panels"></div></div>
@@ -3264,7 +3305,16 @@ async function screenIntradiario(main, sub) {
         + k('volumen', fmt(d.volume, 0), 'nominales')
         + k('operaciones', fmt(d.trades, 0), '')
       : '';
-    chartWrap.innerHTML = intradayChartHTML(d, { prevClose });
+    state.data = d;
+    renderChart();
+  }
+
+  function renderChart() {
+    const chartWrap = $('#intra-chart');
+    if (!chartWrap || !state.data) return;
+    const d = intradayResample(state.data, state.tf);
+    const prevClose = listItem(state.symbol)?.prevClose || null;
+    chartWrap.innerHTML = intradayChartHTML(d, { prevClose, type: state.type });
     wireIntradayHover($('.chart-intra', chartWrap), d, prevClose);
   }
 
@@ -3311,6 +3361,16 @@ async function screenIntradiario(main, sub) {
     state.plazo = b.getAttribute('data-plazo');
     $$('#intra-plazo button').forEach(x => x.classList.toggle('on', x === b));
     loadChart();
+  }));
+  $$('#intra-type button').forEach(b => b.addEventListener('click', () => {
+    state.type = b.getAttribute('data-type');
+    $$('#intra-type button').forEach(x => x.classList.toggle('on', x === b));
+    renderChart();
+  }));
+  $$('#intra-tf button').forEach(b => b.addEventListener('click', () => {
+    state.tf = +b.getAttribute('data-tf');
+    $$('#intra-tf button').forEach(x => x.classList.toggle('on', x === b));
+    renderChart();
   }));
 
   loadChart();
