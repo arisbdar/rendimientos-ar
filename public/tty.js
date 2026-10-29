@@ -1687,13 +1687,15 @@ function _shareDate() {
 }
 
 async function renderPlazoFijoCard(list) {
-  const W = 1200, H = 1500, PX = 72;
+  const W = 1200, H = 1500, PX = 64;
   const C = SHARE_C;
-  const top = list.slice(0, 10);
+  // Todas las entidades: con más de 12 filas la tabla pasa a dos columnas para seguir en 4:5.
+  const cols = list.length > 12 ? 2 : 1;
+  const perCol = Math.ceil(list.length / cols);
   await Promise.all(['400', '600', '700'].map(w => document.fonts.load(`${w} 32px "JetBrains Mono"`).catch(() => {})));
   // Mismo criterio que la tabla: PF_RAW_LOGOS (PNG real → chip blanco; chip SVG generado → su propio fondo)
   // y si no, lookupLogoURL sobre fondo oscuro; sin logo, iniciales sobre el color de marca.
-  const logoSpec = top.map(r => {
+  const logoSpec = list.map(r => {
     if (r.rawLogo) return { src: r.rawLogo, light: !r.rawLogo.startsWith('data:') };
     return { src: lookupLogoURL(r.bank), light: false, bg: BILLETERA_BG[r.bank] || BILLETERA_BG[r.short] || bankColor(r.short) };
   });
@@ -1712,122 +1714,135 @@ async function renderPlazoFijoCard(list) {
 
   // Encabezado: marca + fecha
   ctx.textBaseline = 'alphabetic';
-  font(600, 34);
+  font(600, 32);
   let x = PX;
   for (const [txt, col] of [['rendimientos', C.fg], ['*', C.hot], ['.co', C.fg]]) {
-    ctx.fillStyle = col; ctx.fillText(txt, x, 112); x += ctx.measureText(txt).width;
+    ctx.fillStyle = col; ctx.fillText(txt, x, 104); x += ctx.measureText(txt).width;
   }
   const date = _shareDate();
-  font(500, 24);
+  font(500, 22);
   ctx.fillStyle = C.faint;
   ctx.textAlign = 'right';
-  ctx.fillText(date.long, W - PX, 110);
+  ctx.fillText(date.long, W - PX, 102);
   ctx.textAlign = 'left';
 
   // Título
-  font(500, 22);
-  ctx.fillStyle = C.faint;
-  ctx.fillText('ARS · PLAZO FIJO · TNA', PX, 200);
-  font(700, 66);
+  font(700, 58);
   ctx.fillStyle = C.fg;
-  ctx.fillText('Ranking plazo fijo', PX, 278);
-  font(500, 28);
+  ctx.fillText('Ranking plazo fijo', PX, 192);
+  font(500, 25);
   ctx.fillStyle = C.hot;
-  ctx.fillText(`Top ${top.length} entidades por tasa a 30 días`, PX, 326);
+  ctx.fillText(`${list.length} entidades · ordenadas por TNA a 30 días`, PX, 236);
 
-  // Columnas
-  const COL = { rank: PX, logo: PX + 58, name: PX + 128, c30: 860, c60: 1000, c90: W - PX };
-  const headY = 404;
-  font(600, 20);
-  ctx.fillStyle = C.faint;
-  ctx.fillText('#', COL.rank, headY);
-  ctx.fillText('ENTIDAD', COL.name, headY);
-  ctx.textAlign = 'right';
-  ctx.fillText('30D', COL.c30, headY);
-  ctx.fillText('60D', COL.c60, headY);
-  ctx.fillText('90D', COL.c90, headY);
-  ctx.textAlign = 'left';
-  ctx.fillStyle = C.rule;
-  ctx.fillRect(PX, headY + 20, W - 2 * PX, 2);
-
-  // Filas
-  const rowH = 90, y0 = headY + 24;
+  // Grilla de filas
+  const gap = 40;
+  const colW = (W - 2 * PX - gap * (cols - 1)) / cols;
+  const headY = 300, top0 = headY + 18, bottom = H - 150;
+  const rowH = Math.min(90, (bottom - top0) / perCol);
+  const big = cols === 2 ? 22 : 34, small = cols === 2 ? 16 : 26, nameSz = cols === 2 ? 19 : 29;
+  const ls = Math.round(Math.min(50, rowH * 0.62));
   const pct = (v) => v == null ? '—' : v.toFixed(2) + '%';
-  top.forEach((r, i) => {
-    const y = y0 + i * rowH, mid = y + rowH / 2;
-    if (i === 0) {
-      ctx.fillStyle = 'rgba(0,229,160,0.08)';
-      ctx.fillRect(PX - 16, y, W - 2 * PX + 32, rowH);
-      ctx.fillStyle = C.hot;
-      ctx.fillRect(PX - 16, y, 5, rowH);
-    }
-    ctx.textBaseline = 'middle';
-    font(600, 26);
-    ctx.fillStyle = i === 0 ? C.hot : C.faint;
-    ctx.fillText(String(i + 1).padStart(2, '0'), COL.rank, mid);
 
-    // Logo: PNG/SVG real sobre chip blanco; los chips generados (data:) ya traen su fondo.
-    const ls = 50, lx = COL.logo, ly = mid - ls / 2;
-    const img = logos[i];
-    ctx.save();
-    _shareRoundRect(ctx, lx, ly, ls, ls, 8);
-    ctx.clip();
-    const spec = logoSpec[i];
-    if (img) {
-      ctx.fillStyle = spec.light ? '#fff' : C.bg1;
-      ctx.fillRect(lx, ly, ls, ls);
-      const pad = spec.light ? 6 : 0, box = ls - 2 * pad;
-      const k = Math.min(box / img.width, box / img.height);
-      const iw = img.width * k, ih = img.height * k;
-      ctx.drawImage(img, lx + (ls - iw) / 2, ly + (ls - ih) / 2, iw, ih);
-    } else {
-      ctx.fillStyle = spec.bg || C.bg1;
-      ctx.fillRect(lx, ly, ls, ls);
-      font(700, 18);
-      ctx.fillStyle = '#fff';
-      ctx.textAlign = 'center';
-      ctx.fillText(initials(r.short), lx + ls / 2, mid + 1);
-      ctx.textAlign = 'left';
-    }
-    ctx.restore();
-    ctx.strokeStyle = C.rule;
-    ctx.lineWidth = 1;
-    _shareRoundRect(ctx, lx, ly, ls, ls, 8);
-    ctx.stroke();
-
-    font(600, 29);
-    ctx.fillStyle = i === 0 ? C.hot : C.fg;
-    ctx.fillText(_shareFit(ctx, r.short, COL.c30 - 190 - COL.name), COL.name, mid);
-
+  for (let c = 0; c < cols; c++) {
+    const cx = PX + c * (colW + gap);
+    // Columnas de tasas alineadas a la derecha de cada bloque
+    const X = {
+      rank: cx, logo: cx + (cols === 2 ? 40 : 58), name: cx + (cols === 2 ? 40 : 58) + ls + 14,
+      c90: cx + colW, c60: cx + colW - (cols === 2 ? 68 : 128), c30: cx + colW - (cols === 2 ? 142 : 268),
+    };
+    font(600, cols === 2 ? 16 : 20);
+    ctx.fillStyle = C.faint;
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('#', X.rank, headY);
+    ctx.fillText('ENTIDAD', X.name, headY);
     ctx.textAlign = 'right';
-    font(700, 34);
-    ctx.fillStyle = i === 0 ? C.hot : C.fg;
-    ctx.fillText(pct(r.tna30), COL.c30, mid);
-    font(500, 26);
-    ctx.fillStyle = C.dim;
-    ctx.fillText(pct(r.tna60), COL.c60, mid);
-    ctx.fillText(pct(r.tna90), COL.c90, mid);
+    ctx.fillText('30D', X.c30, headY);
+    ctx.fillText('60D', X.c60, headY);
+    ctx.fillText('90D', X.c90, headY);
     ctx.textAlign = 'left';
+    ctx.fillStyle = C.rule;
+    ctx.fillRect(cx, headY + 12, colW, 2);
 
-    if (i < top.length - 1) {
-      ctx.fillStyle = C.rule;
-      ctx.fillRect(PX, y + rowH - 1, W - 2 * PX, 1);
+    for (let j = 0; j < perCol; j++) {
+      const i = c * perCol + j;
+      const r = list[i];
+      if (!r) break;
+      const y = top0 + j * rowH, mid = y + rowH / 2;
+      if (i === 0) {
+        ctx.fillStyle = 'rgba(0,229,160,0.08)';
+        ctx.fillRect(cx - 12, y, colW + 24, rowH);
+        ctx.fillStyle = C.hot;
+        ctx.fillRect(cx - 12, y, 4, rowH);
+      }
+      ctx.textBaseline = 'middle';
+      font(600, small);
+      ctx.fillStyle = i === 0 ? C.hot : C.faint;
+      ctx.fillText(String(i + 1).padStart(2, '0'), X.rank, mid);
+
+      const lx = X.logo, ly = mid - ls / 2, spec = logoSpec[i], img = logos[i];
+      ctx.save();
+      _shareRoundRect(ctx, lx, ly, ls, ls, 6);
+      ctx.clip();
+      if (img) {
+        ctx.fillStyle = spec.light ? '#fff' : C.bg1;
+        ctx.fillRect(lx, ly, ls, ls);
+        const pad = spec.light ? Math.round(ls * 0.12) : 0, box = ls - 2 * pad;
+        const k = Math.min(box / img.width, box / img.height);
+        const iw = img.width * k, ih = img.height * k;
+        ctx.drawImage(img, lx + (ls - iw) / 2, ly + (ls - ih) / 2, iw, ih);
+      } else {
+        ctx.fillStyle = spec.bg || C.bg1;
+        ctx.fillRect(lx, ly, ls, ls);
+        font(700, Math.round(ls * 0.36));
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.fillText(initials(r.short), lx + ls / 2, mid + 1);
+        ctx.textAlign = 'left';
+      }
+      ctx.restore();
+      ctx.strokeStyle = C.rule;
+      ctx.lineWidth = 1;
+      _shareRoundRect(ctx, lx, ly, ls, ls, 6);
+      ctx.stroke();
+
+      // El nombre usa todo el ancho hasta donde empieza la tasa a 30 días.
+      font(700, big);
+      const rateW = ctx.measureText('00.00%').width;
+      font(600, nameSz);
+      ctx.fillStyle = i === 0 ? C.hot : C.fg;
+      const nameMax = X.c30 - rateW - 14 - X.name;
+      ctx.fillText(_shareFit(ctx, r.short, nameMax), X.name, mid);
+
+      ctx.textAlign = 'right';
+      font(700, big);
+      ctx.fillStyle = i === 0 ? C.hot : C.fg;
+      ctx.fillText(pct(r.tna30), X.c30, mid);
+      font(500, small);
+      ctx.fillStyle = C.dim;
+      ctx.fillText(pct(r.tna60), X.c60, mid);
+      ctx.fillText(pct(r.tna90), X.c90, mid);
+      ctx.textAlign = 'left';
+
+      if (j < perCol - 1 && list[i + 1]) {
+        ctx.fillStyle = C.rule;
+        ctx.fillRect(cx, y + rowH - 1, colW, 1);
+      }
     }
-  });
+  }
 
   // Pie
-  const fy = y0 + top.length * rowH + 64;
+  const fy = H - 92;
   ctx.fillStyle = C.rule;
-  ctx.fillRect(PX, fy - 34, W - 2 * PX, 2);
+  ctx.fillRect(PX, fy - 36, W - 2 * PX, 2);
   ctx.textBaseline = 'alphabetic';
-  font(500, 21);
+  font(500, 20);
   ctx.fillStyle = C.faint;
-  ctx.fillText(`Fuente: BCRA · argentinadatos.com · ${date.short}`, PX, fy + 4);
-  ctx.fillText(`Ranking completo de ${list.length} entidades en`, PX, fy + 40);
+  ctx.fillText(`Fuente: BCRA · argentinadatos.com · ${date.short}`, PX, fy);
+  ctx.fillText('TNA informada por cada entidad. No es recomendación de inversión.', PX, fy + 32);
   font(700, 30);
   ctx.fillStyle = C.hot;
   ctx.textAlign = 'right';
-  ctx.fillText('rendimientos.co', W - PX, fy + 40);
+  ctx.fillText('rendimientos.co', W - PX, fy + 16);
   ctx.textAlign = 'left';
   return cv;
 }
