@@ -1533,21 +1533,24 @@ table.t.ced-sortable th { padding: 0; }
 /* Intradiario */
 .chart.chart-intra {
   height: auto;
-  padding: 8px 6px 4px;
+  padding: 0;
 }
-.chart.chart-intra svg { height: auto; }
+.chart.chart-intra .intra-canvas { height: 380px; }
 .chart.chart-intra .empty-state { padding: 60px 0; text-align: center; }
-.intra-tip {
+.intra-legend {
   position: absolute;
-  top: 10px;
+  top: 8px;
+  left: 10px;
+  right: 80px;
+  z-index: 3;
   pointer-events: none;
-  background: var(--bg-2);
-  border: 1px solid var(--rule-hi);
-  padding: 6px 9px;
   font-size: 11px;
   line-height: 1.5;
-  white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+@media (max-width: 600px) {
+  .chart.chart-intra .intra-canvas { height: 300px; }
+  .intra-legend { font-size: 10px; right: 60px; }
 }
 #intra-search { max-width: 260px; text-transform: uppercase; }
 #intra-panels { flex-wrap: wrap; }

@@ -3097,8 +3097,6 @@ async function screenRemesas(main) {
 // ─── Screen: Intradiario — gráfico del día de cualquier activo de BYMA ───
 // Fuente: open.bymadata (datos públicos con demora). El sub de la ruta es el ticker: #intradiario.GGAL
 const INTRA_DEFAULT = 'GGAL';
-const INTRA_W = 900, INTRA_H = 340, INTRA_VOL_H = 56;
-const INTRA_P = { l: 8, r: 78, t: 16, b: 26 };
 
 function _hhmmToMin(hhmm) {
   const [h, m] = hhmm.split(':').map(Number);
@@ -3125,125 +3123,114 @@ function intradayResample(d, tf) {
   return { ...d, candles, tf };
 }
 
-// Escalas compartidas entre el SVG y el hover.
-function intradayLayout(d, prevClose) {
-  const tf = d.tf || 1;
-  const pts = d.candles.map(c => ({ t: c[0].slice(11, 16), m: _hhmmToMin(c[0].slice(11, 16)), o: c[1], h: c[2], l: c[3], c: c[4], v: c[5] }));
-  const P = INTRA_P;
-  const priceBottom = INTRA_H - P.b - INTRA_VOL_H - 10;
-  // Eje X por hora real: los activos ilíquidos muestran los huecos sin operaciones.
-  const xMin = Math.min(pts[0].m, _hhmmToMin('11:00'));
-  const xMax = Math.max(pts[pts.length - 1].m + tf, _hhmmToMin('17:00'));
-  const ref = prevClose || pts[0].o;
-  let yMin = Math.min(...pts.map(p => p.l), ref), yMax = Math.max(...pts.map(p => p.h), ref);
-  const pad = (yMax - yMin) * 0.06 || yMax * 0.01;
-  yMin -= pad; yMax += pad;
-  const x = (m) => P.l + ((m - xMin) / (xMax - xMin)) * (INTRA_W - P.l - P.r);
-  // Cada vela se dibuja centrada en su intervalo [m, m + tf).
-  for (const p of pts) p.xc = x(p.m + tf / 2);
-  return {
-    pts, ref, tf, xMin, xMax, yMin, yMax, priceBottom, x,
-    y: (v) => P.t + (1 - (v - yMin) / (yMax - yMin)) * (priceBottom - P.t),
-    // Ancho de cada vela/barra de volumen: 70% del intervalo.
-    bw: Math.max(1, ((INTRA_W - P.l - P.r) / (xMax - xMin)) * tf * 0.7),
-  };
+// Gráfico con Lightweight Charts (TradingView, Apache 2.0). Se carga solo al entrar a la sección.
+const LWC_SRC = 'https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.9/dist/lightweight-charts.standalone.production.js';
+let _lwcPromise = null;
+function loadLightweightCharts() {
+  if (window.LightweightCharts) return Promise.resolve(window.LightweightCharts);
+  if (!_lwcPromise) {
+    _lwcPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = LWC_SRC;
+      s.onload = () => resolve(window.LightweightCharts);
+      s.onerror = () => { _lwcPromise = null; reject(new Error('no se pudo cargar la librería de gráficos')); };
+      document.head.appendChild(s);
+    });
+  }
+  return _lwcPromise;
 }
 
-function intradayChartHTML(d, { prevClose = null, type = 'velas' } = {}) {
-  // Con velas de 15m un activo poco operado puede quedar en una sola vela: igual se dibuja.
+// La API devuelve hora Argentina sin zona; la pasamos como si fuera UTC para que el eje muestre la hora local de BYMA.
+function _intraTime(t) {
+  return Date.UTC(+t.slice(0, 4), +t.slice(5, 7) - 1, +t.slice(8, 10), +t.slice(11, 13), +t.slice(14, 16)) / 1000;
+}
+
+// Precios de BYMA: los menores a 1.000 (especies D/C, CEDEARs baratos) necesitan 2 decimales.
+function _intraPx(p) {
+  return fmt(p, Math.abs(p) < 1000 ? 2 : 0);
+}
+
+let _intraChart = null;
+function destroyIntradayChart() {
+  if (_intraChart) { _intraChart.remove(); _intraChart = null; }
+}
+
+function renderIntradayChart(LWC, wrap, d, { prevClose = null, type = 'velas' } = {}) {
+  destroyIntradayChart();
   if (!d.candles || !d.candles.length) {
-    return `<div class="chart chart-intra"><div class="empty-state">sin operaciones en ${d.plazo === 'ci' ? 'CI' : '24hs'} para ${esc(d.symbol)} hoy</div></div>`;
+    wrap.innerHTML = `<div class="chart chart-intra"><div class="empty-state">sin operaciones en ${d.plazo === 'ci' ? 'CI' : '24hs'} para ${esc(d.symbol)} hoy</div></div>`;
+    return;
   }
-  const W = INTRA_W, H = INTRA_H, P = INTRA_P;
-  const { pts, ref, xMin, xMax, yMin, yMax, priceBottom, x, y, bw } = intradayLayout(d, prevClose);
-  const vMax = Math.max(...pts.map(p => p.v));
-  const last = pts[pts.length - 1].c;
-  const up = last >= ref;
-  const color = up ? 'var(--up)' : 'var(--down)';
+  wrap.innerHTML = `<div class="chart chart-intra"><div class="intra-legend"></div><div class="intra-canvas"></div></div>`;
+  const css = getComputedStyle(document.body);
+  const v = (name) => css.getPropertyValue(name).trim();
+  const up = v('--up'), down = v('--down');
 
-  let grid = '';
-  for (let i = 0; i < 5; i++) {
-    const v = yMin + (i * (yMax - yMin)) / 4;
-    grid += `<line class="grid-line" x1="${P.l}" x2="${W - P.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"/>`;
-    // Ocultamos la etiqueta del eje si queda tapada por la del último precio.
-    if (Math.abs(y(v) - y(last)) < 22) continue;
-    grid += `<text x="${W - P.r + 8}" y="${y(v).toFixed(1)}" dominant-baseline="middle" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${esc(fmt(v))}</text>`;
-  }
-  for (let m = Math.ceil(xMin / 60) * 60; m <= xMax; m += 60) {
-    grid += `<line class="grid-line" x1="${x(m).toFixed(1)}" x2="${x(m).toFixed(1)}" y1="${P.t}" y2="${H - P.b}"/>
-      <text x="${x(m).toFixed(1)}" y="${H - 8}" text-anchor="${m === xMin ? 'start' : 'middle'}" fill="var(--fg-faint)" font-size="12" font-family="var(--font-mono)">${_minToHhmm(m)}</text>`;
-  }
-  const refLine = `<line x1="${P.l}" x2="${W - P.r}" y1="${y(ref).toFixed(1)}" y2="${y(ref).toFixed(1)}" stroke="var(--fg-faint)" stroke-dasharray="4 4"/>
-    <text x="${P.l + 4}" y="${(y(ref) - 6).toFixed(1)}" fill="var(--fg-faint)" font-size="11" font-family="var(--font-mono)">${prevClose ? 'cierre ant.' : 'apertura'} ${esc(fmt(ref))}</text>`;
-  let price;
+  const chart = LWC.createChart($('.intra-canvas', wrap), {
+    autoSize: true,
+    layout: {
+      background: { type: 'solid', color: 'transparent' },
+      textColor: v('--fg-faint'),
+      fontFamily: v('--font-mono'),
+      fontSize: 11,
+    },
+    grid: { vertLines: { color: v('--rule') }, horzLines: { color: v('--rule') } },
+    rightPriceScale: { borderColor: v('--rule-hi') },
+    timeScale: { borderColor: v('--rule-hi'), timeVisible: true, secondsVisible: false },
+    crosshair: { mode: LWC.CrosshairMode.Normal },
+    localization: { priceFormatter: _intraPx, timeFormatter: (t) => _minToHhmm(Math.floor((t % 86400) / 60)) },
+  });
+  _intraChart = chart;
+
+  const tf = d.tf || 1;
+  const rows = d.candles.map(([t, o, h, l, c, vol]) => ({ time: _intraTime(t), open: o, high: h, low: l, close: c, vol }));
+  const last = rows[rows.length - 1].close;
+  const ref = prevClose || rows[0].open;
+  let series;
   if (type === 'velas') {
-    price = pts.map(p => {
-      const col = p.c >= p.o ? 'var(--up)' : 'var(--down)';
-      const top = y(Math.max(p.o, p.c)), bot = y(Math.min(p.o, p.c));
-      return `<line x1="${p.xc.toFixed(1)}" x2="${p.xc.toFixed(1)}" y1="${y(p.h).toFixed(1)}" y2="${y(p.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>
-        <rect x="${(p.xc - bw / 2).toFixed(1)}" y="${top.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(1, bot - top).toFixed(1)}" fill="${col}"/>`;
-    }).join('');
+    series = chart.addSeries(LWC.CandlestickSeries, {
+      upColor: up, downColor: down, borderVisible: false, wickUpColor: up, wickDownColor: down,
+    });
+    series.setData(rows.map(({ time, open, high, low, close }) => ({ time, open, high, low, close })));
   } else {
-    // Línea escalonada: el precio se mantiene hasta el próximo trade.
-    let line = `M${pts[0].xc.toFixed(1)},${y(pts[0].c).toFixed(1)}`;
-    for (let i = 1; i < pts.length; i++) line += ` H${pts[i].xc.toFixed(1)} V${y(pts[i].c).toFixed(1)}`;
-    const fill = `${line} V${priceBottom} H${pts[0].xc.toFixed(1)} Z`;
-    price = `<path d="${fill}" fill="${up ? 'rgba(74,222,128,0.10)' : 'rgba(255,90,78,0.10)'}" stroke="none"/>
-      <path d="${line}" fill="none" stroke="${color}" stroke-width="1.6" stroke-linejoin="round"/>`;
+    const col = last >= ref ? up : down;
+    series = chart.addSeries(LWC.AreaSeries, {
+      lineType: LWC.LineType.WithSteps, lineColor: col, lineWidth: 2,
+      topColor: last >= ref ? 'rgba(74,222,128,0.18)' : 'rgba(255,90,78,0.18)', bottomColor: 'rgba(0,0,0,0)',
+    });
+    series.setData(rows.map(({ time, close }) => ({ time, value: close })));
   }
-  const vols = pts.map(p => {
-    const h = Math.max(1, (p.v / vMax) * INTRA_VOL_H);
-    return `<rect x="${(p.xc - bw / 2).toFixed(1)}" y="${(H - P.b - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" fill="var(--fg-faint)"/>`;
-  }).join('');
-  const lastTag = `<rect x="${W - P.r + 2}" y="${(y(last) - 9).toFixed(1)}" width="${P.r - 4}" height="18" fill="${color}"/>
-    <text x="${W - P.r + 8}" y="${y(last).toFixed(1)}" dominant-baseline="middle" fill="var(--inv-fg)" font-size="12" font-weight="600" font-family="var(--font-mono)">${esc(fmt(last))}</text>`;
+  series.applyOptions({ priceFormat: { type: 'price', precision: 2, minMove: 0.01 } });
+  series.priceScale().applyOptions({ scaleMargins: { top: 0.08, bottom: 0.24 } });
+  series.createPriceLine({
+    price: ref, color: v('--fg-faint'), lineWidth: 1, lineStyle: LWC.LineStyle.Dashed,
+    axisLabelVisible: true, title: prevClose ? 'cierre ant.' : 'apertura',
+  });
 
-  return `<div class="chart chart-intra">
-    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
-      ${grid}${refLine}${price}
-      ${vols}${lastTag}
-      <line class="intra-cross" x1="0" x2="0" y1="${P.t}" y2="${H - P.b}" stroke="var(--fg-dim)" stroke-dasharray="2 3" visibility="hidden"/>
-      <circle class="intra-dot" r="4" fill="${color}" stroke="var(--bg)" stroke-width="2" visibility="hidden"/>
-      <rect class="intra-hit" x="${P.l}" y="${P.t}" width="${W - P.l - P.r}" height="${H - P.t - P.b}" fill="transparent"/>
-    </svg>
-    <div class="intra-tip" hidden></div>
-  </div>`;
-}
+  const volume = chart.addSeries(LWC.HistogramSeries, { priceScaleId: '', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+  volume.priceScale().applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
+  volume.setData(rows.map(r => ({ time: r.time, value: r.vol, color: r.close >= r.open ? 'rgba(74,222,128,0.35)' : 'rgba(255,90,78,0.35)' })));
+  chart.timeScale().fitContent();
 
-function wireIntradayHover(chartEl, d, prevClose) {
-  const svg = $('svg', chartEl), hit = $('.intra-hit', chartEl);
-  if (!svg || !hit) return;
-  const cross = $('.intra-cross', chartEl), dot = $('.intra-dot', chartEl), tip = $('.intra-tip', chartEl);
-  const { pts, tf, xMin, xMax, y } = intradayLayout(d, prevClose);
-  const show = (evt) => {
-    const pt = svg.createSVGPoint();
-    pt.x = evt.clientX; pt.y = evt.clientY;
-    const sx = pt.matrixTransform(svg.getScreenCTM().inverse()).x;
-    const m = xMin + ((sx - INTRA_P.l) / (INTRA_W - INTRA_P.l - INTRA_P.r)) * (xMax - xMin);
-    // Última vela operada hasta la posición del cursor.
-    let i = pts.length - 1;
-    while (i > 0 && pts[i].m > m) i--;
-    const c = pts[i];
-    cross.setAttribute('x1', c.xc); cross.setAttribute('x2', c.xc); cross.setAttribute('visibility', 'visible');
-    dot.setAttribute('cx', c.xc); dot.setAttribute('cy', y(c.c)); dot.setAttribute('visibility', 'visible');
-    tip.hidden = false;
-    tip.innerHTML = `<b>${c.t}${tf > 1 ? '–' + _minToHhmm(c.m + tf) : ''}</b> · <span class="hot">${fmt(c.c)}</span><br><span class="dim">a</span> ${fmt(c.o)} <span class="dim">máx</span> ${fmt(c.h)} <span class="dim">mín</span> ${fmt(c.l)}<br><span class="dim">vol</span> ${fmt(c.v, 0)}`;
-    const rect = chartEl.getBoundingClientRect();
-    const left = evt.clientX - rect.left + 14;
-    tip.style.left = `${Math.max(8, Math.min(left, rect.width - tip.offsetWidth - 8))}px`;
+  // Leyenda OHLC: muestra la vela bajo el cursor, o la última si no hay cursor.
+  const legend = $('.intra-legend', wrap);
+  const byTime = new Map(rows.map(r => [r.time, r]));
+  const showLegend = (r) => {
+    const m = Math.floor((r.time % 86400) / 60);
+    const cls = r.close >= r.open ? 'up' : 'down';
+    legend.innerHTML = `<b>${esc(d.symbol)}</b> <span class="dim">${_minToHhmm(m)}${tf > 1 ? '–' + _minToHhmm(m + tf) : ''}</span>
+      <span class="dim">a</span> ${_intraPx(r.open)} <span class="dim">máx</span> ${_intraPx(r.high)} <span class="dim">mín</span> ${_intraPx(r.low)}
+      <span class="dim">c</span> <span class="${cls}">${_intraPx(r.close)}</span> <span class="dim">vol</span> ${fmt(r.vol, 0)}`;
   };
-  const hide = () => {
-    cross.setAttribute('visibility', 'hidden');
-    dot.setAttribute('visibility', 'hidden');
-    tip.hidden = true;
-  };
-  hit.addEventListener('mousemove', show);
-  hit.addEventListener('mouseleave', hide);
-  hit.addEventListener('touchmove', (e) => { if (e.touches[0]) show(e.touches[0]); }, { passive: true });
-  hit.addEventListener('touchend', hide);
+  showLegend(rows[rows.length - 1]);
+  chart.subscribeCrosshairMove((p) => {
+    const r = p && p.time != null ? byTime.get(p.time) : null;
+    showLegend(r || rows[rows.length - 1]);
+  });
 }
 
 async function screenIntradiario(main, sub) {
+  destroyIntradayChart();
   const state = {
     symbol: (sub || INTRA_DEFAULT).toUpperCase(),
     plazo: '24hs',
@@ -3298,10 +3285,10 @@ async function screenIntradiario(main, sub) {
     const chg = ref && d.last != null ? ((d.last - ref) / ref) * 100 : null;
     const k = (lbl, val, sub, cls) => `<div class="k"><div class="lbl">${esc(lbl)}</div><div class="val">${val}</div><div class="chg ${cls || 'dim'}">${sub}</div></div>`;
     $('#intra-kline').innerHTML = d.candles.length
-      ? k(`${d.symbol} · ${d.plazo}`, fmt(d.last), `${arrow(chg)} ${fmtPct(chg, 2)} vs ${prevClose ? 'cierre ant.' : 'apertura'}`, signClass(chg))
-        + k('apertura', fmt(d.open), d.date ? d.date.split('-').reverse().join('/') : '')
-        + k('máximo', fmt(d.high), '')
-        + k('mínimo', fmt(d.low), '')
+      ? k(`${d.symbol} · ${d.plazo}`, _intraPx(d.last), `${arrow(chg)} ${fmtPct(chg, 2)} vs ${prevClose ? 'cierre ant.' : 'apertura'}`, signClass(chg))
+        + k('apertura', _intraPx(d.open), d.date ? d.date.split('-').reverse().join('/') : '')
+        + k('máximo', _intraPx(d.high), '')
+        + k('mínimo', _intraPx(d.low), '')
         + k('volumen', fmt(d.volume, 0), 'nominales')
         + k('operaciones', fmt(d.trades, 0), '')
       : '';
@@ -3309,13 +3296,20 @@ async function screenIntradiario(main, sub) {
     renderChart();
   }
 
-  function renderChart() {
+  async function renderChart() {
     const chartWrap = $('#intra-chart');
     if (!chartWrap || !state.data) return;
+    let LWC;
+    try {
+      LWC = await loadLightweightCharts();
+    } catch (e) {
+      chartWrap.innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+      return;
+    }
+    if (!$('#intra-chart')) return; // el usuario ya navegó a otra sección
     const d = intradayResample(state.data, state.tf);
     const prevClose = listItem(state.symbol)?.prevClose || null;
-    chartWrap.innerHTML = intradayChartHTML(d, { prevClose, type: state.type });
-    wireIntradayHover($('.chart-intra', chartWrap), d, prevClose);
+    renderIntradayChart(LWC, chartWrap, d, { prevClose, type: state.type });
   }
 
   function setSymbol(sym) {
