@@ -1637,21 +1637,24 @@ table.t.ced-sortable th { padding: 0; }
   align-items: center;
 }
 /* LEFT */
-.cocos-pix-banner .cpx-left { max-width: 46ch; }
-.cocos-pix-banner .cpx-eyebrow {
+.cocos-pix-banner .cpx-left { max-width: 50ch; }
+/* Hero claim — el "YA FUE PIX" grande, gritando. Es el hook principal. */
+.cocos-pix-banner .cpx-hero {
   font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  font-size: clamp(34px, 5.5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
   color: var(--hot);
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 20px rgba(0, 229, 160, 0.25);
 }
 .cocos-pix-banner .cpx-title {
   font-family: var(--font-mono);
-  font-size: clamp(22px, 3vw, 30px);
+  font-size: clamp(16px, 2.2vw, 22px);
   font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.1;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   color: #fff;
   margin-bottom: 10px;
 }
