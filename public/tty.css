@@ -1641,10 +1641,13 @@ table.t.ced-sortable th { padding: 0; }
 /* Brand mark de Cocos Bank arriba del hero */
 .cocos-pix-banner .cpx-brand {
   display: block;
-  height: 24px;
+  height: 40px;
   width: auto;
-  margin-bottom: 14px;
-  opacity: 0.95;
+  margin-bottom: 18px;
+  filter: drop-shadow(0 0 8px rgba(0, 229, 160, 0.15));
+}
+@media (max-width: 700px) {
+  .cocos-pix-banner .cpx-brand { height: 30px; margin-bottom: 12px; }
 }
 /* Hero claim — el "YA FUE PIX" grande, gritando. Es el hook principal. */
 .cocos-pix-banner .cpx-hero {
