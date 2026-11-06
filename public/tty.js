@@ -3104,6 +3104,7 @@ async function renderCocosPixBanner() {
       </div>
       <div class="cpx-content">
         <div class="cpx-left">
+          <img class="cpx-brand" src="/logos/cocos-bank-wordmark.webp" alt="Cocos Bank" width="140" height="33">
           <div class="cpx-hero">YA FUE PIX</div>
           <div class="cpx-title">Pagar con <em>Cocos Bank</em> es la mejor alternativa en Brasil.</div>
           <div class="cpx-sub">Dólar oficial Cocos + 1% de conversión, sin fees ocultos.</div>
