@@ -3065,8 +3065,9 @@ async function renderCocosPixBanner() {
     const cocosAsk = cocosBank ? +cocosBank.ask : null;
     const usdBrl = brl ? +brl.price : null;
     if (!cocosAsk || !usdBrl) { slot.innerHTML = ''; return; }
-    const CONVERSION_FEE = 0.01; // 1% de fee cocos para usar dólares oficiales
-    const precioPix = (cocosAsk * (1 + CONVERSION_FEE)) / usdBrl;
+    const USD_FEE = 0.01; // 1% fee de Cocos para usar dólares oficiales en consumos
+    const BRL_SPREAD = 0.01; // 1% de spread al comprar BRL (nunca conseguís el mayorista exacto)
+    const precioPix = (cocosAsk * (1 + USD_FEE)) / (usdBrl * (1 - BRL_SPREAD));
     // Promedio de precio PIX del mercado, excluyendo cualquier entidad Cocos
     // para que la comparación no se auto-contamine.
     const pixPrices = [];
@@ -3116,7 +3117,7 @@ async function renderCocosPixBanner() {
             <span class="cpx-price-value">$${fmt(precioPix, 2)}</span>
           </div>
           ${ahorro != null ? `<div class="cpx-savings">▼ ${ahorro.toFixed(1)}% más barato que el promedio PIX</div>` : ''}
-          <div class="cpx-formula">(USD oficial Cocos $${fmt(cocosAsk, 2)} × 1,01) ÷ R$${fmt(usdBrl, 2)} mayorista</div>
+          <div class="cpx-formula">(USD oficial Cocos $${fmt(cocosAsk, 2)} × 1,01) ÷ (R$${fmt(usdBrl, 2)} mayorista × 0,99)</div>
         </div>
       </div>
       <div class="cpx-cta">Abrí tu Cocos Bank →</div>
