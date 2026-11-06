@@ -2968,8 +2968,10 @@ async function screenDolar(main) {
 // ─── Screen: PIX ──────────────────────────────────────────────
 async function screenPix(main) {
   main.innerHTML = pHd('pix · ar → br', 'PIX', 'Mejor / peor proveedor para mandar reales a Brasil desde Argentina. Ranking por precio BRL/ARS ascendente (menor = mejor).')
+    + `<div id="cocos-pix-banner" class="cocos-pix-banner-slot"></div>`
     + `<section class="s"><h2><span>mejor / peor</span><span class="line"></span></h2><div id="pix-best" class="dol-best-row"><div class="loading-row"> cargando…</div></div></section>`
     + `<section class="s"><h2><span>proveedores</span><span class="line"></span><span class="count" id="pix-count">…</span></h2><div id="pix-tbl"><div class="loading-row"> cargando proveedores…</div></div></section>`;
+  renderCocosPixBanner();
   try {
     const raw = await fetchCached('/api/pix', 180_000);
     // Proveedores que pasan el filtro isPix de comparapix pero no tiene sentido
@@ -3040,6 +3042,75 @@ async function screenPix(main) {
       <div class="hint" style="margin-top:8px">fuente: comparapix.ar</div>`;
   } catch (e) {
     $('#pix-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
+  }
+}
+
+// Banner "Hola Cocos Bank" en la cabecera de PIX. Calcula el precio implícito
+// de mandar un real usando dólar oficial de Cocos + 1% de conversión / USD-BRL
+// mayorista de Yahoo. Live: refetch cada vez que entras a la sección.
+async function renderCocosPixBanner() {
+  const slot = $('#cocos-pix-banner');
+  if (!slot) return;
+  try {
+    const [dolar, mundo] = await Promise.all([
+      fetchCached('/api/dolar', 60_000),
+      fetchCached('/api/mundo', 60_000),
+    ]);
+    const cocosBank = (dolar?.exchanges?.usd || []).find(e => e.id === 'cocos-bank');
+    const brl = (mundo?.data || []).find(a => a.id === 'usdbrl');
+    const cocosAsk = cocosBank ? +cocosBank.ask : null;
+    const usdBrl = brl ? +brl.price : null;
+    if (!cocosAsk || !usdBrl) { slot.innerHTML = ''; return; }
+    const CONVERSION_FEE = 0.01; // 1% de fee cocos para usar dólares oficiales
+    const precioPix = (cocosAsk * (1 + CONVERSION_FEE)) / usdBrl;
+    // Comparo contra el mejor PIX actual del listado (si ya está renderizado)
+    const bestPixEl = $('#pix-best .dol-best-card .val');
+    const bestPix = bestPixEl ? parseFloat(bestPixEl.textContent.replace(/[^\d.,]/g, '').replace(',', '.')) : null;
+    const ahorro = bestPix && precioPix < bestPix ? ((bestPix - precioPix) / bestPix) * 100 : null;
+    slot.innerHTML = `<a class="cocos-pix-banner" href="https://cocos.capital" target="_blank" rel="noopener">
+      <div class="cpx-bg">
+        <svg viewBox="0 0 400 200" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+          <defs>
+            <linearGradient id="cpx-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1a3a5c"/>
+              <stop offset="1" stop-color="#1a5a4c"/>
+            </linearGradient>
+            <linearGradient id="cpx-sun" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffcf6b"/>
+              <stop offset="1" stop-color="#ff8f3a"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="200" fill="url(#cpx-sky)"/>
+          <circle cx="310" cy="72" r="28" fill="url(#cpx-sun)" opacity="0.9"/>
+          <!-- Pão de Açúcar siluetas -->
+          <path d="M0,180 L0,150 Q30,120 60,140 Q90,110 120,130 Q150,100 180,118 Q200,90 220,110 Q240,60 265,80 Q290,100 310,105 Q340,95 360,110 Q380,120 400,118 L400,200 L0,200 Z" fill="#0a2238" opacity="0.85"/>
+          <!-- Agua / reflejos -->
+          <rect y="175" width="400" height="25" fill="#0a1a2a" opacity="0.5"/>
+          <line x1="20" y1="185" x2="80" y2="185" stroke="#ffcf6b" stroke-width="0.5" opacity="0.4"/>
+          <line x1="120" y1="190" x2="200" y2="190" stroke="#ffcf6b" stroke-width="0.5" opacity="0.3"/>
+          <line x1="250" y1="187" x2="330" y2="187" stroke="#ffcf6b" stroke-width="0.5" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="cpx-content">
+        <div class="cpx-left">
+          <div class="cpx-eyebrow">ya fue pix</div>
+          <div class="cpx-title">Ahora va <em>Cocos Bank</em></div>
+          <div class="cpx-sub">Mandá reales usando dólar oficial de Cocos. Sin fees ocultos, ganando en todos los rubros.</div>
+        </div>
+        <div class="cpx-right">
+          <div class="cpx-price-lbl">precio implícito · live</div>
+          <div class="cpx-price-row">
+            <span class="cpx-price-currency">R$ 1 =</span>
+            <span class="cpx-price-value">$${fmt(precioPix, 2)}</span>
+          </div>
+          ${ahorro != null ? `<div class="cpx-savings">▼ ${ahorro.toFixed(1)}% vs mejor PIX</div>` : ''}
+          <div class="cpx-formula">(USD oficial Cocos $${fmt(cocosAsk, 2)} × 1,01) ÷ R$${fmt(usdBrl, 2)} mayorista</div>
+        </div>
+      </div>
+      <div class="cpx-cta">Abrí tu Cocos Bank →</div>
+    </a>`;
+  } catch (e) {
+    slot.innerHTML = '';
   }
 }
 

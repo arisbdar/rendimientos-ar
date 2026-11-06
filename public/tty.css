@@ -1592,3 +1592,161 @@ table.t.ced-sortable th { padding: 0; }
   .share-wrap { grid-template-columns: 1fr; }
   .share-preview { max-height: 55vh; }
 }
+
+/* ─── Banner Cocos Bank en PIX ─────────────────────────────────
+   Sky nocturno con silueta de montaña y sun; precio big a la derecha. */
+.cocos-pix-banner-slot { margin: 20px 0 24px; }
+.cocos-pix-banner {
+  position: relative;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  border: 1px solid var(--rule-hi);
+  border-radius: 14px;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 190px;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.cocos-pix-banner:hover {
+  transform: translateY(-1px);
+  border-color: var(--hot);
+  box-shadow: 0 8px 28px rgba(0, 229, 160, 0.12);
+}
+.cocos-pix-banner .cpx-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.cocos-pix-banner .cpx-bg svg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+/* Overlay de gradiente para que el texto se lea limpio sobre el svg */
+.cocos-pix-banner::before {
+  content: "";
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(90deg, rgba(10, 14, 24, 0.92) 0%, rgba(10, 14, 24, 0.75) 45%, rgba(10, 14, 24, 0.35) 100%);
+}
+.cocos-pix-banner .cpx-content {
+  position: relative; z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  padding: 22px 26px 18px;
+  min-height: 190px;
+  align-items: center;
+}
+/* LEFT */
+.cocos-pix-banner .cpx-left { max-width: 46ch; }
+.cocos-pix-banner .cpx-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--hot);
+  margin-bottom: 8px;
+}
+.cocos-pix-banner .cpx-title {
+  font-family: var(--font-mono);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.cocos-pix-banner .cpx-title em {
+  font-style: normal;
+  color: var(--hot);
+}
+.cocos-pix-banner .cpx-sub {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c9c9d1;
+  max-width: 42ch;
+}
+/* RIGHT */
+.cocos-pix-banner .cpx-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.cocos-pix-banner .cpx-price-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--hot);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.cocos-pix-banner .cpx-price-lbl::before {
+  content: "";
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--hot);
+  box-shadow: 0 0 8px var(--hot);
+  animation: blink 1.5s steps(2, start) infinite;
+}
+.cocos-pix-banner .cpx-price-row {
+  display: flex; align-items: baseline; gap: 10px;
+  font-family: var(--font-mono);
+  color: #fff;
+}
+.cocos-pix-banner .cpx-price-currency {
+  font-size: 14px;
+  color: #c9c9d1;
+}
+.cocos-pix-banner .cpx-price-value {
+  font-size: clamp(32px, 5vw, 46px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--hot);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.cocos-pix-banner .cpx-savings {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--up);
+  font-weight: 500;
+  margin-top: 2px;
+}
+.cocos-pix-banner .cpx-formula {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #8a8a95;
+  margin-top: 4px;
+}
+/* CTA bottom-right ribbon */
+.cocos-pix-banner .cpx-cta {
+  position: absolute;
+  bottom: 12px; right: 18px;
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--hot);
+  padding: 4px 10px;
+  border: 1px solid var(--hot);
+  border-radius: 999px;
+  background: rgba(0, 229, 160, 0.08);
+  transition: background .18s ease;
+}
+.cocos-pix-banner:hover .cpx-cta {
+  background: rgba(0, 229, 160, 0.2);
+}
+/* Mobile */
+@media (max-width: 700px) {
+  .cocos-pix-banner .cpx-content {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 18px 18px 50px;
+  }
+  .cocos-pix-banner .cpx-right {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .cocos-pix-banner .cpx-price-value { font-size: 34px; }
+  .cocos-pix-banner .cpx-cta { bottom: 14px; left: 18px; right: auto; }
+}
