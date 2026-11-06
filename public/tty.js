@@ -2972,9 +2972,13 @@ async function screenPix(main) {
     + `<section class="s"><h2><span>proveedores</span><span class="line"></span><span class="count" id="pix-count">…</span></h2><div id="pix-tbl"><div class="loading-row"> cargando proveedores…</div></div></section>`;
   try {
     const raw = await fetchCached('/api/pix', 180_000);
+    // Proveedores que pasan el filtro isPix de comparapix pero no tiene sentido
+    // listarlos acá (no ofrecen el servicio real, upstream mal etiquetado, etc).
+    const PIX_EXCLUDE = new Set(['credicoop']);
     const providers = [];
     for (const [id, info] of Object.entries(raw)) {
       if (!info || !info.isPix) continue;
+      if (PIX_EXCLUDE.has(id)) continue;
       const brlArs = (info.quotes || []).find(q => q.symbol === 'BRLARS');
       if (!brlArs || !brlArs.buy) continue;
       providers.push({
