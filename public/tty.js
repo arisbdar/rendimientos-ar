@@ -3040,6 +3040,9 @@ async function screenPix(main) {
         </tr>`;
       }).join('')}</tbody></table>
       <div class="hint" style="margin-top:8px">fuente: comparapix.ar</div>`;
+    // Re-render del banner una vez que el DOM tiene #pix-best para que capture
+    // el ahorro vs el mejor PIX del listado.
+    renderCocosPixBanner();
   } catch (e) {
     $('#pix-tbl').innerHTML = `<div class="empty-state"><span class="down">ERROR</span> ${esc(e.message)}</div>`;
   }
